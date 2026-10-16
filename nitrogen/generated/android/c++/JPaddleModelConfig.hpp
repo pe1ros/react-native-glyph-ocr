@@ -11,6 +11,7 @@
 #include "PaddleModelConfig.hpp"
 
 #include <string>
+#include <vector>
 
 namespace margelo::nitro::purelyocr {
 
@@ -41,12 +42,20 @@ namespace margelo::nitro::purelyocr {
       double threads = this->getFieldValue(fieldThreads);
       static const auto fieldUseXnnpack = clazz->getField<jboolean>("useXnnpack");
       jboolean useXnnpack = this->getFieldValue(fieldUseXnnpack);
+      static const auto fieldCpus = clazz->getField<jni::JArrayDouble>("cpus");
+      jni::local_ref<jni::JArrayDouble> cpus = this->getFieldValue(fieldCpus);
       return PaddleModelConfig(
         detModel->toStdString(),
         recModel->toStdString(),
         recDict->toStdString(),
         threads,
-        static_cast<bool>(useXnnpack)
+        static_cast<bool>(useXnnpack),
+        [&]() {
+          size_t __size = cpus->size();
+          std::vector<double> __vector(__size);
+          cpus->getRegion(0, __size, __vector.data());
+          return __vector;
+        }()
       );
     }
 
@@ -56,7 +65,7 @@ namespace margelo::nitro::purelyocr {
      */
     [[maybe_unused]]
     static jni::local_ref<JPaddleModelConfig::javaobject> fromCpp(const PaddleModelConfig& value) {
-      using JSignature = JPaddleModelConfig(jni::alias_ref<jni::JString>, jni::alias_ref<jni::JString>, jni::alias_ref<jni::JString>, double, jboolean);
+      using JSignature = JPaddleModelConfig(jni::alias_ref<jni::JString>, jni::alias_ref<jni::JString>, jni::alias_ref<jni::JString>, double, jboolean, jni::alias_ref<jni::JArrayDouble>);
       static const auto clazz = javaClassStatic();
       static const auto create = clazz->getStaticMethod<JSignature>("fromCpp");
       return create(
@@ -65,7 +74,13 @@ namespace margelo::nitro::purelyocr {
         jni::make_jstring(value.recModel),
         jni::make_jstring(value.recDict),
         value.threads,
-        value.useXnnpack
+        value.useXnnpack,
+        [&]() {
+          size_t __size = value.cpus.size();
+          jni::local_ref<jni::JArrayDouble> __array = jni::JArrayDouble::newArray(__size);
+          __array->setRegion(0, __size, value.cpus.data());
+          return __array;
+        }()
       );
     }
   };

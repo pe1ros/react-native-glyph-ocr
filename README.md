@@ -11,6 +11,12 @@ Android only: iOS will use Apple Vision, so the module is not linked there.
 
 The spike screen that uses it lives in `src/spikes/ocr`. The report is in `docs/spikes/paddleocr-android.md`.
 
+Things learned on the way:
+- **Thread affinity.** ONNX Runtime ignores `session.intra_op_thread_affinities` on Android (the code is behind `#if !defined(__ANDROID__)`).
+  `PaddleModelConfig.cpus` works around it: it pins the worker thread before the sessions are created, and ONNX Runtime's pool threads inherit that CPU mask.
+  This is how the spike estimated a budget phone on the little cores of a faster one.
+- **XNNPACK.** `useXnnpack: true` crashes ONNX Runtime 1.30 (SIGSEGV in `OrtSession.run`) on the recognizer. The spike screen does not offer it.
+
 ## Models
 
 `android/build.gradle` downloads the models into the APK assets at build time. They are pinned by revision and checked by SHA-256.

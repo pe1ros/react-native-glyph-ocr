@@ -16,6 +16,11 @@ export interface PaddleModelConfig {
   threads: number;
   /** Run the models with the XNNPACK execution provider instead of the default CPU one. */
   useXnnpack: boolean;
+  /**
+   * Pin PaddleOCR to these CPU cores (0-based), one thread per core; `threads` is ignored then.
+   * Empty = no pinning. Used to estimate a budget phone on the little cores of a faster one.
+   */
+  cpus: number[];
 }
 
 export interface PaddleOptions {

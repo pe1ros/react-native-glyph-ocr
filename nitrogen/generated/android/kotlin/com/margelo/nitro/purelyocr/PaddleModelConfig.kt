@@ -32,7 +32,10 @@ data class PaddleModelConfig(
   val threads: Double,
   @DoNotStrip
   @Keep
-  val useXnnpack: Boolean
+  val useXnnpack: Boolean,
+  @DoNotStrip
+  @Keep
+  val cpus: DoubleArray
 ) {
   /* primary constructor */
 
@@ -44,6 +47,7 @@ data class PaddleModelConfig(
       && Objects.deepEquals(this.recDict, other.recDict)
       && Objects.deepEquals(this.threads, other.threads)
       && Objects.deepEquals(this.useXnnpack, other.useXnnpack)
+      && Objects.deepEquals(this.cpus, other.cpus)
   }
 
   override fun hashCode(): Int {
@@ -52,7 +56,8 @@ data class PaddleModelConfig(
       recModel,
       recDict,
       threads,
-      useXnnpack
+      useXnnpack,
+      cpus
     ).contentDeepHashCode()
   }
 
@@ -64,8 +69,8 @@ data class PaddleModelConfig(
     @Keep
     @Suppress("unused")
     @JvmStatic
-    private fun fromCpp(detModel: String, recModel: String, recDict: String, threads: Double, useXnnpack: Boolean): PaddleModelConfig {
-      return PaddleModelConfig(detModel, recModel, recDict, threads, useXnnpack)
+    private fun fromCpp(detModel: String, recModel: String, recDict: String, threads: Double, useXnnpack: Boolean, cpus: DoubleArray): PaddleModelConfig {
+      return PaddleModelConfig(detModel, recModel, recDict, threads, useXnnpack, cpus)
     }
   }
 }

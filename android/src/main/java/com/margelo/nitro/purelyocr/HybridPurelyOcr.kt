@@ -4,6 +4,7 @@ import android.app.ActivityManager
 import android.content.Context
 import android.os.Build
 import android.os.SystemClock
+import android.util.Log
 import com.google.android.gms.tasks.Tasks
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
@@ -30,6 +31,9 @@ class HybridPurelyOcr : HybridPurelyOcrSpec() {
 
   @Volatile
   private var paddle: PaddleOcr? = null
+
+  /** Cores PaddleOCR runs on (0-based); empty = any. Applied to the worker thread before each run. */
+  private var paddleCpus = IntArray(0)
   private var mlKit: TextRecognizer? = null
 
   override val isPaddleLoaded: Boolean
@@ -50,7 +54,16 @@ class HybridPurelyOcr : HybridPurelyOcrSpec() {
     val dict = String(readBytes(config.recDict), Charsets.UTF_8).split('\n').filter { it.isNotEmpty() }
     paddle?.close()
     paddle = null
-    paddle = PaddleOcr(det, rec, dict, config.threads.toInt(), config.useXnnpack)
+    val cpus = config.cpus.map { it.toInt() }.toIntArray()
+    paddleCpus = cpus
+    // ONNX Runtime ignores its thread-affinity option on Android, but its pool threads are created
+    // with the session and inherit the creating thread's CPU mask. So pin the worker first.
+    pinWorker(if (cpus.isEmpty()) CpuAffinity.allCpus() else cpus)
+    paddle = if (cpus.isEmpty()) {
+      PaddleOcr(det, rec, dict, config.threads.toInt(), config.useXnnpack)
+    } else {
+      PaddleOcr(det, rec, dict, cpus.size, useXnnpack = false)
+    }
     ModelLoadInfo(
       loadMs = (SystemClock.elapsedRealtimeNanos() - t0) / 1e6,
       detBytes = det.size.toDouble(),
@@ -61,6 +74,7 @@ class HybridPurelyOcr : HybridPurelyOcrSpec() {
 
   override fun recognizePaddle(imageUri: String, options: PaddleOptions): Promise<OcrResult> = Promise.async(scope) {
     val engine = paddle ?: throw Error("PaddleOCR models are not loaded")
+    pinWorker(if (paddleCpus.isEmpty()) CpuAffinity.allCpus() else paddleCpus)
     val t0 = SystemClock.elapsedRealtimeNanos()
     val bitmap = ImageLoader.decode(context, imageUri, options.maxImageSide.toInt())
     val decodeMs = (SystemClock.elapsedRealtimeNanos() - t0) / 1e6
@@ -99,6 +113,7 @@ class HybridPurelyOcr : HybridPurelyOcrSpec() {
 
   override fun recognizeMlKit(imageUri: String, maxImageSide: Double): Promise<OcrResult> = Promise.async(scope) {
     val recognizer = mlKit ?: TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS).also { mlKit = it }
+    pinWorker(CpuAffinity.allCpus())
     val t0 = SystemClock.elapsedRealtimeNanos()
     val bitmap = ImageLoader.decode(context, imageUri, maxImageSide.toInt())
     val t1 = SystemClock.elapsedRealtimeNanos()
@@ -175,10 +190,19 @@ class HybridPurelyOcr : HybridPurelyOcrSpec() {
     )
   }
 
+  private fun pinWorker(cpus: IntArray) {
+    val err = CpuAffinity.setCurrentThreadCpus(cpus)
+    if (err != 0) Log.w(TAG, "sched_setaffinity(${cpus.joinToString()}) failed: errno $err")
+  }
+
   /** `name` is a file in the module's `assets/ocr/` or an absolute path. */
   private fun readBytes(name: String): ByteArray =
     if (name.startsWith("/")) File(name).readBytes()
     else context.assets.open("ocr/$name").use { it.readBytes() }
+
+  companion object {
+    private const val TAG = "PurelyOcr"
+  }
 
   override fun dispose() {
     paddle?.close()

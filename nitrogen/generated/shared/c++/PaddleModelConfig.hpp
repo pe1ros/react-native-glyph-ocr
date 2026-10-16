@@ -31,6 +31,7 @@
 
 
 #include <string>
+#include <vector>
 
 namespace margelo::nitro::purelyocr {
 
@@ -44,10 +45,11 @@ namespace margelo::nitro::purelyocr {
     std::string recDict     SWIFT_PRIVATE;
     double threads     SWIFT_PRIVATE;
     bool useXnnpack     SWIFT_PRIVATE;
+    std::vector<double> cpus     SWIFT_PRIVATE;
 
   public:
     PaddleModelConfig() = default;
-    explicit PaddleModelConfig(std::string detModel, std::string recModel, std::string recDict, double threads, bool useXnnpack): detModel(detModel), recModel(recModel), recDict(recDict), threads(threads), useXnnpack(useXnnpack) {}
+    explicit PaddleModelConfig(std::string detModel, std::string recModel, std::string recDict, double threads, bool useXnnpack, std::vector<double> cpus): detModel(detModel), recModel(recModel), recDict(recDict), threads(threads), useXnnpack(useXnnpack), cpus(cpus) {}
 
   public:
     friend bool operator==(const PaddleModelConfig& lhs, const PaddleModelConfig& rhs) = default;
@@ -67,7 +69,8 @@ namespace margelo::nitro {
         JSIConverter<std::string>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "recModel"))),
         JSIConverter<std::string>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "recDict"))),
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "threads"))),
-        JSIConverter<bool>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "useXnnpack")))
+        JSIConverter<bool>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "useXnnpack"))),
+        JSIConverter<std::vector<double>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "cpus")))
       );
     }
     static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::purelyocr::PaddleModelConfig& arg) {
@@ -77,6 +80,7 @@ namespace margelo::nitro {
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "recDict"), JSIConverter<std::string>::toJSI(runtime, arg.recDict));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "threads"), JSIConverter<double>::toJSI(runtime, arg.threads));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "useXnnpack"), JSIConverter<bool>::toJSI(runtime, arg.useXnnpack));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "cpus"), JSIConverter<std::vector<double>>::toJSI(runtime, arg.cpus));
       return obj;
     }
     static inline bool canConvert(jsi::Runtime& runtime, const jsi::Value& value) {
@@ -92,6 +96,7 @@ namespace margelo::nitro {
       if (!JSIConverter<std::string>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "recDict")))) return false;
       if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "threads")))) return false;
       if (!JSIConverter<bool>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "useXnnpack")))) return false;
+      if (!JSIConverter<std::vector<double>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "cpus")))) return false;
       return true;
     }
   };
