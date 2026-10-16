@@ -49,6 +49,10 @@ abstract class HybridPurelyOcrSpec: HybridObject() {
   
   @DoNotStrip
   @Keep
+  abstract fun recognizeVision(imageUri: String, options: VisionOptions): Promise<OcrResult>
+  
+  @DoNotStrip
+  @Keep
   abstract fun listImages(dir: String): Array<String>
   
   @DoNotStrip

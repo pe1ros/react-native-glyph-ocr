@@ -31,6 +31,7 @@ namespace margelo::nitro::purelyocr {
   enum class OcrEngine {
     PADDLE      SWIFT_NAME(paddle) = 0,
     MLKIT      SWIFT_NAME(mlkit) = 1,
+    VISION      SWIFT_NAME(vision) = 2,
   } CLOSED_ENUM;
 
 } // namespace margelo::nitro::purelyocr
@@ -45,6 +46,7 @@ namespace margelo::nitro {
       switch (hashString(unionValue.c_str(), unionValue.size())) {
         case hashString("paddle"): return margelo::nitro::purelyocr::OcrEngine::PADDLE;
         case hashString("mlkit"): return margelo::nitro::purelyocr::OcrEngine::MLKIT;
+        case hashString("vision"): return margelo::nitro::purelyocr::OcrEngine::VISION;
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert \"" + unionValue + "\" to enum OcrEngine - invalid value!");
       }
@@ -53,6 +55,7 @@ namespace margelo::nitro {
       switch (arg) {
         case margelo::nitro::purelyocr::OcrEngine::PADDLE: return JSIConverter<std::string>::toJSI(runtime, "paddle");
         case margelo::nitro::purelyocr::OcrEngine::MLKIT: return JSIConverter<std::string>::toJSI(runtime, "mlkit");
+        case margelo::nitro::purelyocr::OcrEngine::VISION: return JSIConverter<std::string>::toJSI(runtime, "vision");
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert OcrEngine to JS - invalid value: "
                                     + std::to_string(static_cast<int>(arg)) + "!");
@@ -66,6 +69,7 @@ namespace margelo::nitro {
       switch (hashString(unionValue.c_str(), unionValue.size())) {
         case hashString("paddle"):
         case hashString("mlkit"):
+        case hashString("vision"):
           return true;
         default:
           return false;

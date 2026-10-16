@@ -17,7 +17,8 @@ import com.facebook.proguard.annotations.DoNotStrip
 @Keep
 enum class OcrEngine(@DoNotStrip @Keep val value: Int) {
   PADDLE(0),
-  MLKIT(1);
+  MLKIT(1),
+  VISION(2);
 
   companion object
 }

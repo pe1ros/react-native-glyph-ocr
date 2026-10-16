@@ -38,8 +38,8 @@ namespace margelo::nitro::purelyocr {
       jni::local_ref<jni::JString> model = this->getFieldValue(fieldModel);
       static const auto fieldSoc = clazz->getField<jni::JString>("soc");
       jni::local_ref<jni::JString> soc = this->getFieldValue(fieldSoc);
-      static const auto fieldAndroidVersion = clazz->getField<jni::JString>("androidVersion");
-      jni::local_ref<jni::JString> androidVersion = this->getFieldValue(fieldAndroidVersion);
+      static const auto fieldOsVersion = clazz->getField<jni::JString>("osVersion");
+      jni::local_ref<jni::JString> osVersion = this->getFieldValue(fieldOsVersion);
       static const auto fieldCpuCores = clazz->getField<double>("cpuCores");
       double cpuCores = this->getFieldValue(fieldCpuCores);
       static const auto fieldMaxCpuFreqsMHz = clazz->getField<jni::JArrayDouble>("maxCpuFreqsMHz");
@@ -52,7 +52,7 @@ namespace margelo::nitro::purelyocr {
         manufacturer->toStdString(),
         model->toStdString(),
         soc->toStdString(),
-        androidVersion->toStdString(),
+        osVersion->toStdString(),
         cpuCores,
         [&]() {
           size_t __size = maxCpuFreqsMHz->size();
@@ -79,7 +79,7 @@ namespace margelo::nitro::purelyocr {
         jni::make_jstring(value.manufacturer),
         jni::make_jstring(value.model),
         jni::make_jstring(value.soc),
-        jni::make_jstring(value.androidVersion),
+        jni::make_jstring(value.osVersion),
         value.cpuCores,
         [&]() {
           size_t __size = value.maxCpuFreqsMHz.size();

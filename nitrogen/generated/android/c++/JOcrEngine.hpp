@@ -48,6 +48,9 @@ namespace margelo::nitro::purelyocr {
         case OcrEngine::MLKIT:
           static const auto fieldMLKIT = clazz->getStaticField<JOcrEngine>("MLKIT");
           return clazz->getStaticFieldValue(fieldMLKIT);
+        case OcrEngine::VISION:
+          static const auto fieldVISION = clazz->getStaticField<JOcrEngine>("VISION");
+          return clazz->getStaticFieldValue(fieldVISION);
         default:
           std::string stringValue = std::to_string(static_cast<int>(value));
           throw std::invalid_argument("Invalid enum value (" + stringValue + "!");

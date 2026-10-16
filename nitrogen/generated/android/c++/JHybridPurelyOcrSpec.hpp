@@ -58,6 +58,7 @@ namespace margelo::nitro::purelyocr {
     std::shared_ptr<Promise<ModelLoadInfo>> loadPaddle(const PaddleModelConfig& config) override;
     std::shared_ptr<Promise<OcrResult>> recognizePaddle(const std::string& imageUri, const PaddleOptions& options) override;
     std::shared_ptr<Promise<OcrResult>> recognizeMlKit(const std::string& imageUri, double maxImageSide) override;
+    std::shared_ptr<Promise<OcrResult>> recognizeVision(const std::string& imageUri, const VisionOptions& options) override;
     std::vector<std::string> listImages(const std::string& dir) override;
     void writeText(const std::string& path, const std::string& content) override;
     DeviceSummary getDeviceSummary() override;

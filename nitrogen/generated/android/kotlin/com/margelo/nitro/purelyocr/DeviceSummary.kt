@@ -29,7 +29,7 @@ data class DeviceSummary(
   val soc: String,
   @DoNotStrip
   @Keep
-  val androidVersion: String,
+  val osVersion: String,
   @DoNotStrip
   @Keep
   val cpuCores: Double,
@@ -51,7 +51,7 @@ data class DeviceSummary(
     return Objects.deepEquals(this.manufacturer, other.manufacturer)
       && Objects.deepEquals(this.model, other.model)
       && Objects.deepEquals(this.soc, other.soc)
-      && Objects.deepEquals(this.androidVersion, other.androidVersion)
+      && Objects.deepEquals(this.osVersion, other.osVersion)
       && Objects.deepEquals(this.cpuCores, other.cpuCores)
       && Objects.deepEquals(this.maxCpuFreqsMHz, other.maxCpuFreqsMHz)
       && Objects.deepEquals(this.totalRamMb, other.totalRamMb)
@@ -63,7 +63,7 @@ data class DeviceSummary(
       manufacturer,
       model,
       soc,
-      androidVersion,
+      osVersion,
       cpuCores,
       maxCpuFreqsMHz,
       totalRamMb,
@@ -79,8 +79,8 @@ data class DeviceSummary(
     @Keep
     @Suppress("unused")
     @JvmStatic
-    private fun fromCpp(manufacturer: String, model: String, soc: String, androidVersion: String, cpuCores: Double, maxCpuFreqsMHz: DoubleArray, totalRamMb: Double, abi: String): DeviceSummary {
-      return DeviceSummary(manufacturer, model, soc, androidVersion, cpuCores, maxCpuFreqsMHz, totalRamMb, abi)
+    private fun fromCpp(manufacturer: String, model: String, soc: String, osVersion: String, cpuCores: Double, maxCpuFreqsMHz: DoubleArray, totalRamMb: Double, abi: String): DeviceSummary {
+      return DeviceSummary(manufacturer, model, soc, osVersion, cpuCores, maxCpuFreqsMHz, totalRamMb, abi)
     }
   }
 }

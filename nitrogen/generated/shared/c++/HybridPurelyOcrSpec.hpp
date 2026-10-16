@@ -21,6 +21,8 @@ namespace margelo::nitro::purelyocr { struct PaddleModelConfig; }
 namespace margelo::nitro::purelyocr { struct OcrResult; }
 // Forward declaration of `PaddleOptions` to properly resolve imports.
 namespace margelo::nitro::purelyocr { struct PaddleOptions; }
+// Forward declaration of `VisionOptions` to properly resolve imports.
+namespace margelo::nitro::purelyocr { struct VisionOptions; }
 // Forward declaration of `DeviceSummary` to properly resolve imports.
 namespace margelo::nitro::purelyocr { struct DeviceSummary; }
 
@@ -30,6 +32,7 @@ namespace margelo::nitro::purelyocr { struct DeviceSummary; }
 #include "PaddleModelConfig.hpp"
 #include "OcrResult.hpp"
 #include "PaddleOptions.hpp"
+#include "VisionOptions.hpp"
 #include <vector>
 #include "DeviceSummary.hpp"
 
@@ -68,6 +71,7 @@ namespace margelo::nitro::purelyocr {
       virtual std::shared_ptr<Promise<ModelLoadInfo>> loadPaddle(const PaddleModelConfig& config) = 0;
       virtual std::shared_ptr<Promise<OcrResult>> recognizePaddle(const std::string& imageUri, const PaddleOptions& options) = 0;
       virtual std::shared_ptr<Promise<OcrResult>> recognizeMlKit(const std::string& imageUri, double maxImageSide) = 0;
+      virtual std::shared_ptr<Promise<OcrResult>> recognizeVision(const std::string& imageUri, const VisionOptions& options) = 0;
       virtual std::vector<std::string> listImages(const std::string& dir) = 0;
       virtual void writeText(const std::string& path, const std::string& content) = 0;
       virtual DeviceSummary getDeviceSummary() = 0;

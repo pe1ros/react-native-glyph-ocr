@@ -10,6 +10,10 @@
   },
   "autolinking": {
     "PurelyOcr": {
+      "ios": {
+        "language": "swift",
+        "implementationClassName": "HybridPurelyOcr"
+      },
       "android": {
         "language": "kotlin",
         "implementationClassName": "HybridPurelyOcr"

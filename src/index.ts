@@ -11,11 +11,12 @@ export type {
   PaddleModelConfig,
   PaddleOptions,
   PurelyOcr,
+  VisionOptions,
 } from './specs/PurelyOcr.nitro';
 
 let instance: PurelyOcr | undefined;
 
-/** Lazily creates the native OCR object. Android only. */
+/** Lazily creates the native OCR object. */
 export function getPurelyOcr(): PurelyOcr {
   if (instance == null) {
     instance = NitroModules.createHybridObject<PurelyOcr>('PurelyOcr');

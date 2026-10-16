@@ -149,6 +149,9 @@ class HybridPurelyOcr : HybridPurelyOcrSpec() {
     }
   }
 
+  override fun recognizeVision(imageUri: String, options: VisionOptions): Promise<OcrResult> =
+    throw Error("Apple Vision is iOS only")
+
   override fun listImages(dir: String): Array<String> {
     val ext = setOf("jpg", "jpeg", "png", "heic", "heif", "webp")
     return (File(dir).listFiles() ?: emptyArray())
@@ -182,7 +185,7 @@ class HybridPurelyOcr : HybridPurelyOcrSpec() {
       manufacturer = Build.MANUFACTURER,
       model = Build.MODEL,
       soc = soc,
-      androidVersion = "${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})",
+      osVersion = "Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})",
       cpuCores = cores.toDouble(),
       maxCpuFreqsMHz = freqs.toDoubleArray(),
       totalRamMb = (memory.totalMem / (1024 * 1024)).toDouble(),

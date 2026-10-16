@@ -43,7 +43,7 @@ namespace margelo::nitro::purelyocr {
     std::string manufacturer     SWIFT_PRIVATE;
     std::string model     SWIFT_PRIVATE;
     std::string soc     SWIFT_PRIVATE;
-    std::string androidVersion     SWIFT_PRIVATE;
+    std::string osVersion     SWIFT_PRIVATE;
     double cpuCores     SWIFT_PRIVATE;
     std::vector<double> maxCpuFreqsMHz     SWIFT_PRIVATE;
     double totalRamMb     SWIFT_PRIVATE;
@@ -51,7 +51,7 @@ namespace margelo::nitro::purelyocr {
 
   public:
     DeviceSummary() = default;
-    explicit DeviceSummary(std::string manufacturer, std::string model, std::string soc, std::string androidVersion, double cpuCores, std::vector<double> maxCpuFreqsMHz, double totalRamMb, std::string abi): manufacturer(manufacturer), model(model), soc(soc), androidVersion(androidVersion), cpuCores(cpuCores), maxCpuFreqsMHz(maxCpuFreqsMHz), totalRamMb(totalRamMb), abi(abi) {}
+    explicit DeviceSummary(std::string manufacturer, std::string model, std::string soc, std::string osVersion, double cpuCores, std::vector<double> maxCpuFreqsMHz, double totalRamMb, std::string abi): manufacturer(manufacturer), model(model), soc(soc), osVersion(osVersion), cpuCores(cpuCores), maxCpuFreqsMHz(maxCpuFreqsMHz), totalRamMb(totalRamMb), abi(abi) {}
 
   public:
     friend bool operator==(const DeviceSummary& lhs, const DeviceSummary& rhs) = default;
@@ -70,7 +70,7 @@ namespace margelo::nitro {
         JSIConverter<std::string>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "manufacturer"))),
         JSIConverter<std::string>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "model"))),
         JSIConverter<std::string>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "soc"))),
-        JSIConverter<std::string>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "androidVersion"))),
+        JSIConverter<std::string>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "osVersion"))),
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "cpuCores"))),
         JSIConverter<std::vector<double>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "maxCpuFreqsMHz"))),
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "totalRamMb"))),
@@ -82,7 +82,7 @@ namespace margelo::nitro {
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "manufacturer"), JSIConverter<std::string>::toJSI(runtime, arg.manufacturer));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "model"), JSIConverter<std::string>::toJSI(runtime, arg.model));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "soc"), JSIConverter<std::string>::toJSI(runtime, arg.soc));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "androidVersion"), JSIConverter<std::string>::toJSI(runtime, arg.androidVersion));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "osVersion"), JSIConverter<std::string>::toJSI(runtime, arg.osVersion));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "cpuCores"), JSIConverter<double>::toJSI(runtime, arg.cpuCores));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "maxCpuFreqsMHz"), JSIConverter<std::vector<double>>::toJSI(runtime, arg.maxCpuFreqsMHz));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "totalRamMb"), JSIConverter<double>::toJSI(runtime, arg.totalRamMb));
@@ -100,7 +100,7 @@ namespace margelo::nitro {
       if (!JSIConverter<std::string>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "manufacturer")))) return false;
       if (!JSIConverter<std::string>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "model")))) return false;
       if (!JSIConverter<std::string>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "soc")))) return false;
-      if (!JSIConverter<std::string>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "androidVersion")))) return false;
+      if (!JSIConverter<std::string>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "osVersion")))) return false;
       if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "cpuCores")))) return false;
       if (!JSIConverter<std::vector<double>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "maxCpuFreqsMHz")))) return false;
       if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "totalRamMb")))) return false;

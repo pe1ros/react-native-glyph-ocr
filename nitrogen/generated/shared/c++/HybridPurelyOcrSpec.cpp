@@ -19,6 +19,7 @@ namespace margelo::nitro::purelyocr {
       prototype.registerHybridMethod("loadPaddle", &HybridPurelyOcrSpec::loadPaddle);
       prototype.registerHybridMethod("recognizePaddle", &HybridPurelyOcrSpec::recognizePaddle);
       prototype.registerHybridMethod("recognizeMlKit", &HybridPurelyOcrSpec::recognizeMlKit);
+      prototype.registerHybridMethod("recognizeVision", &HybridPurelyOcrSpec::recognizeVision);
       prototype.registerHybridMethod("listImages", &HybridPurelyOcrSpec::listImages);
       prototype.registerHybridMethod("writeText", &HybridPurelyOcrSpec::writeText);
       prototype.registerHybridMethod("getDeviceSummary", &HybridPurelyOcrSpec::getDeviceSummary);

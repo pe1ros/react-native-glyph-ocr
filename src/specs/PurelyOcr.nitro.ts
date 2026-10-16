@@ -1,7 +1,7 @@
 import type { HybridObject } from 'react-native-nitro-modules';
 
 /** Engine that produced an {@linkcode OcrResult}. */
-export type OcrEngine = 'paddle' | 'mlkit';
+export type OcrEngine = 'paddle' | 'mlkit' | 'vision';
 
 /**
  * Where the PaddleOCR models come from. Each entry is either a file name inside
@@ -38,9 +38,19 @@ export interface PaddleOptions {
   dropScore: number;
 }
 
+/** Apple Vision (`VNRecognizeTextRequest`, revision 3, accurate level). */
+export interface VisionOptions {
+  /** The photo is decoded so that its longer side is at most this many px. */
+  maxImageSide: number;
+  /** `usesLanguageCorrection` of the request. */
+  usesLanguageCorrection: boolean;
+  /** Recognition languages in priority order, e.g. `['ru-RU', 'en-US']`. */
+  recognitionLanguages: string[];
+}
+
 export interface OcrLine {
   text: string;
-  /** Mean character confidence (PaddleOCR) or line confidence (ML Kit), 0..1. */
+  /** Mean character confidence (PaddleOCR) or line confidence (ML Kit, Vision), 0..1. */
   score: number;
   /** Axis-aligned bounds in the decoded image, px. */
   x: number;
@@ -63,7 +73,7 @@ export interface OcrResult {
   detMs: number;
   /** PaddleOCR only: cropping and recognizing all lines. */
   recMs: number;
-  /** Recognition time without decoding: det + rec for PaddleOCR, the whole call for ML Kit. */
+  /** Recognition time without decoding: det + rec for PaddleOCR, the whole call for ML Kit and Vision. */
   totalMs: number;
   /** PaddleOCR only: detector input size. */
   detInputWidth: number;
@@ -81,29 +91,38 @@ export interface ModelLoadInfo {
 
 export interface DeviceSummary {
   manufacturer: string;
+  /** On iOS the model identifier, e.g. `iPhone14,3`. */
   model: string;
-  /** SoC model on Android 12+, otherwise the board/hardware name. */
+  /** SoC model on Android 12+, otherwise the board/hardware name (on iOS the board, e.g. `D64AP`). */
   soc: string;
-  androidVersion: string;
+  /** `Android 16 (API 36)`, `iOS 26.0`. */
+  osVersion: string;
   cpuCores: number;
-  /** Max frequency of every core, MHz. */
+  /** Max frequency of every core, MHz. Empty on iOS. */
   maxCpuFreqsMHz: number[];
   totalRamMb: number;
   abi: string;
 }
 
 /**
- * On-device text recognition for the OCR spike: PaddleOCR (PP-OCRv5 ONNX on ONNX Runtime)
- * and ML Kit Text Recognition v2 (Latin) on the same decoded photo. Android only.
+ * On-device text recognition for the OCR spike. On Android: PaddleOCR (PP-OCRv5 ONNX on ONNX
+ * Runtime) and ML Kit Text Recognition v2 (Latin) on the same decoded photo. On iOS: Apple Vision.
+ * The other platform's methods throw.
  */
-export interface PurelyOcr extends HybridObject<{ android: 'kotlin' }> {
+export interface PurelyOcr
+  extends HybridObject<{ android: 'kotlin'; ios: 'swift' }> {
+  /** Android only. */
   loadPaddle(config: PaddleModelConfig): Promise<ModelLoadInfo>;
+  /** Always false on iOS. */
   readonly isPaddleLoaded: boolean;
-  /** `imageUri`: a file path, `file://` or `content://` URI. */
+  /** Android only. `imageUri`: a file path, `file://` or `content://` URI. */
   recognizePaddle(imageUri: string, options: PaddleOptions): Promise<OcrResult>;
+  /** Android only. */
   recognizeMlKit(imageUri: string, maxImageSide: number): Promise<OcrResult>;
+  /** iOS only. `imageUri`: a file path or `file://` URI. */
+  recognizeVision(imageUri: string, options: VisionOptions): Promise<OcrResult>;
 
-  /** Folder for the batch benchmark: `<app external files>/ocr-bench`. */
+  /** Folder for the batch benchmark: `<app external files>/ocr-bench` on Android, `<Documents>/ocr-bench` on iOS. */
   readonly benchDir: string;
   /** Absolute paths of the JPEG/PNG/HEIC/WebP files in `dir`, sorted by name. */
   listImages(dir: string): string[];

@@ -21,6 +21,8 @@ namespace margelo::nitro::purelyocr { struct DeviceSummary; }
 namespace margelo::nitro::purelyocr { struct PaddleModelConfig; }
 // Forward declaration of `PaddleOptions` to properly resolve imports.
 namespace margelo::nitro::purelyocr { struct PaddleOptions; }
+// Forward declaration of `VisionOptions` to properly resolve imports.
+namespace margelo::nitro::purelyocr { struct VisionOptions; }
 
 #include <string>
 #include "ModelLoadInfo.hpp"
@@ -40,6 +42,8 @@ namespace margelo::nitro::purelyocr { struct PaddleOptions; }
 #include "JPaddleModelConfig.hpp"
 #include "PaddleOptions.hpp"
 #include "JPaddleOptions.hpp"
+#include "VisionOptions.hpp"
+#include "JVisionOptions.hpp"
 
 namespace margelo::nitro::purelyocr {
 
@@ -118,6 +122,22 @@ namespace margelo::nitro::purelyocr {
   std::shared_ptr<Promise<OcrResult>> JHybridPurelyOcrSpec::recognizeMlKit(const std::string& imageUri, double maxImageSide) {
     static const auto method = _javaPart->javaClassStatic()->getMethod<jni::local_ref<JPromise::javaobject>(jni::alias_ref<jni::JString> /* imageUri */, double /* maxImageSide */)>("recognizeMlKit");
     auto __result = method(_javaPart, jni::make_jstring(imageUri), maxImageSide);
+    return [&]() {
+      auto __promise = Promise<OcrResult>::create();
+      __result->cthis()->addOnResolvedListener([=](const jni::alias_ref<jni::JObject>& __boxedResult) {
+        auto __result = jni::static_ref_cast<JOcrResult>(__boxedResult);
+        __promise->resolve(__result->toCpp());
+      });
+      __result->cthis()->addOnRejectedListener([=](const jni::alias_ref<jni::JThrowable>& __throwable) {
+        jni::JniException __jniError(__throwable);
+        __promise->reject(std::make_exception_ptr(__jniError));
+      });
+      return __promise;
+    }();
+  }
+  std::shared_ptr<Promise<OcrResult>> JHybridPurelyOcrSpec::recognizeVision(const std::string& imageUri, const VisionOptions& options) {
+    static const auto method = _javaPart->javaClassStatic()->getMethod<jni::local_ref<JPromise::javaobject>(jni::alias_ref<jni::JString> /* imageUri */, jni::alias_ref<JVisionOptions> /* options */)>("recognizeVision");
+    auto __result = method(_javaPart, jni::make_jstring(imageUri), JVisionOptions::fromCpp(options));
     return [&]() {
       auto __promise = Promise<OcrResult>::create();
       __result->cthis()->addOnResolvedListener([=](const jni::alias_ref<jni::JObject>& __boxedResult) {
