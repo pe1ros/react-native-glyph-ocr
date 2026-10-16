@@ -1,0 +1,20 @@
+{
+  "name": "react-native-purely-ocr",
+  "version": "0.0.1",
+  "private": true,
+  "description": "OCR spike: PaddleOCR (ONNX Runtime) and ML Kit text recognition on Android, as a Nitro module",
+  "main": "src/index",
+  "react-native": "src/index",
+  "source": "src/index",
+  "scripts": {
+    "specs": "nitrogen --logLevel=\"debug\""
+  },
+  "devDependencies": {
+    "nitrogen": "0.35.9"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*",
+    "react-native-nitro-modules": "*"
+  }
+}

@@ -1,0 +1,195 @@
+import java.security.MessageDigest
+
+def reactNativeArchitectures() {
+  def value = rootProject.getProperties().get("reactNativeArchitectures")
+  return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
+}
+
+def isNewArchitectureEnabled() {
+  return rootProject.hasProperty("newArchEnabled") && rootProject.getProperty("newArchEnabled") == "true"
+}
+
+apply plugin: "com.android.library"
+apply plugin: 'org.jetbrains.kotlin.android'
+apply from: '../nitrogen/generated/android/NitroPurelyOcr+autolinking.gradle'
+apply from: "./fix-prefab.gradle"
+
+if (isNewArchitectureEnabled()) {
+  apply plugin: "com.facebook.react"
+}
+
+def getExtOrDefault(name) {
+  return rootProject.ext.has(name) ? rootProject.ext.get(name) : project.properties["NitroPurelyOcr_" + name]
+}
+
+def getExtOrIntegerDefault(name) {
+  return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties["NitroPurelyOcr_" + name]).toInteger()
+}
+
+// PaddleOCR models (Apache-2.0), official ONNX exports by PaddlePaddle, pinned to a revision.
+// They are downloaded at build time and packed into the APK assets for the spike only:
+// the real app will download them from our server on first launch.
+def ocrModels = [
+  [
+    name  : "PP-OCRv5_mobile_det.onnx",
+    url   : "https://huggingface.co/PaddlePaddle/PP-OCRv5_mobile_det_onnx/resolve/e6f4fa85f00e168c862bc462aebca69eef9b3d3d/inference.onnx",
+    sha256: "a431985659dc921974177a95adcfbb90fd9e51989a5e04d70d0b75f597b6e61d",
+  ],
+  [
+    name  : "eslav_PP-OCRv5_mobile_rec.onnx",
+    url   : "https://huggingface.co/PaddlePaddle/eslav_PP-OCRv5_mobile_rec_onnx/resolve/9a32171fc5718746875e1a261818884517975013/inference.onnx",
+    sha256: "b3018ef2b09a0250b6e0c8e871c927098363e5fd4df890cc68e8358eb0aaf1bd",
+  ],
+  [
+    name  : "cyrillic_PP-OCRv5_mobile_rec.onnx",
+    url   : "https://huggingface.co/PaddlePaddle/cyrillic_PP-OCRv5_mobile_rec_onnx/resolve/2cef88145434beb8afa9dd82d77d799eb1ad7b29/inference.onnx",
+    sha256: "5371ee1ddaa7983cc62d0818d99e982b6804638c85e4f960d59a574094e172e5",
+  ],
+]
+def ocrAssetsDir = file("${buildDir}/generated/ocr-assets")
+
+static String sha256Of(File f) {
+  def md = MessageDigest.getInstance("SHA-256")
+  f.withInputStream { is ->
+    byte[] buf = new byte[1 << 16]
+    int n
+    while ((n = is.read(buf)) > 0) md.update(buf, 0, n)
+  }
+  return md.digest().encodeHex().toString()
+}
+
+tasks.register("downloadOcrModels") {
+  description = "Downloads the PaddleOCR ONNX models into the OCR spike assets"
+  outputs.dir(ocrAssetsDir)
+  doLast {
+    def dir = new File(ocrAssetsDir, "ocr")
+    dir.mkdirs()
+    ocrModels.each { m ->
+      def out = new File(dir, m.name)
+      if (out.exists() && sha256Of(out) == m.sha256) return
+      logger.lifecycle("[PurelyOcr] downloading ${m.name}")
+      def tmp = new File(dir, m.name + ".part")
+      new URL(m.url).withInputStream { is -> tmp.withOutputStream { os -> os << is } }
+      def actual = sha256Of(tmp)
+      if (actual != m.sha256) {
+        tmp.delete()
+        throw new GradleException("[PurelyOcr] ${m.name}: sha256 ${actual} != ${m.sha256}")
+      }
+      out.delete()
+      tmp.renameTo(out)
+    }
+  }
+}
+preBuild.dependsOn("downloadOcrModels")
+
+android {
+  namespace "com.margelo.nitro.purelyocr"
+
+  ndkVersion getExtOrDefault("ndkVersion")
+  compileSdkVersion getExtOrIntegerDefault("compileSdkVersion")
+
+  defaultConfig {
+    minSdkVersion getExtOrIntegerDefault("minSdkVersion")
+    targetSdkVersion getExtOrIntegerDefault("targetSdkVersion")
+    buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
+
+    externalNativeBuild {
+      cmake {
+        cppFlags "-frtti -fexceptions -Wall -Wextra -fstack-protector-all"
+        arguments "-DANDROID_STL=c++_shared", "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON"
+        abiFilters (*reactNativeArchitectures())
+
+        buildTypes {
+          debug {
+            cppFlags "-O1 -g"
+          }
+          release {
+            cppFlags "-O2"
+          }
+        }
+      }
+    }
+  }
+
+  externalNativeBuild {
+    cmake {
+      path "CMakeLists.txt"
+    }
+  }
+
+  packagingOptions {
+    excludes = [
+            "META-INF",
+            "META-INF/**",
+            "**/libc++_shared.so",
+            "**/libNitroModules.so",
+            "**/libfbjni.so",
+            "**/libjsi.so",
+            "**/libfolly_json.so",
+            "**/libfolly_runtime.so",
+            "**/libglog.so",
+            "**/libhermes.so",
+            "**/libhermes-executor-debug.so",
+            "**/libhermes_executor.so",
+            "**/libreactnative.so",
+            "**/libreactnativejni.so",
+            "**/libturbomodulejsijni.so",
+            "**/libreact_nativemodule_core.so",
+            "**/libjscexecutor.so"
+    ]
+  }
+
+  buildFeatures {
+    buildConfig true
+    prefab true
+  }
+
+  buildTypes {
+    release {
+      minifyEnabled false
+    }
+  }
+
+  lintOptions {
+    disable "GradleCompatible"
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+
+  sourceSets {
+    main {
+      assets.srcDirs += [ocrAssetsDir]
+      if (isNewArchitectureEnabled()) {
+        java.srcDirs += [
+          // React Codegen files
+          "${project.buildDir}/generated/source/codegen/java"
+        ]
+      }
+    }
+  }
+}
+
+repositories {
+  mavenCentral()
+  google()
+}
+
+dependencies {
+  // For < 0.71, this will be from the local maven repo
+  // For > 0.71, this will be replaced by `com.facebook.react:react-android:$version` by react gradle plugin
+  //noinspection GradleDynamicVersion
+  implementation "com.facebook.react:react-native:+"
+
+  // Add a dependency on NitroModules
+  implementation project(":react-native-nitro-modules")
+
+  // PaddleOCR inference (MIT)
+  implementation "com.microsoft.onnxruntime:onnxruntime-android:1.30.0"
+  // ML Kit Text Recognition v2, Latin script, model bundled into the APK
+  implementation "com.google.mlkit:text-recognition:16.0.1"
+  implementation "androidx.exifinterface:exifinterface:1.4.2"
+  implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2"
+}

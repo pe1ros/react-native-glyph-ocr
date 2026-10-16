@@ -1,0 +1,20 @@
+{
+  "$schema": "https://nitro.margelo.com/nitro.schema.json",
+  "cxxNamespace": ["purelyocr"],
+  "ios": {
+    "iosModuleName": "NitroPurelyOcr"
+  },
+  "android": {
+    "androidNamespace": ["purelyocr"],
+    "androidCxxLibName": "NitroPurelyOcr"
+  },
+  "autolinking": {
+    "PurelyOcr": {
+      "android": {
+        "language": "kotlin",
+        "implementationClassName": "HybridPurelyOcr"
+      }
+    }
+  },
+  "ignorePaths": ["**/node_modules"]
+}
