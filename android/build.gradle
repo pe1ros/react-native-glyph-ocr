@@ -188,6 +188,9 @@ dependencies {
 
   // PaddleOCR inference (MIT)
   implementation "com.microsoft.onnxruntime:onnxruntime-android:1.30.0"
+  // ExecuTorch runtime (BSD-3-Clause) for the same models exported to .pte; the -vulkan build also
+  // carries XNNPACK. Same version as the executorch Python package that exported the models.
+  implementation "org.pytorch:executorch-android-vulkan:1.4.0"
   // ML Kit Text Recognition v2, Latin script, model bundled into the APK
   implementation "com.google.mlkit:text-recognition:16.0.1"
   implementation "androidx.exifinterface:exifinterface:1.4.2"

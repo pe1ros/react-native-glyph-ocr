@@ -1,9 +1,5 @@
 package com.margelo.nitro.purelyocr.paddle
 
-import ai.onnxruntime.OnnxTensor
-import ai.onnxruntime.OrtLoggingLevel
-import ai.onnxruntime.OrtEnvironment
-import ai.onnxruntime.OrtSession
 import android.graphics.Bitmap
 import android.os.SystemClock
 import android.util.Log
@@ -17,15 +13,12 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 
 /**
- * PP-OCRv5 text detection (DB) + recognition (CTC) on ONNX Runtime.
+ * PP-OCRv5 text detection (DB) + recognition (CTC) on ONNX Runtime or ExecuTorch, see [PaddleRuntime].
  * Pre/post-processing follows PaddleOCR; see TextLines.kt for the line finder.
  */
 class PaddleOcr(
-  detModel: ByteArray,
-  recModel: ByteArray,
+  private val runtime: PaddleRuntime,
   dictionary: List<String>,
-  threads: Int,
-  useXnnpack: Boolean,
 ) : AutoCloseable {
   class Options(
     val detLimitSide: Int,
@@ -46,12 +39,6 @@ class PaddleOcr(
     val boxCount: Int,
   )
 
-  private val env = OrtEnvironment.getEnvironment()
-  private val det: OrtSession
-  private val rec: OrtSession
-  private val detInput: String
-  private val recInput: String
-
   /** CTC classes: 0 is blank, then the dictionary, then a space. */
   private val classes: Array<String> = arrayOf("") + dictionary.toTypedArray() + " "
 
@@ -61,13 +48,6 @@ class PaddleOcr(
   private var sampleNs = 0L
   private var inferNs = 0L
   private var recColumns = 0
-
-  init {
-    det = env.createSession(detModel, sessionOptions(threads, useXnnpack))
-    rec = env.createSession(recModel, sessionOptions(threads, useXnnpack))
-    detInput = det.inputNames.first()
-    recInput = rec.inputNames.first()
-  }
 
   fun run(bitmap: Bitmap, options: Options): Output {
     val t0 = SystemClock.elapsedRealtimeNanos()
@@ -81,19 +61,16 @@ class PaddleOcr(
     val detPixels = scaledPixels(bitmap, detW, detH)
     val detTensor = floatBuffer(3 * detW * detH)
     val plane = detW * detH
+    // PaddleOCR feeds BGR with ImageNet mean/std in RGB order; the ExecuTorch export takes plain RGB.
+    val first = if (runtime.rgbInput) 16 else 0
+    val third = 16 - first
     for (i in 0 until plane) {
       val p = detPixels[i]
-      // PaddleOCR feeds BGR with ImageNet mean/std in that channel order.
-      detTensor.put(i, ((p and 0xff) / 255f - 0.485f) / 0.229f)
+      detTensor.put(i, (((p shr first) and 0xff) / 255f - 0.485f) / 0.229f)
       detTensor.put(plane + i, (((p shr 8) and 0xff) / 255f - 0.456f) / 0.224f)
-      detTensor.put(2 * plane + i, (((p shr 16) and 0xff) / 255f - 0.406f) / 0.225f)
+      detTensor.put(2 * plane + i, (((p shr third) and 0xff) / 255f - 0.406f) / 0.225f)
     }
-    val prob = FloatArray(plane)
-    OnnxTensor.createTensor(env, detTensor, longArrayOf(1, 3, detH.toLong(), detW.toLong())).use { input ->
-      det.run(mapOf(detInput to input)).use { result ->
-        (result.get(0) as OnnxTensor).floatBuffer.get(prob)
-      }
-    }
+    val prob = runtime.detect(detTensor, detH, detW)
     val found = TextLineFinder.find(
       prob, detW, detH, srcW, srcH, options.detThresh, options.boxThresh, options.unclipRatio,
     )
@@ -125,7 +102,8 @@ class PaddleOcr(
     if (line.vertical) length = height.also { height = length }
     if (length < 1f || height < 1f) return null
     val outW = min(REC_MAX_W, max(1, ceil(REC_H * length / height).toInt()))
-    val padW = max(REC_MIN_W, outW)
+    val step = runtime.recWidthStep
+    val padW = (max(REC_MIN_W, outW) + step - 1) / step * step
     val tensor = floatBuffer(3 * REC_H * padW)
     val ts = SystemClock.elapsedRealtimeNanos()
     sampleLine(src, srcW, srcH, line, outW, padW, tensor)
@@ -133,18 +111,9 @@ class PaddleOcr(
     sampleNs += ti - ts
     recColumns += padW
 
-    OnnxTensor.createTensor(env, tensor, longArrayOf(1, 3, REC_H.toLong(), padW.toLong())).use { input ->
-      rec.run(mapOf(recInput to input)).use { result ->
-        inferNs += SystemClock.elapsedRealtimeNanos() - ti
-        val out = result.get(0) as OnnxTensor
-        val shape = out.info.shape // [1, T, C]
-        val steps = shape[1].toInt()
-        val numClasses = shape[2].toInt()
-        val logits = FloatArray(steps * numClasses)
-        out.floatBuffer.get(logits)
-        return ctcDecode(logits, steps, numClasses)
-      }
-    }
+    val out = runtime.recognize(tensor, padW)
+    inferNs += SystemClock.elapsedRealtimeNanos() - ti
+    return ctcDecode(out.probs, out.steps, out.classes)
   }
 
   /** Greedy CTC: argmax per step, merge repeats, drop blanks; score = mean prob of kept chars. */
@@ -175,7 +144,8 @@ class PaddleOcr(
   }
 
   /**
-   * Fills the recognizer input [3, REC_H, padW] (BGR, (x/255 - 0.5) / 0.5, zero right padding)
+   * Fills the recognizer input [3, REC_H, padW] (BGR or RGB, see [PaddleRuntime.rgbInput];
+   * (x/255 - 0.5) / 0.5, zero right padding)
    * by sampling the line straight from the source pixels. Supersamples when shrinking, so that
    * big text is averaged instead of aliased.
    */
@@ -200,6 +170,7 @@ class PaddleOcr(
       vTop[k] = if (line.vertical) line.centerAt(u) + line.halfHeight else line.centerAt(u) - line.halfHeight
     }
     val vStep = if (line.vertical) -h2 else h2
+    val rgb = runtime.rgbInput
     for (j in 0 until REC_H) {
       for (i in 0 until outW) {
         var b = 0f
@@ -218,9 +189,9 @@ class PaddleOcr(
           }
         }
         val idx = j * padW + i
-        out.put(idx, (b * inv / 255f - 0.5f) / 0.5f)
+        out.put(idx, ((if (rgb) r else b) * inv / 255f - 0.5f) / 0.5f)
         out.put(plane + idx, (g * inv / 255f - 0.5f) / 0.5f)
-        out.put(2 * plane + idx, (r * inv / 255f - 0.5f) / 0.5f)
+        out.put(2 * plane + idx, ((if (rgb) b else r) * inv / 255f - 0.5f) / 0.5f)
       }
       for (i in outW until padW) {
         val idx = j * padW + i
@@ -299,35 +270,19 @@ class PaddleOcr(
     if (buffer.capacity() < count * 4) {
       buffer = ByteBuffer.allocateDirect(count * 4).order(ByteOrder.nativeOrder())
     }
+    // A view of exactly `count` floats: ExecuTorch checks the capacity against the tensor shape.
     buffer.clear()
-    val fb = buffer.asFloatBuffer()
-    fb.limit(count)
-    return fb
+    buffer.limit(count * 4)
+    return buffer.slice().order(ByteOrder.nativeOrder()).asFloatBuffer()
   }
 
   override fun close() {
-    det.close()
-    rec.close()
+    runtime.close()
   }
 
   companion object {
     private const val TAG = "PurelyOcr"
-    private const val REC_H = 48
     private const val REC_MIN_W = 320
     private const val REC_MAX_W = 3200
-
-    private fun sessionOptions(threads: Int, useXnnpack: Boolean) = OrtSession.SessionOptions().apply {
-      setOptimizationLevel(OrtSession.SessionOptions.OptLevel.ALL_OPT)
-      // The Paddle exports carry unused initializers; ONNX Runtime warns about each of them.
-      setSessionLogLevel(OrtLoggingLevel.ORT_LOGGING_LEVEL_ERROR)
-      if (useXnnpack) {
-        // XNNPACK has its own thread pool; ORT's one should stay at 1 thread.
-        addXnnpack(mapOf("intra_op_num_threads" to max(1, threads).toString()))
-        setIntraOpNumThreads(1)
-        addConfigEntry("session.intra_op.allow_spinning", "0")
-      } else if (threads > 0) {
-        setIntraOpNumThreads(threads)
-      }
-    }
   }
 }

@@ -12,6 +12,8 @@ import com.google.mlkit.vision.text.TextRecognizer
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.margelo.nitro.NitroModules
 import com.margelo.nitro.core.Promise
+import com.margelo.nitro.purelyocr.paddle.ExecuTorchRuntime
+import com.margelo.nitro.purelyocr.paddle.OrtRuntime
 import com.margelo.nitro.purelyocr.paddle.PaddleOcr
 import com.margelo.nitro.purelyocr.paddle.ReadingOrder
 import kotlinx.coroutines.CoroutineScope
@@ -49,8 +51,6 @@ class HybridPurelyOcr : HybridPurelyOcrSpec() {
 
   override fun loadPaddle(config: PaddleModelConfig): Promise<ModelLoadInfo> = Promise.async(scope) {
     val t0 = SystemClock.elapsedRealtimeNanos()
-    val det = readBytes(config.detModel)
-    val rec = readBytes(config.recModel)
     val dict = String(readBytes(config.recDict), Charsets.UTF_8).split('\n').filter { it.isNotEmpty() }
     paddle?.close()
     paddle = null
@@ -59,15 +59,27 @@ class HybridPurelyOcr : HybridPurelyOcrSpec() {
     // ONNX Runtime ignores its thread-affinity option on Android, but its pool threads are created
     // with the session and inherit the creating thread's CPU mask. So pin the worker first.
     pinWorker(if (cpus.isEmpty()) CpuAffinity.allCpus() else cpus)
-    paddle = if (cpus.isEmpty()) {
-      PaddleOcr(det, rec, dict, config.threads.toInt(), config.useXnnpack)
+    val threads = if (cpus.isEmpty()) config.threads.toInt() else cpus.size
+    val detBytes: Long
+    val recBytes: Long
+    val runtime = if (config.detModel.endsWith(".pte")) {
+      // One fused ExecuTorch program; the backend (XNNPACK or Vulkan) is baked into the file.
+      val file = modelFile(config.detModel)
+      detBytes = file.length()
+      recBytes = 0
+      ExecuTorchRuntime(file.absolutePath, threads)
     } else {
-      PaddleOcr(det, rec, dict, cpus.size, useXnnpack = false)
+      val det = readBytes(config.detModel)
+      val rec = readBytes(config.recModel)
+      detBytes = det.size.toLong()
+      recBytes = rec.size.toLong()
+      OrtRuntime(det, rec, threads, config.useXnnpack && cpus.isEmpty())
     }
+    paddle = PaddleOcr(runtime, dict)
     ModelLoadInfo(
       loadMs = (SystemClock.elapsedRealtimeNanos() - t0) / 1e6,
-      detBytes = det.size.toDouble(),
-      recBytes = rec.size.toDouble(),
+      detBytes = detBytes.toDouble(),
+      recBytes = recBytes.toDouble(),
       dictSize = dict.size.toDouble(),
     )
   }
@@ -196,6 +208,16 @@ class HybridPurelyOcr : HybridPurelyOcrSpec() {
   private fun pinWorker(cpus: IntArray) {
     val err = CpuAffinity.setCurrentThreadCpus(cpus)
     if (err != 0) Log.w(TAG, "sched_setaffinity(${cpus.joinToString()}) failed: errno $err")
+  }
+
+  /**
+   * ExecuTorch loads programs from a file. `name` is an absolute path or a file pushed to
+   * `<benchDir>/models/` (see scripts/ocr-spike/executorch/push-models.sh).
+   */
+  private fun modelFile(name: String): File {
+    val file = if (name.startsWith("/")) File(name) else File(benchDir, "models/$name")
+    if (!file.isFile) throw Error("Model not found: ${file.absolutePath}")
+    return file
   }
 
   /** `name` is a file in the module's `assets/ocr/` or an absolute path. */
