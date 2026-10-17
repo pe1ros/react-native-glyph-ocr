@@ -44,28 +44,31 @@ class HybridPurelyOcr: HybridPurelyOcrSpec {
       languages: options.recognitionLanguages
     )
     return Promise.parallel(queue) {
-      let t0 = DispatchTime.now().uptimeNanoseconds
-      let image = try VisionText.decode(url, maxSide: maxSide)
-      let t1 = DispatchTime.now().uptimeNanoseconds
-      let lines = try VisionText.recognize(image, settings)
-      let t2 = DispatchTime.now().uptimeNanoseconds
-      return OcrResult(
-        engine: .vision,
-        text: VisionText.join(lines),
-        lines: lines.map {
-          OcrLine(text: $0.text, score: Double($0.confidence), x: $0.left, y: $0.top,
-                  width: $0.right - $0.left, height: $0.bottom - $0.top)
-        },
-        imageWidth: Double(image.width),
-        imageHeight: Double(image.height),
-        decodeMs: Double(t1 - t0) / 1e6,
-        detMs: 0,
-        recMs: 0,
-        totalMs: Double(t2 - t1) / 1e6,
-        detInputWidth: 0,
-        detInputHeight: 0,
-        boxCount: Double(lines.count)
-      )
+      // Vision and ImageIO autorelease a lot; drain after every photo, or a long batch run grows.
+      try autoreleasepool {
+        let t0 = DispatchTime.now().uptimeNanoseconds
+        let image = try VisionText.decode(url, maxSide: maxSide)
+        let t1 = DispatchTime.now().uptimeNanoseconds
+        let lines = try VisionText.recognize(image, settings)
+        let t2 = DispatchTime.now().uptimeNanoseconds
+        return OcrResult(
+          engine: .vision,
+          text: VisionText.join(lines),
+          lines: lines.map {
+            OcrLine(text: $0.text, score: Double($0.confidence), x: $0.left, y: $0.top,
+                    width: $0.right - $0.left, height: $0.bottom - $0.top)
+          },
+          imageWidth: Double(image.width),
+          imageHeight: Double(image.height),
+          decodeMs: Double(t1 - t0) / 1e6,
+          detMs: 0,
+          recMs: 0,
+          totalMs: Double(t2 - t1) / 1e6,
+          detInputWidth: 0,
+          detInputHeight: 0,
+          boxCount: Double(lines.count)
+        )
+      }
     }
   }
 
