@@ -4,6 +4,7 @@ import ai.onnxruntime.OnnxTensor
 import ai.onnxruntime.OrtEnvironment
 import ai.onnxruntime.OrtLoggingLevel
 import ai.onnxruntime.OrtSession
+import android.util.Log
 import org.pytorch.executorch.EValue
 import org.pytorch.executorch.Module
 import org.pytorch.executorch.Tensor
@@ -94,8 +95,11 @@ class ExecuTorchRuntime(path: String, threads: Int) : PaddleRuntime {
   override val recWidthStep = 8
 
   init {
-    module.loadMethod("detect")
-    module.loadMethod("recognize")
+    for (method in arrayOf("detect", "recognize")) {
+      // A backend error here is a C++ exception that fbjni cannot translate: the app aborts.
+      Log.i("PurelyOcr", "ExecuTorch: loading $method from $path")
+      module.loadMethod(method)
+    }
   }
 
   override fun detect(input: FloatBuffer, h: Int, w: Int): FloatArray {
