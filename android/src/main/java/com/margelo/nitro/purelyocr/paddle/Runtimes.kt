@@ -86,7 +86,8 @@ class OrtRuntime(detModel: ByteArray, recModel: ByteArray, threads: Int, useXnnp
 /**
  * One fused ExecuTorch program with `detect` and `recognize` methods, lowered to XNNPACK or Vulkan
  * (see scripts/ocr-spike/executorch). It takes RGB and recognizer widths that are multiples of 8,
- * the contract of react-native-executorch's createPaddleOcr.
+ * the contract of react-native-executorch's createPaddleOcr. Our ExecuTorch build has XNNPACK only:
+ * Vulkan programs fail to load with ExecutorchRuntimeException.
  */
 class ExecuTorchRuntime(path: String, threads: Int) : PaddleRuntime {
   private val module = Module.load(path, Module.LOAD_MODE_MMAP, threads)
@@ -96,7 +97,6 @@ class ExecuTorchRuntime(path: String, threads: Int) : PaddleRuntime {
 
   init {
     for (method in arrayOf("detect", "recognize")) {
-      // A backend error here is a C++ exception that fbjni cannot translate: the app aborts.
       Log.i("PurelyOcr", "ExecuTorch: loading $method from $path")
       module.loadMethod(method)
     }

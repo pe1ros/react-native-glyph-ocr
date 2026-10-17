@@ -82,6 +82,21 @@ tasks.register("downloadOcrModels") {
 }
 preBuild.dependsOn("downloadOcrModels")
 
+// ExecuTorch runtime for the same models exported to .pte, built from the v1.4.0 sources (the version
+// of the executorch Python package that exports them) by scripts/ocr-spike/executorch/build-android.sh:
+// XNNPACK and only the kernels our programs run outside the delegate, arm64-v8a only. That build also
+// links the app's libc++_shared, so its C++ exceptions reach Kotlin instead of aborting the app.
+def executorchDir = file("executorch")
+
+tasks.register("checkExecuTorch") {
+  doLast {
+    if (!new File(executorchDir, "jni/arm64-v8a/libexecutorch.so").exists()) {
+      throw new GradleException("[PurelyOcr] no ExecuTorch in ${executorchDir}: run scripts/ocr-spike/executorch/build-android.sh")
+    }
+  }
+}
+preBuild.dependsOn("checkExecuTorch")
+
 android {
   namespace "com.margelo.nitro.purelyocr"
 
@@ -162,6 +177,8 @@ android {
   sourceSets {
     main {
       assets.srcDirs += [ocrAssetsDir]
+      java.srcDirs += ["${executorchDir}/java"]
+      jniLibs.srcDirs += ["${executorchDir}/jni"]
       if (isNewArchitectureEnabled()) {
         java.srcDirs += [
           // React Codegen files
@@ -188,9 +205,10 @@ dependencies {
 
   // PaddleOCR inference (MIT)
   implementation "com.microsoft.onnxruntime:onnxruntime-android:1.30.0"
-  // ExecuTorch runtime (BSD-3-Clause) for the same models exported to .pte; the -vulkan build also
-  // carries XNNPACK. Same version as the executorch Python package that exported the models.
-  implementation "org.pytorch:executorch-android-vulkan:1.4.0"
+  // ExecuTorch (BSD-3-Clause): libexecutorch.so and its Kotlin API come from executorchDir; the API
+  // needs fbjni and SoLoader's NativeLoader, the versions react-native ships.
+  implementation "com.facebook.fbjni:fbjni:0.7.0"
+  implementation "com.facebook.soloader:nativeloader:0.12.1"
   // ML Kit Text Recognition v2, Latin script, model bundled into the APK
   implementation "com.google.mlkit:text-recognition:16.0.1"
   implementation "androidx.exifinterface:exifinterface:1.4.2"
