@@ -1,0 +1,20 @@
+# OS
+.DS_Store
+
+# Node
+node_modules/
+*.tgz
+
+# Android
+android/build/
+android/.cxx/
+android/.gradle/
+android/local.properties
+*.iml
+# Own ExecuTorch build output (scripts/ocr-spike/executorch/build-android.sh in the app repo)
+android/executorch/
+
+# iOS
+ios/build/
+*.xcuserstate
+xcuserdata/
