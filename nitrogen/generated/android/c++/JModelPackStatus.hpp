@@ -15,7 +15,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ enum "ModelPackStatus" and the the Kotlin enum "ModelPackStatus".
+   * The C++ JNI bridge between the C++ enum "ModelPackStatus" and the Kotlin enum "ModelPackStatus".
    */
   struct JModelPackStatus final: public jni::JavaClass<JModelPackStatus> {
   public:

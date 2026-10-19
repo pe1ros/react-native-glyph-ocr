@@ -15,7 +15,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ enum "PaddleRuntimeKind" and the the Kotlin enum "PaddleRuntimeKind".
+   * The C++ JNI bridge between the C++ enum "PaddleRuntimeKind" and the Kotlin enum "PaddleRuntimeKind".
    */
   struct JPaddleRuntimeKind final: public jni::JavaClass<JPaddleRuntimeKind> {
   public:

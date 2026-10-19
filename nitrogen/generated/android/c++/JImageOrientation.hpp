@@ -15,7 +15,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ enum "ImageOrientation" and the the Kotlin enum "ImageOrientation".
+   * The C++ JNI bridge between the C++ enum "ImageOrientation" and the Kotlin enum "ImageOrientation".
    */
   struct JImageOrientation final: public jni::JavaClass<JImageOrientation> {
   public:

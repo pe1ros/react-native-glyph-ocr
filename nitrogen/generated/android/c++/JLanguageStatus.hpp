@@ -15,7 +15,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ enum "LanguageStatus" and the the Kotlin enum "LanguageStatus".
+   * The C++ JNI bridge between the C++ enum "LanguageStatus" and the Kotlin enum "LanguageStatus".
    */
   struct JLanguageStatus final: public jni::JavaClass<JLanguageStatus> {
   public:

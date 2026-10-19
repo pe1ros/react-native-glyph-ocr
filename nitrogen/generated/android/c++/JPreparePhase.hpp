@@ -15,7 +15,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ enum "PreparePhase" and the the Kotlin enum "PreparePhase".
+   * The C++ JNI bridge between the C++ enum "PreparePhase" and the Kotlin enum "PreparePhase".
    */
   struct JPreparePhase final: public jni::JavaClass<JPreparePhase> {
   public:

@@ -17,7 +17,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ struct "FrameQuality" and the the Kotlin data class "FrameQuality".
+   * The C++ JNI bridge between the C++ struct "FrameQuality" and the Kotlin data class "FrameQuality".
    */
   struct JFrameQuality final: public jni::JavaClass<JFrameQuality> {
   public:

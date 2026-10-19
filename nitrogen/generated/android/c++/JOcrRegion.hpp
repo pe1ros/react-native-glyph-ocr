@@ -23,7 +23,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ struct "OcrRegion" and the the Kotlin data class "OcrRegion".
+   * The C++ JNI bridge between the C++ struct "OcrRegion" and the Kotlin data class "OcrRegion".
    */
   struct JOcrRegion final: public jni::JavaClass<JOcrRegion> {
   public:

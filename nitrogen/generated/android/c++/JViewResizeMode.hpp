@@ -15,7 +15,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ enum "ViewResizeMode" and the the Kotlin enum "ViewResizeMode".
+   * The C++ JNI bridge between the C++ enum "ViewResizeMode" and the Kotlin enum "ViewResizeMode".
    */
   struct JViewResizeMode final: public jni::JavaClass<JViewResizeMode> {
   public:

@@ -22,7 +22,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ struct "OcrElement" and the the Kotlin data class "OcrElement".
+   * The C++ JNI bridge between the C++ struct "OcrElement" and the Kotlin data class "OcrElement".
    */
   struct JOcrElement final: public jni::JavaClass<JOcrElement> {
   public:

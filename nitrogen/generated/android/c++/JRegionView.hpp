@@ -18,7 +18,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ struct "RegionView" and the the Kotlin data class "RegionView".
+   * The C++ JNI bridge between the C++ struct "RegionView" and the Kotlin data class "RegionView".
    */
   struct JRegionView final: public jni::JavaClass<JRegionView> {
   public:

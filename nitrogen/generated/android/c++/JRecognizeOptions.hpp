@@ -35,7 +35,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ struct "RecognizeOptions" and the the Kotlin data class "RecognizeOptions".
+   * The C++ JNI bridge between the C++ struct "RecognizeOptions" and the Kotlin data class "RecognizeOptions".
    */
   struct JRecognizeOptions final: public jni::JavaClass<JRecognizeOptions> {
   public:

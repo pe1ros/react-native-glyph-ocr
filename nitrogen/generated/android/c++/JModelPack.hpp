@@ -20,7 +20,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ struct "ModelPack" and the the Kotlin data class "ModelPack".
+   * The C++ JNI bridge between the C++ struct "ModelPack" and the Kotlin data class "ModelPack".
    */
   struct JModelPack final: public jni::JavaClass<JModelPack> {
   public:

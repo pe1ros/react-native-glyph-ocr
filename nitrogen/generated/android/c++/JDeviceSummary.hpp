@@ -18,7 +18,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ struct "DeviceSummary" and the the Kotlin data class "DeviceSummary".
+   * The C++ JNI bridge between the C++ struct "DeviceSummary" and the Kotlin data class "DeviceSummary".
    */
   struct JDeviceSummary final: public jni::JavaClass<JDeviceSummary> {
   public:

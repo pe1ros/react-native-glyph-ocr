@@ -19,7 +19,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ struct "PrepareProgress" and the the Kotlin data class "PrepareProgress".
+   * The C++ JNI bridge between the C++ struct "PrepareProgress" and the Kotlin data class "PrepareProgress".
    */
   struct JPrepareProgress final: public jni::JavaClass<JPrepareProgress> {
   public:

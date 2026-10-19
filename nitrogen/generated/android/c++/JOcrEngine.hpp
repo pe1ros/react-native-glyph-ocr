@@ -15,7 +15,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ enum "OcrEngine" and the the Kotlin enum "OcrEngine".
+   * The C++ JNI bridge between the C++ enum "OcrEngine" and the Kotlin enum "OcrEngine".
    */
   struct JOcrEngine final: public jni::JavaClass<JOcrEngine> {
   public:

@@ -10,7 +10,6 @@ package com.margelo.nitro.glyphocr
 import androidx.annotation.Keep
 import com.facebook.jni.HybridData
 import com.facebook.proguard.annotations.DoNotStrip
-import dalvik.annotation.optimization.FastNative
 
 
 /**
@@ -59,7 +58,6 @@ class Func_void_PrepareProgress_cxx: Func_void_PrepareProgress {
   override fun invoke(progress: PrepareProgress): Unit
     = invoke_cxx(progress)
 
-  @FastNative
   private external fun invoke_cxx(progress: PrepareProgress): Unit
 }
 

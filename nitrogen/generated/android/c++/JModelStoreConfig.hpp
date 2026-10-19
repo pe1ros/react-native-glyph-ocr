@@ -34,7 +34,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ struct "ModelStoreConfig" and the the Kotlin data class "ModelStoreConfig".
+   * The C++ JNI bridge between the C++ struct "ModelStoreConfig" and the Kotlin data class "ModelStoreConfig".
    */
   struct JModelStoreConfig final: public jni::JavaClass<JModelStoreConfig> {
   public:

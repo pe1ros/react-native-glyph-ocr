@@ -15,7 +15,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ enum "RegionUnit" and the the Kotlin enum "RegionUnit".
+   * The C++ JNI bridge between the C++ enum "RegionUnit" and the Kotlin enum "RegionUnit".
    */
   struct JRegionUnit final: public jni::JavaClass<JRegionUnit> {
   public:

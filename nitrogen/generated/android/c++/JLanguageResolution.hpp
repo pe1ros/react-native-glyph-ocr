@@ -21,7 +21,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ struct "LanguageResolution" and the the Kotlin data class "LanguageResolution".
+   * The C++ JNI bridge between the C++ struct "LanguageResolution" and the Kotlin data class "LanguageResolution".
    */
   struct JLanguageResolution final: public jni::JavaClass<JLanguageResolution> {
   public:

@@ -17,7 +17,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ struct "OcrImageSize" and the the Kotlin data class "OcrImageSize".
+   * The C++ JNI bridge between the C++ struct "OcrImageSize" and the Kotlin data class "OcrImageSize".
    */
   struct JOcrImageSize final: public jni::JavaClass<JOcrImageSize> {
   public:

@@ -17,7 +17,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ struct "LoadResult" and the the Kotlin data class "LoadResult".
+   * The C++ JNI bridge between the C++ struct "LoadResult" and the Kotlin data class "LoadResult".
    */
   struct JLoadResult final: public jni::JavaClass<JLoadResult> {
   public:

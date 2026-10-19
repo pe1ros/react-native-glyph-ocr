@@ -22,7 +22,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ struct "SupportedLanguage" and the the Kotlin data class "SupportedLanguage".
+   * The C++ JNI bridge between the C++ struct "SupportedLanguage" and the Kotlin data class "SupportedLanguage".
    */
   struct JSupportedLanguage final: public jni::JavaClass<JSupportedLanguage> {
   public:

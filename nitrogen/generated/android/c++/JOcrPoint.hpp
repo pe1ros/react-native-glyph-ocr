@@ -17,7 +17,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ struct "OcrPoint" and the the Kotlin data class "OcrPoint".
+   * The C++ JNI bridge between the C++ struct "OcrPoint" and the Kotlin data class "OcrPoint".
    */
   struct JOcrPoint final: public jni::JavaClass<JOcrPoint> {
   public:

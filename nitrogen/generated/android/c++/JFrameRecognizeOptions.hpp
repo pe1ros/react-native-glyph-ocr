@@ -27,7 +27,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ struct "FrameRecognizeOptions" and the the Kotlin data class "FrameRecognizeOptions".
+   * The C++ JNI bridge between the C++ struct "FrameRecognizeOptions" and the Kotlin data class "FrameRecognizeOptions".
    */
   struct JFrameRecognizeOptions final: public jni::JavaClass<JFrameRecognizeOptions> {
   public:

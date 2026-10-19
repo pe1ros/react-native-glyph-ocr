@@ -15,7 +15,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ enum "RecognitionLevel" and the the Kotlin enum "RecognitionLevel".
+   * The C++ JNI bridge between the C++ enum "RecognitionLevel" and the Kotlin enum "RecognitionLevel".
    */
   struct JRecognitionLevel final: public jni::JavaClass<JRecognitionLevel> {
   public:

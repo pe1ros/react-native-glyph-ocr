@@ -15,7 +15,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ enum "ModelFormat" and the the Kotlin enum "ModelFormat".
+   * The C++ JNI bridge between the C++ enum "ModelFormat" and the Kotlin enum "ModelFormat".
    */
   struct JModelFormat final: public jni::JavaClass<JModelFormat> {
   public:

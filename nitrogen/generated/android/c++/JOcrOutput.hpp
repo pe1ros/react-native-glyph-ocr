@@ -15,7 +15,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ enum "OcrOutput" and the the Kotlin enum "OcrOutput".
+   * The C++ JNI bridge between the C++ enum "OcrOutput" and the Kotlin enum "OcrOutput".
    */
   struct JOcrOutput final: public jni::JavaClass<JOcrOutput> {
   public:

@@ -17,7 +17,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ struct "TestFrameInfo" and the the Kotlin data class "TestFrameInfo".
+   * The C++ JNI bridge between the C++ struct "TestFrameInfo" and the Kotlin data class "TestFrameInfo".
    */
   struct JTestFrameInfo final: public jni::JavaClass<JTestFrameInfo> {
   public:

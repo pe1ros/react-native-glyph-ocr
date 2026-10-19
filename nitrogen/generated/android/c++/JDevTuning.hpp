@@ -21,7 +21,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ struct "DevTuning" and the the Kotlin data class "DevTuning".
+   * The C++ JNI bridge between the C++ struct "DevTuning" and the Kotlin data class "DevTuning".
    */
   struct JDevTuning final: public jni::JavaClass<JDevTuning> {
   public:

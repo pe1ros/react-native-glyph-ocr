@@ -15,7 +15,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ enum "RawPixelFormat" and the the Kotlin enum "RawPixelFormat".
+   * The C++ JNI bridge between the C++ enum "RawPixelFormat" and the Kotlin enum "RawPixelFormat".
    */
   struct JRawPixelFormat final: public jni::JavaClass<JRawPixelFormat> {
   public:

@@ -15,7 +15,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ enum "ModelSource" and the the Kotlin enum "ModelSource".
+   * The C++ JNI bridge between the C++ enum "ModelSource" and the Kotlin enum "ModelSource".
    */
   struct JModelSource final: public jni::JavaClass<JModelSource> {
   public:

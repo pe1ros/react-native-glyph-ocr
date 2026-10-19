@@ -1,6 +1,6 @@
 {
   "name": "react-native-glyph-ocr",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "On-device text recognition for React Native: Apple Vision on iOS, PaddleOCR (PP-OCRv5) on Android, as a Nitro module",
   "main": "src/index",
@@ -32,15 +32,15 @@
     "typecheck": "tsc -p tsconfig.json"
   },
   "devDependencies": {
-    "nitrogen": "0.35.9"
+    "nitrogen": "0.37.1"
   },
   "peerDependencies": {
     "react": "*",
     "react-native": ">=0.79",
-    "react-native-nitro-modules": ">=0.35.9",
-    "react-native-nitro-image": ">=0.15",
-    "react-native-vision-camera": ">=5.0.0",
-    "react-native-vision-camera-worklets": "*",
+    "react-native-nitro-modules": "^0.37.0",
+    "react-native-nitro-image": ">=0.15.2",
+    "react-native-vision-camera": ">=5.2.3",
+    "react-native-vision-camera-worklets": ">=5.2.3",
     "react-native-worklets": ">=0.8.0"
   },
   "peerDependenciesMeta": {

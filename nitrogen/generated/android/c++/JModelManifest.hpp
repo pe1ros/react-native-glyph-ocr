@@ -29,7 +29,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ struct "ModelManifest" and the the Kotlin data class "ModelManifest".
+   * The C++ JNI bridge between the C++ struct "ModelManifest" and the Kotlin data class "ModelManifest".
    */
   struct JModelManifest final: public jni::JavaClass<JModelManifest> {
   public:

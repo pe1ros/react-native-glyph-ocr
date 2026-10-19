@@ -15,7 +15,7 @@ namespace margelo::nitro::glyphocr {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ enum "ReadingOrder" and the the Kotlin enum "ReadingOrder".
+   * The C++ JNI bridge between the C++ enum "ReadingOrder" and the Kotlin enum "ReadingOrder".
    */
   struct JReadingOrder final: public jni::JavaClass<JReadingOrder> {
   public:
