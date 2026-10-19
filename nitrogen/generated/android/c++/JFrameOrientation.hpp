@@ -10,7 +10,7 @@
 #include <fbjni/fbjni.h>
 #include "FrameOrientation.hpp"
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   using namespace facebook;
 
@@ -19,7 +19,7 @@ namespace margelo::nitro::purelyocr {
    */
   struct JFrameOrientation final: public jni::JavaClass<JFrameOrientation> {
   public:
-    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/FrameOrientation;";
+    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/glyphocr/FrameOrientation;";
 
   public:
     /**
@@ -61,4 +61,4 @@ namespace margelo::nitro::purelyocr {
     }
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

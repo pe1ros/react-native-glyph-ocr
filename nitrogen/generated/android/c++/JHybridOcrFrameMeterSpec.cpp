@@ -8,11 +8,11 @@
 #include "JHybridOcrFrameMeterSpec.hpp"
 
 // Forward declaration of `FrameQuality` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct FrameQuality; }
+namespace margelo::nitro::glyphocr { struct FrameQuality; }
 // Forward declaration of `FrameOrientation` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class FrameOrientation; }
+namespace margelo::nitro::glyphocr { enum class FrameOrientation; }
 // Forward declaration of `OcrRect` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct OcrRect; }
+namespace margelo::nitro::glyphocr { struct OcrRect; }
 
 #include "FrameQuality.hpp"
 #include "JFrameQuality.hpp"
@@ -22,7 +22,7 @@ namespace margelo::nitro::purelyocr { struct OcrRect; }
 #include <optional>
 #include "JOcrRect.hpp"
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   std::shared_ptr<JHybridOcrFrameMeterSpec> JHybridOcrFrameMeterSpec::JavaPart::getJHybridOcrFrameMeterSpec() {
     auto hybridObject = JHybridObject::JavaPart::getJHybridObject();
@@ -65,4 +65,4 @@ namespace margelo::nitro::purelyocr {
     method(_javaPart);
   }
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

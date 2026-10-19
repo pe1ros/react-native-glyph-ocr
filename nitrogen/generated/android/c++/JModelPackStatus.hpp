@@ -10,7 +10,7 @@
 #include <fbjni/fbjni.h>
 #include "ModelPackStatus.hpp"
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   using namespace facebook;
 
@@ -19,7 +19,7 @@ namespace margelo::nitro::purelyocr {
    */
   struct JModelPackStatus final: public jni::JavaClass<JModelPackStatus> {
   public:
-    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/ModelPackStatus;";
+    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/glyphocr/ModelPackStatus;";
 
   public:
     /**
@@ -64,4 +64,4 @@ namespace margelo::nitro::purelyocr {
     }
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

@@ -10,10 +10,10 @@ import NitroModules
 /**
  * Represents an instance of `LanguageResolution`, backed by a C++ struct.
  */
-public typealias LanguageResolution = margelo.nitro.purelyocr.LanguageResolution
+public typealias LanguageResolution = margelo.nitro.glyphocr.LanguageResolution
 
 public extension LanguageResolution {
-  private typealias bridge = margelo.nitro.purelyocr.bridge.swift
+  private typealias bridge = margelo.nitro.glyphocr.bridge.swift
 
   /**
    * Create a new instance of `LanguageResolution`.

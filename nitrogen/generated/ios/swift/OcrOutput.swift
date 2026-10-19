@@ -8,7 +8,7 @@
 /**
  * Represents the JS union `OcrOutput`, backed by a C++ enum.
  */
-public typealias OcrOutput = margelo.nitro.purelyocr.OcrOutput
+public typealias OcrOutput = margelo.nitro.glyphocr.OcrOutput
 
 public extension OcrOutput {
   /**

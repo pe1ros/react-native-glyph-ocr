@@ -33,7 +33,7 @@
 #include <string>
 #include <vector>
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * A struct which can be represented as a JavaScript object (DownloadResult).
@@ -51,21 +51,21 @@ namespace margelo::nitro::purelyocr {
     friend bool operator==(const DownloadResult& lhs, const DownloadResult& rhs) = default;
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ DownloadResult <> JS DownloadResult (object)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::DownloadResult> final {
-    static inline margelo::nitro::purelyocr::DownloadResult fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::DownloadResult> final {
+    static inline margelo::nitro::glyphocr::DownloadResult fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       jsi::Object obj = arg.asObject(runtime);
-      return margelo::nitro::purelyocr::DownloadResult(
+      return margelo::nitro::glyphocr::DownloadResult(
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "downloadedBytes"))),
         JSIConverter<std::vector<std::string>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "packIds")))
       );
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::purelyocr::DownloadResult& arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::glyphocr::DownloadResult& arg) {
       jsi::Object obj(runtime);
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "downloadedBytes"), JSIConverter<double>::toJSI(runtime, arg.downloadedBytes));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "packIds"), JSIConverter<std::vector<std::string>>::toJSI(runtime, arg.packIds));

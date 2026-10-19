@@ -30,7 +30,7 @@
 #include "ViewResizeMode.hpp"
 #include <optional>
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   using namespace facebook;
 
@@ -39,7 +39,7 @@ namespace margelo::nitro::purelyocr {
    */
   struct JRecognizeOptions final: public jni::JavaClass<JRecognizeOptions> {
   public:
-    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/RecognizeOptions;";
+    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/glyphocr/RecognizeOptions;";
 
   public:
     /**
@@ -108,4 +108,4 @@ namespace margelo::nitro::purelyocr {
     }
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

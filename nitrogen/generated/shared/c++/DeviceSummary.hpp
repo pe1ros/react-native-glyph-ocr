@@ -33,7 +33,7 @@
 #include <string>
 #include <vector>
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * A struct which can be represented as a JavaScript object (DeviceSummary).
@@ -57,16 +57,16 @@ namespace margelo::nitro::purelyocr {
     friend bool operator==(const DeviceSummary& lhs, const DeviceSummary& rhs) = default;
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ DeviceSummary <> JS DeviceSummary (object)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::DeviceSummary> final {
-    static inline margelo::nitro::purelyocr::DeviceSummary fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::DeviceSummary> final {
+    static inline margelo::nitro::glyphocr::DeviceSummary fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       jsi::Object obj = arg.asObject(runtime);
-      return margelo::nitro::purelyocr::DeviceSummary(
+      return margelo::nitro::glyphocr::DeviceSummary(
         JSIConverter<std::string>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "manufacturer"))),
         JSIConverter<std::string>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "model"))),
         JSIConverter<std::string>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "soc"))),
@@ -77,7 +77,7 @@ namespace margelo::nitro {
         JSIConverter<std::string>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "abi")))
       );
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::purelyocr::DeviceSummary& arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::glyphocr::DeviceSummary& arg) {
       jsi::Object obj(runtime);
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "manufacturer"), JSIConverter<std::string>::toJSI(runtime, arg.manufacturer));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "model"), JSIConverter<std::string>::toJSI(runtime, arg.model));

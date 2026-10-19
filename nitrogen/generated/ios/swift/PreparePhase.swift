@@ -8,7 +8,7 @@
 /**
  * Represents the JS union `PreparePhase`, backed by a C++ enum.
  */
-public typealias PreparePhase = margelo.nitro.purelyocr.PreparePhase
+public typealias PreparePhase = margelo.nitro.glyphocr.PreparePhase
 
 public extension PreparePhase {
   /**

@@ -12,7 +12,7 @@
 
 
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   using namespace facebook;
 
@@ -21,7 +21,7 @@ namespace margelo::nitro::purelyocr {
    */
   struct JOcrTimings final: public jni::JavaClass<JOcrTimings> {
   public:
-    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/OcrTimings;";
+    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/glyphocr/OcrTimings;";
 
   public:
     /**
@@ -62,4 +62,4 @@ namespace margelo::nitro::purelyocr {
     }
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

@@ -32,7 +32,7 @@
 
 
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * A struct which can be represented as a JavaScript object (OcrTimings).
@@ -51,22 +51,22 @@ namespace margelo::nitro::purelyocr {
     friend bool operator==(const OcrTimings& lhs, const OcrTimings& rhs) = default;
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ OcrTimings <> JS OcrTimings (object)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::OcrTimings> final {
-    static inline margelo::nitro::purelyocr::OcrTimings fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::OcrTimings> final {
+    static inline margelo::nitro::glyphocr::OcrTimings fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       jsi::Object obj = arg.asObject(runtime);
-      return margelo::nitro::purelyocr::OcrTimings(
+      return margelo::nitro::glyphocr::OcrTimings(
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "decodeMs"))),
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "recognizeMs"))),
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "totalMs")))
       );
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::purelyocr::OcrTimings& arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::glyphocr::OcrTimings& arg) {
       jsi::Object obj(runtime);
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "decodeMs"), JSIConverter<double>::toJSI(runtime, arg.decodeMs));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "recognizeMs"), JSIConverter<double>::toJSI(runtime, arg.recognizeMs));

@@ -32,7 +32,7 @@
 #include <string>
 #include <vector>
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   using namespace facebook;
 
@@ -41,7 +41,7 @@ namespace margelo::nitro::purelyocr {
    */
   struct JOcrResult final: public jni::JavaClass<JOcrResult> {
   public:
-    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/OcrResult;";
+    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/glyphocr/OcrResult;";
 
   public:
     /**
@@ -134,4 +134,4 @@ namespace margelo::nitro::purelyocr {
     }
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

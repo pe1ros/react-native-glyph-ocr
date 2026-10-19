@@ -10,7 +10,7 @@
 #include <fbjni/fbjni.h>
 #include "ViewResizeMode.hpp"
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   using namespace facebook;
 
@@ -19,7 +19,7 @@ namespace margelo::nitro::purelyocr {
    */
   struct JViewResizeMode final: public jni::JavaClass<JViewResizeMode> {
   public:
-    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/ViewResizeMode;";
+    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/glyphocr/ViewResizeMode;";
 
   public:
     /**
@@ -55,4 +55,4 @@ namespace margelo::nitro::purelyocr {
     }
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

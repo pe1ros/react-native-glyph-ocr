@@ -10,23 +10,23 @@
 #include "HybridOcrFrameMeterSpec.hpp"
 
 // Forward declaration of `HybridOcrFrameMeterSpec_cxx` to properly resolve imports.
-namespace NitroPurelyOcr { class HybridOcrFrameMeterSpec_cxx; }
+namespace NitroGlyphOcr { class HybridOcrFrameMeterSpec_cxx; }
 
 // Forward declaration of `FrameQuality` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct FrameQuality; }
+namespace margelo::nitro::glyphocr { struct FrameQuality; }
 // Forward declaration of `FrameOrientation` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class FrameOrientation; }
+namespace margelo::nitro::glyphocr { enum class FrameOrientation; }
 // Forward declaration of `OcrRect` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct OcrRect; }
+namespace margelo::nitro::glyphocr { struct OcrRect; }
 
 #include "FrameQuality.hpp"
 #include "FrameOrientation.hpp"
 #include "OcrRect.hpp"
 #include <optional>
 
-#include "NitroPurelyOcr-Swift-Cxx-Umbrella.hpp"
+#include "NitroGlyphOcr-Swift-Cxx-Umbrella.hpp"
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * The C++ part of HybridOcrFrameMeterSpec_cxx.swift.
@@ -41,13 +41,13 @@ namespace margelo::nitro::purelyocr {
   class HybridOcrFrameMeterSpecSwift: public virtual HybridOcrFrameMeterSpec {
   public:
     // Constructor from a Swift instance
-    explicit HybridOcrFrameMeterSpecSwift(const NitroPurelyOcr::HybridOcrFrameMeterSpec_cxx& swiftPart):
+    explicit HybridOcrFrameMeterSpecSwift(const NitroGlyphOcr::HybridOcrFrameMeterSpec_cxx& swiftPart):
       HybridObject(HybridOcrFrameMeterSpec::TAG),
       _swiftPart(swiftPart) { }
 
   public:
     // Get the Swift part
-    inline NitroPurelyOcr::HybridOcrFrameMeterSpec_cxx& getSwiftPart() noexcept {
+    inline NitroGlyphOcr::HybridOcrFrameMeterSpec_cxx& getSwiftPart() noexcept {
       return _swiftPart;
     }
 
@@ -90,7 +90,7 @@ namespace margelo::nitro::purelyocr {
     }
 
   private:
-    NitroPurelyOcr::HybridOcrFrameMeterSpec_cxx _swiftPart;
+    NitroGlyphOcr::HybridOcrFrameMeterSpec_cxx _swiftPart;
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

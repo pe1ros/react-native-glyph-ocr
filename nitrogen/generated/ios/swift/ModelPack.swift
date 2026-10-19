@@ -10,10 +10,10 @@ import NitroModules
 /**
  * Represents an instance of `ModelPack`, backed by a C++ struct.
  */
-public typealias ModelPack = margelo.nitro.purelyocr.ModelPack
+public typealias ModelPack = margelo.nitro.glyphocr.ModelPack
 
 public extension ModelPack {
-  private typealias bridge = margelo.nitro.purelyocr.bridge.swift
+  private typealias bridge = margelo.nitro.glyphocr.bridge.swift
 
   /**
    * Create a new instance of `ModelPack`.

@@ -29,14 +29,14 @@
 #endif
 
 // Forward declaration of `OcrEngine` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class OcrEngine; }
+namespace margelo::nitro::glyphocr { enum class OcrEngine; }
 
 #include "OcrEngine.hpp"
 #include <string>
 #include <vector>
 #include <optional>
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * A struct which can be represented as a JavaScript object (LanguageResolution).
@@ -57,26 +57,26 @@ namespace margelo::nitro::purelyocr {
     friend bool operator==(const LanguageResolution& lhs, const LanguageResolution& rhs) = default;
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ LanguageResolution <> JS LanguageResolution (object)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::LanguageResolution> final {
-    static inline margelo::nitro::purelyocr::LanguageResolution fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::LanguageResolution> final {
+    static inline margelo::nitro::glyphocr::LanguageResolution fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       jsi::Object obj = arg.asObject(runtime);
-      return margelo::nitro::purelyocr::LanguageResolution(
-        JSIConverter<margelo::nitro::purelyocr::OcrEngine>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "engine"))),
+      return margelo::nitro::glyphocr::LanguageResolution(
+        JSIConverter<margelo::nitro::glyphocr::OcrEngine>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "engine"))),
         JSIConverter<std::vector<std::string>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "languages"))),
         JSIConverter<std::vector<std::string>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "engineLanguages"))),
         JSIConverter<std::optional<std::string>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "packId"))),
         JSIConverter<std::vector<std::string>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "unsupported")))
       );
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::purelyocr::LanguageResolution& arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::glyphocr::LanguageResolution& arg) {
       jsi::Object obj(runtime);
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "engine"), JSIConverter<margelo::nitro::purelyocr::OcrEngine>::toJSI(runtime, arg.engine));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "engine"), JSIConverter<margelo::nitro::glyphocr::OcrEngine>::toJSI(runtime, arg.engine));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "languages"), JSIConverter<std::vector<std::string>>::toJSI(runtime, arg.languages));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "engineLanguages"), JSIConverter<std::vector<std::string>>::toJSI(runtime, arg.engineLanguages));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "packId"), JSIConverter<std::optional<std::string>>::toJSI(runtime, arg.packId));
@@ -91,7 +91,7 @@ namespace margelo::nitro {
       if (!nitro::isPlainObject(runtime, obj)) {
         return false;
       }
-      if (!JSIConverter<margelo::nitro::purelyocr::OcrEngine>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "engine")))) return false;
+      if (!JSIConverter<margelo::nitro::glyphocr::OcrEngine>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "engine")))) return false;
       if (!JSIConverter<std::vector<std::string>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "languages")))) return false;
       if (!JSIConverter<std::vector<std::string>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "engineLanguages")))) return false;
       if (!JSIConverter<std::optional<std::string>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "packId")))) return false;

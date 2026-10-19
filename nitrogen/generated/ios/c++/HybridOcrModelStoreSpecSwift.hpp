@@ -10,32 +10,32 @@
 #include "HybridOcrModelStoreSpec.hpp"
 
 // Forward declaration of `HybridOcrModelStoreSpec_cxx` to properly resolve imports.
-namespace NitroPurelyOcr { class HybridOcrModelStoreSpec_cxx; }
+namespace NitroGlyphOcr { class HybridOcrModelStoreSpec_cxx; }
 
 // Forward declaration of `ModelManifest` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct ModelManifest; }
+namespace margelo::nitro::glyphocr { struct ModelManifest; }
 // Forward declaration of `ModelFile` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct ModelFile; }
+namespace margelo::nitro::glyphocr { struct ModelFile; }
 // Forward declaration of `ModelRole` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class ModelRole; }
+namespace margelo::nitro::glyphocr { enum class ModelRole; }
 // Forward declaration of `ModelFormat` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class ModelFormat; }
+namespace margelo::nitro::glyphocr { enum class ModelFormat; }
 // Forward declaration of `ModelPack` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct ModelPack; }
+namespace margelo::nitro::glyphocr { struct ModelPack; }
 // Forward declaration of `OcrEngine` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class OcrEngine; }
+namespace margelo::nitro::glyphocr { enum class OcrEngine; }
 // Forward declaration of `ModelStoreConfig` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct ModelStoreConfig; }
+namespace margelo::nitro::glyphocr { struct ModelStoreConfig; }
 // Forward declaration of `ModelSource` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class ModelSource; }
+namespace margelo::nitro::glyphocr { enum class ModelSource; }
 // Forward declaration of `ModelPackStatus` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class ModelPackStatus; }
+namespace margelo::nitro::glyphocr { enum class ModelPackStatus; }
 // Forward declaration of `DownloadResult` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct DownloadResult; }
+namespace margelo::nitro::glyphocr { struct DownloadResult; }
 // Forward declaration of `PrepareProgress` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct PrepareProgress; }
+namespace margelo::nitro::glyphocr { struct PrepareProgress; }
 // Forward declaration of `PreparePhase` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class PreparePhase; }
+namespace margelo::nitro::glyphocr { enum class PreparePhase; }
 
 #include "ModelManifest.hpp"
 #include <string>
@@ -56,9 +56,9 @@ namespace margelo::nitro::purelyocr { enum class PreparePhase; }
 #include <functional>
 #include "PreparePhase.hpp"
 
-#include "NitroPurelyOcr-Swift-Cxx-Umbrella.hpp"
+#include "NitroGlyphOcr-Swift-Cxx-Umbrella.hpp"
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * The C++ part of HybridOcrModelStoreSpec_cxx.swift.
@@ -73,13 +73,13 @@ namespace margelo::nitro::purelyocr {
   class HybridOcrModelStoreSpecSwift: public virtual HybridOcrModelStoreSpec {
   public:
     // Constructor from a Swift instance
-    explicit HybridOcrModelStoreSpecSwift(const NitroPurelyOcr::HybridOcrModelStoreSpec_cxx& swiftPart):
+    explicit HybridOcrModelStoreSpecSwift(const NitroGlyphOcr::HybridOcrModelStoreSpec_cxx& swiftPart):
       HybridObject(HybridOcrModelStoreSpec::TAG),
       _swiftPart(swiftPart) { }
 
   public:
     // Get the Swift part
-    inline NitroPurelyOcr::HybridOcrModelStoreSpec_cxx& getSwiftPart() noexcept {
+    inline NitroGlyphOcr::HybridOcrModelStoreSpec_cxx& getSwiftPart() noexcept {
       return _swiftPart;
     }
 
@@ -158,7 +158,7 @@ namespace margelo::nitro::purelyocr {
     }
 
   private:
-    NitroPurelyOcr::HybridOcrModelStoreSpec_cxx _swiftPart;
+    NitroGlyphOcr::HybridOcrModelStoreSpec_cxx _swiftPart;
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

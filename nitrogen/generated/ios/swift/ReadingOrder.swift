@@ -8,7 +8,7 @@
 /**
  * Represents the JS union `ReadingOrder`, backed by a C++ enum.
  */
-public typealias ReadingOrder = margelo.nitro.purelyocr.ReadingOrder
+public typealias ReadingOrder = margelo.nitro.glyphocr.ReadingOrder
 
 public extension ReadingOrder {
   /**

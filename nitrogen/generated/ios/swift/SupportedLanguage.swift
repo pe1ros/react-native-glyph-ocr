@@ -10,10 +10,10 @@ import NitroModules
 /**
  * Represents an instance of `SupportedLanguage`, backed by a C++ struct.
  */
-public typealias SupportedLanguage = margelo.nitro.purelyocr.SupportedLanguage
+public typealias SupportedLanguage = margelo.nitro.glyphocr.SupportedLanguage
 
 public extension SupportedLanguage {
-  private typealias bridge = margelo.nitro.purelyocr.bridge.swift
+  private typealias bridge = margelo.nitro.glyphocr.bridge.swift
 
   /**
    * Create a new instance of `SupportedLanguage`.

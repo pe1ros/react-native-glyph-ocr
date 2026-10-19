@@ -18,7 +18,7 @@
 #include "JPreparePhase.hpp"
 #include <string>
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   using namespace facebook;
 
@@ -28,7 +28,7 @@ namespace margelo::nitro::purelyocr {
    */
   struct JFunc_void_PrepareProgress: public jni::JavaClass<JFunc_void_PrepareProgress> {
   public:
-    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/Func_void_PrepareProgress;";
+    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/glyphocr/Func_void_PrepareProgress;";
 
   public:
     /**
@@ -64,7 +64,7 @@ namespace margelo::nitro::purelyocr {
     }
 
   public:
-    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/Func_void_PrepareProgress_cxx;";
+    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/glyphocr/Func_void_PrepareProgress_cxx;";
     static void registerNatives() {
       registerHybrid({makeNativeMethod("invoke_cxx", JFunc_void_PrepareProgress_cxx::invoke_cxx)});
     }
@@ -77,4 +77,4 @@ namespace margelo::nitro::purelyocr {
     std::function<void(const PrepareProgress& /* progress */)> _func;
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

@@ -8,7 +8,7 @@
 /**
  * Represents the JS union `ImageOrientation`, backed by a C++ enum.
  */
-public typealias ImageOrientation = margelo.nitro.purelyocr.ImageOrientation
+public typealias ImageOrientation = margelo.nitro.glyphocr.ImageOrientation
 
 public extension ImageOrientation {
   /**

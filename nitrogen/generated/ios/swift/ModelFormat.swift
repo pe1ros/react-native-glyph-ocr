@@ -8,7 +8,7 @@
 /**
  * Represents the JS union `ModelFormat`, backed by a C++ enum.
  */
-public typealias ModelFormat = margelo.nitro.purelyocr.ModelFormat
+public typealias ModelFormat = margelo.nitro.glyphocr.ModelFormat
 
 public extension ModelFormat {
   /**

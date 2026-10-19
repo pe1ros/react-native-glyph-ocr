@@ -29,14 +29,14 @@
 #endif
 
 // Forward declaration of `PaddleRuntimeKind` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class PaddleRuntimeKind; }
+namespace margelo::nitro::glyphocr { enum class PaddleRuntimeKind; }
 
 #include <optional>
 #include <vector>
 #include "PaddleRuntimeKind.hpp"
 #include <string>
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * A struct which can be represented as a JavaScript object (DevTuning).
@@ -57,29 +57,29 @@ namespace margelo::nitro::purelyocr {
     friend bool operator==(const DevTuning& lhs, const DevTuning& rhs) = default;
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ DevTuning <> JS DevTuning (object)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::DevTuning> final {
-    static inline margelo::nitro::purelyocr::DevTuning fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::DevTuning> final {
+    static inline margelo::nitro::glyphocr::DevTuning fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       jsi::Object obj = arg.asObject(runtime);
-      return margelo::nitro::purelyocr::DevTuning(
+      return margelo::nitro::glyphocr::DevTuning(
         JSIConverter<std::optional<double>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "threads"))),
         JSIConverter<std::optional<bool>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "useXnnpack"))),
         JSIConverter<std::optional<std::vector<double>>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "cpus"))),
-        JSIConverter<std::optional<margelo::nitro::purelyocr::PaddleRuntimeKind>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "runtime"))),
+        JSIConverter<std::optional<margelo::nitro::glyphocr::PaddleRuntimeKind>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "runtime"))),
         JSIConverter<std::optional<std::string>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "program")))
       );
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::purelyocr::DevTuning& arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::glyphocr::DevTuning& arg) {
       jsi::Object obj(runtime);
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "threads"), JSIConverter<std::optional<double>>::toJSI(runtime, arg.threads));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "useXnnpack"), JSIConverter<std::optional<bool>>::toJSI(runtime, arg.useXnnpack));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "cpus"), JSIConverter<std::optional<std::vector<double>>>::toJSI(runtime, arg.cpus));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "runtime"), JSIConverter<std::optional<margelo::nitro::purelyocr::PaddleRuntimeKind>>::toJSI(runtime, arg.runtime));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "runtime"), JSIConverter<std::optional<margelo::nitro::glyphocr::PaddleRuntimeKind>>::toJSI(runtime, arg.runtime));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "program"), JSIConverter<std::optional<std::string>>::toJSI(runtime, arg.program));
       return obj;
     }
@@ -94,7 +94,7 @@ namespace margelo::nitro {
       if (!JSIConverter<std::optional<double>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "threads")))) return false;
       if (!JSIConverter<std::optional<bool>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "useXnnpack")))) return false;
       if (!JSIConverter<std::optional<std::vector<double>>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "cpus")))) return false;
-      if (!JSIConverter<std::optional<margelo::nitro::purelyocr::PaddleRuntimeKind>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "runtime")))) return false;
+      if (!JSIConverter<std::optional<margelo::nitro::glyphocr::PaddleRuntimeKind>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "runtime")))) return false;
       if (!JSIConverter<std::optional<std::string>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "program")))) return false;
       return true;
     }

@@ -32,7 +32,7 @@
 
 #include <string>
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * A struct which can be represented as a JavaScript object (OcrDiagnostics).
@@ -56,16 +56,16 @@ namespace margelo::nitro::purelyocr {
     friend bool operator==(const OcrDiagnostics& lhs, const OcrDiagnostics& rhs) = default;
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ OcrDiagnostics <> JS OcrDiagnostics (object)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::OcrDiagnostics> final {
-    static inline margelo::nitro::purelyocr::OcrDiagnostics fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::OcrDiagnostics> final {
+    static inline margelo::nitro::glyphocr::OcrDiagnostics fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       jsi::Object obj = arg.asObject(runtime);
-      return margelo::nitro::purelyocr::OcrDiagnostics(
+      return margelo::nitro::glyphocr::OcrDiagnostics(
         JSIConverter<std::string>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "runtime"))),
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "inputWidth"))),
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "inputHeight"))),
@@ -76,7 +76,7 @@ namespace margelo::nitro {
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "candidateLines")))
       );
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::purelyocr::OcrDiagnostics& arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::glyphocr::OcrDiagnostics& arg) {
       jsi::Object obj(runtime);
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "runtime"), JSIConverter<std::string>::toJSI(runtime, arg.runtime));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "inputWidth"), JSIConverter<double>::toJSI(runtime, arg.inputWidth));

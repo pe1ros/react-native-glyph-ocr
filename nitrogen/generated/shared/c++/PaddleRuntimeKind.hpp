@@ -23,7 +23,7 @@
 #error NitroModules cannot be found! Are you sure you installed NitroModules properly?
 #endif
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * An enum which can be represented as a JavaScript union (PaddleRuntimeKind).
@@ -33,26 +33,26 @@ namespace margelo::nitro::purelyocr {
     EXECUTORCH      SWIFT_NAME(executorch) = 1,
   } CLOSED_ENUM;
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ PaddleRuntimeKind <> JS PaddleRuntimeKind (union)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::PaddleRuntimeKind> final {
-    static inline margelo::nitro::purelyocr::PaddleRuntimeKind fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::PaddleRuntimeKind> final {
+    static inline margelo::nitro::glyphocr::PaddleRuntimeKind fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       std::string unionValue = JSIConverter<std::string>::fromJSI(runtime, arg);
       switch (hashString(unionValue.c_str(), unionValue.size())) {
-        case hashString("onnxruntime"): return margelo::nitro::purelyocr::PaddleRuntimeKind::ONNXRUNTIME;
-        case hashString("executorch"): return margelo::nitro::purelyocr::PaddleRuntimeKind::EXECUTORCH;
+        case hashString("onnxruntime"): return margelo::nitro::glyphocr::PaddleRuntimeKind::ONNXRUNTIME;
+        case hashString("executorch"): return margelo::nitro::glyphocr::PaddleRuntimeKind::EXECUTORCH;
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert \"" + unionValue + "\" to enum PaddleRuntimeKind - invalid value!");
       }
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::purelyocr::PaddleRuntimeKind arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::glyphocr::PaddleRuntimeKind arg) {
       switch (arg) {
-        case margelo::nitro::purelyocr::PaddleRuntimeKind::ONNXRUNTIME: return JSIConverter<std::string>::toJSI(runtime, "onnxruntime");
-        case margelo::nitro::purelyocr::PaddleRuntimeKind::EXECUTORCH: return JSIConverter<std::string>::toJSI(runtime, "executorch");
+        case margelo::nitro::glyphocr::PaddleRuntimeKind::ONNXRUNTIME: return JSIConverter<std::string>::toJSI(runtime, "onnxruntime");
+        case margelo::nitro::glyphocr::PaddleRuntimeKind::EXECUTORCH: return JSIConverter<std::string>::toJSI(runtime, "executorch");
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert PaddleRuntimeKind to JS - invalid value: "
                                     + std::to_string(static_cast<int>(arg)) + "!");

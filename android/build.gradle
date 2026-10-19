@@ -11,7 +11,7 @@ def isNewArchitectureEnabled() {
 
 apply plugin: "com.android.library"
 apply plugin: 'org.jetbrains.kotlin.android'
-apply from: '../nitrogen/generated/android/NitroPurelyOcr+autolinking.gradle'
+apply from: '../nitrogen/generated/android/NitroGlyphOcr+autolinking.gradle'
 apply from: "./fix-prefab.gradle"
 
 if (isNewArchitectureEnabled()) {
@@ -19,25 +19,25 @@ if (isNewArchitectureEnabled()) {
 }
 
 def getExtOrDefault(name) {
-  return rootProject.ext.has(name) ? rootProject.ext.get(name) : project.properties["NitroPurelyOcr_" + name]
+  return rootProject.ext.has(name) ? rootProject.ext.get(name) : project.properties["NitroGlyphOcr_" + name]
 }
 
 def getExtOrIntegerDefault(name) {
-  return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties["NitroPurelyOcr_" + name]).toInteger()
+  return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties["NitroGlyphOcr_" + name]).toInteger()
 }
 
 def flag(name, defaultValue) {
-  def key = "PurelyOcr_" + name
+  def key = "GlyphOcr_" + name
   if (rootProject.ext.has(key)) return rootProject.ext.get(key).toString()
   def value = project.findProperty(key) ?: System.getenv(key)
   return value != null ? value.toString() : defaultValue
 }
 
 // ─── Build flags (docs/ocr-library-api.md, section 2) ─────────────────────
-// PurelyOcr_embedPacks=eslav,cyrillic  packs of models/manifest.json to download at build time, check
+// GlyphOcr_embedPacks=eslav,cyrillic  packs of models/manifest.json to download at build time, check
 //                                      by sha256 and pack into assets/ocr-models (else downloaded at runtime)
-// PurelyOcr_devMlKit=true             compiles ML Kit for react-native-purely-ocr/dev (+12.5 MB, ML Kit Terms)
-// PurelyOcr_executorch=auto|true|false  the minimal ExecuTorch build in android/executorch, made by
+// GlyphOcr_devMlKit=true             compiles ML Kit for react-native-glyph-ocr/dev (+12.5 MB, ML Kit Terms)
+// GlyphOcr_executorch=auto|true|false  the minimal ExecuTorch build in android/executorch, made by
 //                                      scripts/ocr-spike/executorch/build-android.sh; auto = if it is there
 def embedPacks = flag("embedPacks", "").split(",").collect { it.trim() }.findAll { it }
 def withMlKit = flag("devMlKit", "false").toBoolean()
@@ -45,14 +45,14 @@ def executorchDir = file("executorch")
 def executorchFlag = flag("executorch", "auto")
 def withExecuTorch = executorchFlag == "auto" ? new File(executorchDir, "jni/arm64-v8a/libexecutorch.so").exists() : executorchFlag.toBoolean()
 if (withExecuTorch && !new File(executorchDir, "jni/arm64-v8a/libexecutorch.so").exists()) {
-  throw new GradleException("[PurelyOcr] PurelyOcr_executorch=true, but ${executorchDir} has no build: run scripts/ocr-spike/executorch/build-android.sh")
+  throw new GradleException("[GlyphOcr] GlyphOcr_executorch=true, but ${executorchDir} has no build: run scripts/ocr-spike/executorch/build-android.sh")
 }
 
 // The manifest and the recognizer dictionaries always ship in the APK (a few KB);
-// the models only for PurelyOcr_embedPacks.
+// the models only for GlyphOcr_embedPacks.
 def modelsDir = file("../models")
-def ocrAssetsDir = file("${buildDir}/generated/purelyocr-assets")
-def modelCacheDir = file("${rootProject.buildDir}/purelyocr-model-cache")
+def ocrAssetsDir = file("${buildDir}/generated/glyphocr-assets")
+def modelCacheDir = file("${rootProject.buildDir}/glyphocr-model-cache")
 
 static String sha256Of(File f) {
   def md = MessageDigest.getInstance("SHA-256")
@@ -64,8 +64,8 @@ static String sha256Of(File f) {
   return md.digest().encodeHex().toString()
 }
 
-tasks.register("preparePurelyOcrAssets") {
-  description = "Copies the OCR model manifest and dictionaries into the assets, and the models of PurelyOcr_embedPacks"
+tasks.register("prepareGlyphOcrAssets") {
+  description = "Copies the OCR model manifest and dictionaries into the assets, and the models of GlyphOcr_embedPacks"
   inputs.dir(modelsDir)
   inputs.property("embedPacks", embedPacks.join(","))
   outputs.dir(ocrAssetsDir)
@@ -74,12 +74,12 @@ tasks.register("preparePurelyOcrAssets") {
     def manifest = new groovy.json.JsonSlurper().parse(new File(modelsDir, "manifest.json"))
     copy {
       from(new File(modelsDir, "manifest.json"))
-      into(new File(ocrAssetsDir, "purelyocr"))
+      into(new File(ocrAssetsDir, "glyphocr"))
     }
     def files = manifest.files.collectEntries { [(it.id): it] }
     manifest.files.findAll { it.format == "dict" }.each { f ->
       def src = new File(modelsDir, f.path)
-      if (sha256Of(src) != f.sha256) throw new GradleException("[PurelyOcr] ${f.path}: sha256 does not match the manifest")
+      if (sha256Of(src) != f.sha256) throw new GradleException("[GlyphOcr] ${f.path}: sha256 does not match the manifest")
       copy {
         from(src)
         into(new File(ocrAssetsDir, "ocr-models/" + new File(f.path).parent))
@@ -87,18 +87,18 @@ tasks.register("preparePurelyOcrAssets") {
     }
     embedPacks.each { packId ->
       def pack = manifest.packs.find { it.id == packId }
-      if (pack == null) throw new GradleException("[PurelyOcr] PurelyOcr_embedPacks: no pack ${packId} in models/manifest.json")
+      if (pack == null) throw new GradleException("[GlyphOcr] GlyphOcr_embedPacks: no pack ${packId} in models/manifest.json")
       pack.files.collect { files[it] }.findAll { it.format == "onnx" || it.format == "ort" }.each { f ->
         modelCacheDir.mkdirs()
         def cached = new File(modelCacheDir, "${f.sha256}.${f.format}")
         if (!cached.exists() || sha256Of(cached) != f.sha256) {
-          logger.lifecycle("[PurelyOcr] downloading ${f.path}")
+          logger.lifecycle("[GlyphOcr] downloading ${f.path}")
           def tmp = new File(modelCacheDir, cached.name + ".part")
           new URL(f.url).withInputStream { is -> tmp.withOutputStream { os -> os << is } }
           def actual = sha256Of(tmp)
           if (actual != f.sha256) {
             tmp.delete()
-            throw new GradleException("[PurelyOcr] ${f.path}: sha256 ${actual} != ${f.sha256}")
+            throw new GradleException("[GlyphOcr] ${f.path}: sha256 ${actual} != ${f.sha256}")
           }
           cached.delete()
           tmp.renameTo(cached)
@@ -111,10 +111,10 @@ tasks.register("preparePurelyOcrAssets") {
     }
   }
 }
-preBuild.dependsOn("preparePurelyOcrAssets")
+preBuild.dependsOn("prepareGlyphOcrAssets")
 
 android {
-  namespace "com.margelo.nitro.purelyocr"
+  namespace "com.margelo.nitro.glyphocr"
 
   ndkVersion getExtOrDefault("ndkVersion")
   compileSdkVersion getExtOrIntegerDefault("compileSdkVersion")
@@ -123,8 +123,8 @@ android {
     minSdkVersion getExtOrIntegerDefault("minSdkVersion")
     targetSdkVersion getExtOrIntegerDefault("targetSdkVersion")
     buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
-    buildConfigField "boolean", "PURELYOCR_EXECUTORCH", withExecuTorch.toString()
-    buildConfigField "boolean", "PURELYOCR_MLKIT", withMlKit.toString()
+    buildConfigField "boolean", "GLYPHOCR_EXECUTORCH", withExecuTorch.toString()
+    buildConfigField "boolean", "GLYPHOCR_MLKIT", withMlKit.toString()
 
     externalNativeBuild {
       cmake {

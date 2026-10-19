@@ -10,10 +10,10 @@ import NitroModules
 /**
  * Represents an instance of `OcrImageSize`, backed by a C++ struct.
  */
-public typealias OcrImageSize = margelo.nitro.purelyocr.OcrImageSize
+public typealias OcrImageSize = margelo.nitro.glyphocr.OcrImageSize
 
 public extension OcrImageSize {
-  private typealias bridge = margelo.nitro.purelyocr.bridge.swift
+  private typealias bridge = margelo.nitro.glyphocr.bridge.swift
 
   /**
    * Create a new instance of `OcrImageSize`.

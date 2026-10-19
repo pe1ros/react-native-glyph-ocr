@@ -29,9 +29,9 @@
 #endif
 
 // Forward declaration of `ModelFile` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct ModelFile; }
+namespace margelo::nitro::glyphocr { struct ModelFile; }
 // Forward declaration of `ModelPack` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct ModelPack; }
+namespace margelo::nitro::glyphocr { struct ModelPack; }
 
 #include <string>
 #include <optional>
@@ -39,7 +39,7 @@ namespace margelo::nitro::purelyocr { struct ModelPack; }
 #include <vector>
 #include "ModelPack.hpp"
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * A struct which can be represented as a JavaScript object (ModelManifest).
@@ -59,28 +59,28 @@ namespace margelo::nitro::purelyocr {
     friend bool operator==(const ModelManifest& lhs, const ModelManifest& rhs) = default;
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ ModelManifest <> JS ModelManifest (object)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::ModelManifest> final {
-    static inline margelo::nitro::purelyocr::ModelManifest fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::ModelManifest> final {
+    static inline margelo::nitro::glyphocr::ModelManifest fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       jsi::Object obj = arg.asObject(runtime);
-      return margelo::nitro::purelyocr::ModelManifest(
+      return margelo::nitro::glyphocr::ModelManifest(
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "schemaVersion"))),
         JSIConverter<std::optional<std::string>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "baseUrl"))),
-        JSIConverter<std::vector<margelo::nitro::purelyocr::ModelFile>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "files"))),
-        JSIConverter<std::vector<margelo::nitro::purelyocr::ModelPack>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "packs")))
+        JSIConverter<std::vector<margelo::nitro::glyphocr::ModelFile>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "files"))),
+        JSIConverter<std::vector<margelo::nitro::glyphocr::ModelPack>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "packs")))
       );
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::purelyocr::ModelManifest& arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::glyphocr::ModelManifest& arg) {
       jsi::Object obj(runtime);
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "schemaVersion"), JSIConverter<double>::toJSI(runtime, arg.schemaVersion));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "baseUrl"), JSIConverter<std::optional<std::string>>::toJSI(runtime, arg.baseUrl));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "files"), JSIConverter<std::vector<margelo::nitro::purelyocr::ModelFile>>::toJSI(runtime, arg.files));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "packs"), JSIConverter<std::vector<margelo::nitro::purelyocr::ModelPack>>::toJSI(runtime, arg.packs));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "files"), JSIConverter<std::vector<margelo::nitro::glyphocr::ModelFile>>::toJSI(runtime, arg.files));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "packs"), JSIConverter<std::vector<margelo::nitro::glyphocr::ModelPack>>::toJSI(runtime, arg.packs));
       return obj;
     }
     static inline bool canConvert(jsi::Runtime& runtime, const jsi::Value& value) {
@@ -93,8 +93,8 @@ namespace margelo::nitro {
       }
       if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "schemaVersion")))) return false;
       if (!JSIConverter<std::optional<std::string>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "baseUrl")))) return false;
-      if (!JSIConverter<std::vector<margelo::nitro::purelyocr::ModelFile>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "files")))) return false;
-      if (!JSIConverter<std::vector<margelo::nitro::purelyocr::ModelPack>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "packs")))) return false;
+      if (!JSIConverter<std::vector<margelo::nitro::glyphocr::ModelFile>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "files")))) return false;
+      if (!JSIConverter<std::vector<margelo::nitro::glyphocr::ModelPack>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "packs")))) return false;
       return true;
     }
   };

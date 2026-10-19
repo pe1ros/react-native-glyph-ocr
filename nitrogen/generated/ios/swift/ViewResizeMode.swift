@@ -8,7 +8,7 @@
 /**
  * Represents the JS union `ViewResizeMode`, backed by a C++ enum.
  */
-public typealias ViewResizeMode = margelo.nitro.purelyocr.ViewResizeMode
+public typealias ViewResizeMode = margelo.nitro.glyphocr.ViewResizeMode
 
 public extension ViewResizeMode {
   /**

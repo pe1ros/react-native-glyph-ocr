@@ -1,21 +1,21 @@
 {
   "$schema": "https://nitro.margelo.com/nitro.schema.json",
-  "cxxNamespace": ["purelyocr"],
+  "cxxNamespace": ["glyphocr"],
   "ios": {
-    "iosModuleName": "NitroPurelyOcr"
+    "iosModuleName": "NitroGlyphOcr"
   },
   "android": {
-    "androidNamespace": ["purelyocr"],
-    "androidCxxLibName": "NitroPurelyOcr"
+    "androidNamespace": ["glyphocr"],
+    "androidCxxLibName": "NitroGlyphOcr"
   },
   "autolinking": {
-    "OcrFactory": {
-      "ios": { "language": "swift", "implementationClassName": "HybridOcrFactory" },
-      "android": { "language": "kotlin", "implementationClassName": "HybridOcrFactory" }
+    "GlyphOcrFactory": {
+      "ios": { "language": "swift", "implementationClassName": "HybridGlyphOcrFactory" },
+      "android": { "language": "kotlin", "implementationClassName": "HybridGlyphOcrFactory" }
     },
-    "OcrDevTools": {
-      "ios": { "language": "swift", "implementationClassName": "HybridOcrDevTools" },
-      "android": { "language": "kotlin", "implementationClassName": "HybridOcrDevTools" }
+    "GlyphOcrDevTools": {
+      "ios": { "language": "swift", "implementationClassName": "HybridGlyphOcrDevTools" },
+      "android": { "language": "kotlin", "implementationClassName": "HybridGlyphOcrDevTools" }
     }
   },
   "ignorePaths": ["**/node_modules"]

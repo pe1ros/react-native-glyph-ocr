@@ -23,7 +23,7 @@
 #error NitroModules cannot be found! Are you sure you installed NitroModules properly?
 #endif
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * An enum which can be represented as a JavaScript union (ReadingOrder).
@@ -33,26 +33,26 @@ namespace margelo::nitro::purelyocr {
     ROWS      SWIFT_NAME(rows) = 1,
   } CLOSED_ENUM;
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ ReadingOrder <> JS ReadingOrder (union)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::ReadingOrder> final {
-    static inline margelo::nitro::purelyocr::ReadingOrder fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::ReadingOrder> final {
+    static inline margelo::nitro::glyphocr::ReadingOrder fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       std::string unionValue = JSIConverter<std::string>::fromJSI(runtime, arg);
       switch (hashString(unionValue.c_str(), unionValue.size())) {
-        case hashString("blocks"): return margelo::nitro::purelyocr::ReadingOrder::BLOCKS;
-        case hashString("rows"): return margelo::nitro::purelyocr::ReadingOrder::ROWS;
+        case hashString("blocks"): return margelo::nitro::glyphocr::ReadingOrder::BLOCKS;
+        case hashString("rows"): return margelo::nitro::glyphocr::ReadingOrder::ROWS;
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert \"" + unionValue + "\" to enum ReadingOrder - invalid value!");
       }
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::purelyocr::ReadingOrder arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::glyphocr::ReadingOrder arg) {
       switch (arg) {
-        case margelo::nitro::purelyocr::ReadingOrder::BLOCKS: return JSIConverter<std::string>::toJSI(runtime, "blocks");
-        case margelo::nitro::purelyocr::ReadingOrder::ROWS: return JSIConverter<std::string>::toJSI(runtime, "rows");
+        case margelo::nitro::glyphocr::ReadingOrder::BLOCKS: return JSIConverter<std::string>::toJSI(runtime, "blocks");
+        case margelo::nitro::glyphocr::ReadingOrder::ROWS: return JSIConverter<std::string>::toJSI(runtime, "rows");
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert ReadingOrder to JS - invalid value: "
                                     + std::to_string(static_cast<int>(arg)) + "!");

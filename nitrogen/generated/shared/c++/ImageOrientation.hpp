@@ -23,7 +23,7 @@
 #error NitroModules cannot be found! Are you sure you installed NitroModules properly?
 #endif
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * An enum which can be represented as a JavaScript union (ImageOrientation).
@@ -36,32 +36,32 @@ namespace margelo::nitro::purelyocr {
     LEFT      SWIFT_NAME(left) = 4,
   } CLOSED_ENUM;
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ ImageOrientation <> JS ImageOrientation (union)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::ImageOrientation> final {
-    static inline margelo::nitro::purelyocr::ImageOrientation fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::ImageOrientation> final {
+    static inline margelo::nitro::glyphocr::ImageOrientation fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       std::string unionValue = JSIConverter<std::string>::fromJSI(runtime, arg);
       switch (hashString(unionValue.c_str(), unionValue.size())) {
-        case hashString("auto"): return margelo::nitro::purelyocr::ImageOrientation::AUTO;
-        case hashString("up"): return margelo::nitro::purelyocr::ImageOrientation::UP;
-        case hashString("right"): return margelo::nitro::purelyocr::ImageOrientation::RIGHT;
-        case hashString("down"): return margelo::nitro::purelyocr::ImageOrientation::DOWN;
-        case hashString("left"): return margelo::nitro::purelyocr::ImageOrientation::LEFT;
+        case hashString("auto"): return margelo::nitro::glyphocr::ImageOrientation::AUTO;
+        case hashString("up"): return margelo::nitro::glyphocr::ImageOrientation::UP;
+        case hashString("right"): return margelo::nitro::glyphocr::ImageOrientation::RIGHT;
+        case hashString("down"): return margelo::nitro::glyphocr::ImageOrientation::DOWN;
+        case hashString("left"): return margelo::nitro::glyphocr::ImageOrientation::LEFT;
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert \"" + unionValue + "\" to enum ImageOrientation - invalid value!");
       }
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::purelyocr::ImageOrientation arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::glyphocr::ImageOrientation arg) {
       switch (arg) {
-        case margelo::nitro::purelyocr::ImageOrientation::AUTO: return JSIConverter<std::string>::toJSI(runtime, "auto");
-        case margelo::nitro::purelyocr::ImageOrientation::UP: return JSIConverter<std::string>::toJSI(runtime, "up");
-        case margelo::nitro::purelyocr::ImageOrientation::RIGHT: return JSIConverter<std::string>::toJSI(runtime, "right");
-        case margelo::nitro::purelyocr::ImageOrientation::DOWN: return JSIConverter<std::string>::toJSI(runtime, "down");
-        case margelo::nitro::purelyocr::ImageOrientation::LEFT: return JSIConverter<std::string>::toJSI(runtime, "left");
+        case margelo::nitro::glyphocr::ImageOrientation::AUTO: return JSIConverter<std::string>::toJSI(runtime, "auto");
+        case margelo::nitro::glyphocr::ImageOrientation::UP: return JSIConverter<std::string>::toJSI(runtime, "up");
+        case margelo::nitro::glyphocr::ImageOrientation::RIGHT: return JSIConverter<std::string>::toJSI(runtime, "right");
+        case margelo::nitro::glyphocr::ImageOrientation::DOWN: return JSIConverter<std::string>::toJSI(runtime, "down");
+        case margelo::nitro::glyphocr::ImageOrientation::LEFT: return JSIConverter<std::string>::toJSI(runtime, "left");
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert ImageOrientation to JS - invalid value: "
                                     + std::to_string(static_cast<int>(arg)) + "!");

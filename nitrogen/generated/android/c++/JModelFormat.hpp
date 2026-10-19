@@ -10,7 +10,7 @@
 #include <fbjni/fbjni.h>
 #include "ModelFormat.hpp"
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   using namespace facebook;
 
@@ -19,7 +19,7 @@ namespace margelo::nitro::purelyocr {
    */
   struct JModelFormat final: public jni::JavaClass<JModelFormat> {
   public:
-    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/ModelFormat;";
+    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/glyphocr/ModelFormat;";
 
   public:
     /**
@@ -61,4 +61,4 @@ namespace margelo::nitro::purelyocr {
     }
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

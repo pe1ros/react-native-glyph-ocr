@@ -10,7 +10,7 @@
 #include <fbjni/fbjni.h>
 #include "PaddleRuntimeKind.hpp"
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   using namespace facebook;
 
@@ -19,7 +19,7 @@ namespace margelo::nitro::purelyocr {
    */
   struct JPaddleRuntimeKind final: public jni::JavaClass<JPaddleRuntimeKind> {
   public:
-    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/PaddleRuntimeKind;";
+    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/glyphocr/PaddleRuntimeKind;";
 
   public:
     /**
@@ -55,4 +55,4 @@ namespace margelo::nitro::purelyocr {
     }
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

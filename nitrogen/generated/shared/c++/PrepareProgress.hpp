@@ -29,12 +29,12 @@
 #endif
 
 // Forward declaration of `PreparePhase` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class PreparePhase; }
+namespace margelo::nitro::glyphocr { enum class PreparePhase; }
 
 #include "PreparePhase.hpp"
 #include <string>
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * A struct which can be represented as a JavaScript object (PrepareProgress).
@@ -55,26 +55,26 @@ namespace margelo::nitro::purelyocr {
     friend bool operator==(const PrepareProgress& lhs, const PrepareProgress& rhs) = default;
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ PrepareProgress <> JS PrepareProgress (object)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::PrepareProgress> final {
-    static inline margelo::nitro::purelyocr::PrepareProgress fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::PrepareProgress> final {
+    static inline margelo::nitro::glyphocr::PrepareProgress fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       jsi::Object obj = arg.asObject(runtime);
-      return margelo::nitro::purelyocr::PrepareProgress(
-        JSIConverter<margelo::nitro::purelyocr::PreparePhase>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "phase"))),
+      return margelo::nitro::glyphocr::PrepareProgress(
+        JSIConverter<margelo::nitro::glyphocr::PreparePhase>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "phase"))),
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "receivedBytes"))),
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "totalBytes"))),
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "fraction"))),
         JSIConverter<std::string>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "fileId")))
       );
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::purelyocr::PrepareProgress& arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::glyphocr::PrepareProgress& arg) {
       jsi::Object obj(runtime);
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "phase"), JSIConverter<margelo::nitro::purelyocr::PreparePhase>::toJSI(runtime, arg.phase));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "phase"), JSIConverter<margelo::nitro::glyphocr::PreparePhase>::toJSI(runtime, arg.phase));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "receivedBytes"), JSIConverter<double>::toJSI(runtime, arg.receivedBytes));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "totalBytes"), JSIConverter<double>::toJSI(runtime, arg.totalBytes));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "fraction"), JSIConverter<double>::toJSI(runtime, arg.fraction));
@@ -89,7 +89,7 @@ namespace margelo::nitro {
       if (!nitro::isPlainObject(runtime, obj)) {
         return false;
       }
-      if (!JSIConverter<margelo::nitro::purelyocr::PreparePhase>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "phase")))) return false;
+      if (!JSIConverter<margelo::nitro::glyphocr::PreparePhase>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "phase")))) return false;
       if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "receivedBytes")))) return false;
       if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "totalBytes")))) return false;
       if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "fraction")))) return false;

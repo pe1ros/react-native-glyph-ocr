@@ -10,7 +10,7 @@
 #include <fbjni/fbjni.h>
 #include "RawPixelFormat.hpp"
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   using namespace facebook;
 
@@ -19,7 +19,7 @@ namespace margelo::nitro::purelyocr {
    */
   struct JRawPixelFormat final: public jni::JavaClass<JRawPixelFormat> {
   public:
-    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/RawPixelFormat;";
+    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/glyphocr/RawPixelFormat;";
 
   public:
     /**
@@ -67,4 +67,4 @@ namespace margelo::nitro::purelyocr {
     }
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

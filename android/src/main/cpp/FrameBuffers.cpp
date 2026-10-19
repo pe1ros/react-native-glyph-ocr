@@ -201,7 +201,7 @@ extern "C" {
 
 /** [raw width, raw height, AHardwareBuffer format], or [] below Android 10. */
 JNIEXPORT jintArray JNICALL
-Java_com_margelo_nitro_purelyocr_FrameBuffers_describe(JNIEnv* env, jclass, jlong pointer) {
+Java_com_margelo_nitro_glyphocr_FrameBuffers_describe(JNIEnv* env, jclass, jlong pointer) {
   if (!hasApi() || pointer == 0) return env->NewIntArray(0);
   AHardwareBuffer_Desc desc{};
   api().describe(asBuffer(pointer), &desc);
@@ -213,7 +213,7 @@ Java_com_margelo_nitro_purelyocr_FrameBuffers_describe(JNIEnv* env, jclass, jlon
 
 /** Upright ARGB of the region, outW x outH, into `out`. Returns 0 or a negative status. */
 JNIEXPORT jint JNICALL
-Java_com_margelo_nitro_purelyocr_FrameBuffers_readArgb(JNIEnv* env, jclass, jlong pointer, jint exif,
+Java_com_margelo_nitro_glyphocr_FrameBuffers_readArgb(JNIEnv* env, jclass, jlong pointer, jint exif,
     jfloat x, jfloat y, jfloat w, jfloat h, jint outW, jint outH, jintArray out) {
   if (!hasApi()) return kNoApi;
   Locked b(asBuffer(pointer), AHARDWAREBUFFER_USAGE_CPU_READ_OFTEN);
@@ -233,7 +233,7 @@ Java_com_margelo_nitro_purelyocr_FrameBuffers_readArgb(JNIEnv* env, jclass, jlon
 
 /** Upright luma of the region, outW x outH, 0..255, into `out`. Returns 0 or a negative status. */
 JNIEXPORT jint JNICALL
-Java_com_margelo_nitro_purelyocr_FrameBuffers_readLuma(JNIEnv* env, jclass, jlong pointer, jint exif,
+Java_com_margelo_nitro_glyphocr_FrameBuffers_readLuma(JNIEnv* env, jclass, jlong pointer, jint exif,
     jfloat x, jfloat y, jfloat w, jfloat h, jint outW, jint outH, jfloatArray out) {
   if (!hasApi()) return kNoApi;
   Locked b(asBuffer(pointer), AHARDWAREBUFFER_USAGE_CPU_READ_OFTEN);
@@ -255,7 +255,7 @@ Java_com_margelo_nitro_purelyocr_FrameBuffers_readLuma(JNIEnv* env, jclass, jlon
  * Returns the AHardwareBuffer* or a status -1..-4 (pointers may be negative as jlong: tagged).
  */
 JNIEXPORT jlong JNICALL
-Java_com_margelo_nitro_purelyocr_FrameBuffers_createTestFrame(JNIEnv* env, jclass, jintArray argb,
+Java_com_margelo_nitro_glyphocr_FrameBuffers_createTestFrame(JNIEnv* env, jclass, jintArray argb,
     jint uprightW, jint uprightH, jint exif) {
   if (!hasApi()) return kNoApi;
   int rawW = sideways(exif) ? uprightH : uprightW;
@@ -337,7 +337,7 @@ Java_com_margelo_nitro_purelyocr_FrameBuffers_createTestFrame(JNIEnv* env, jclas
 }
 
 JNIEXPORT void JNICALL
-Java_com_margelo_nitro_purelyocr_FrameBuffers_release(JNIEnv*, jclass, jlong pointer) {
+Java_com_margelo_nitro_glyphocr_FrameBuffers_release(JNIEnv*, jclass, jlong pointer) {
   if (hasApi() && pointer != 0) api().release(asBuffer(pointer));
 }
 

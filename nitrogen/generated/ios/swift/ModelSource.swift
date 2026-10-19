@@ -8,7 +8,7 @@
 /**
  * Represents the JS union `ModelSource`, backed by a C++ enum.
  */
-public typealias ModelSource = margelo.nitro.purelyocr.ModelSource
+public typealias ModelSource = margelo.nitro.glyphocr.ModelSource
 
 public extension ModelSource {
   /**

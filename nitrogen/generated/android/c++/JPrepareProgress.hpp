@@ -14,7 +14,7 @@
 #include "PreparePhase.hpp"
 #include <string>
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   using namespace facebook;
 
@@ -23,7 +23,7 @@ namespace margelo::nitro::purelyocr {
    */
   struct JPrepareProgress final: public jni::JavaClass<JPrepareProgress> {
   public:
-    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/PrepareProgress;";
+    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/glyphocr/PrepareProgress;";
 
   public:
     /**
@@ -72,4 +72,4 @@ namespace margelo::nitro::purelyocr {
     }
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

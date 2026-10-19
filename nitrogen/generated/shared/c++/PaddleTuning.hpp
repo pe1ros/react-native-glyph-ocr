@@ -32,7 +32,7 @@
 
 #include <optional>
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * A struct which can be represented as a JavaScript object (PaddleTuning).
@@ -52,23 +52,23 @@ namespace margelo::nitro::purelyocr {
     friend bool operator==(const PaddleTuning& lhs, const PaddleTuning& rhs) = default;
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ PaddleTuning <> JS PaddleTuning (object)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::PaddleTuning> final {
-    static inline margelo::nitro::purelyocr::PaddleTuning fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::PaddleTuning> final {
+    static inline margelo::nitro::glyphocr::PaddleTuning fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       jsi::Object obj = arg.asObject(runtime);
-      return margelo::nitro::purelyocr::PaddleTuning(
+      return margelo::nitro::glyphocr::PaddleTuning(
         JSIConverter<std::optional<double>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "detectorSide"))),
         JSIConverter<std::optional<double>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "detectorThreshold"))),
         JSIConverter<std::optional<double>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "boxThreshold"))),
         JSIConverter<std::optional<double>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "unclipRatio")))
       );
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::purelyocr::PaddleTuning& arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::glyphocr::PaddleTuning& arg) {
       jsi::Object obj(runtime);
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "detectorSide"), JSIConverter<std::optional<double>>::toJSI(runtime, arg.detectorSide));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "detectorThreshold"), JSIConverter<std::optional<double>>::toJSI(runtime, arg.detectorThreshold));

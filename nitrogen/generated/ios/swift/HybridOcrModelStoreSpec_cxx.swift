@@ -18,11 +18,11 @@ import NitroModules
  */
 open class HybridOcrModelStoreSpec_cxx {
   /**
-   * The Swift <> C++ bridge's namespace (`margelo::nitro::purelyocr::bridge::swift`)
-   * from `NitroPurelyOcr-Swift-Cxx-Bridge.hpp`.
+   * The Swift <> C++ bridge's namespace (`margelo::nitro::glyphocr::bridge::swift`)
+   * from `NitroGlyphOcr-Swift-Cxx-Bridge.hpp`.
    * This contains specialized C++ templates, and C++ helper functions that can be accessed from Swift.
    */
-  public typealias bridge = margelo.nitro.purelyocr.bridge.swift
+  public typealias bridge = margelo.nitro.glyphocr.bridge.swift
 
   /**
    * Holds an instance of the `HybridOcrModelStoreSpec` Swift protocol.

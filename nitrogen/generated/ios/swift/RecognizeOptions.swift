@@ -10,10 +10,10 @@ import NitroModules
 /**
  * Represents an instance of `RecognizeOptions`, backed by a C++ struct.
  */
-public typealias RecognizeOptions = margelo.nitro.purelyocr.RecognizeOptions
+public typealias RecognizeOptions = margelo.nitro.glyphocr.RecognizeOptions
 
 public extension RecognizeOptions {
-  private typealias bridge = margelo.nitro.purelyocr.bridge.swift
+  private typealias bridge = margelo.nitro.glyphocr.bridge.swift
 
   /**
    * Create a new instance of `RecognizeOptions`.

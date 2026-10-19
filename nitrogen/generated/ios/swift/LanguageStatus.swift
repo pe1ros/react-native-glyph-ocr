@@ -8,7 +8,7 @@
 /**
  * Represents the JS union `LanguageStatus`, backed by a C++ enum.
  */
-public typealias LanguageStatus = margelo.nitro.purelyocr.LanguageStatus
+public typealias LanguageStatus = margelo.nitro.glyphocr.LanguageStatus
 
 public extension LanguageStatus {
   /**

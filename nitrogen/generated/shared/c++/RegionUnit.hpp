@@ -23,7 +23,7 @@
 #error NitroModules cannot be found! Are you sure you installed NitroModules properly?
 #endif
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * An enum which can be represented as a JavaScript union (RegionUnit).
@@ -33,26 +33,26 @@ namespace margelo::nitro::purelyocr {
     PIXEL      SWIFT_NAME(pixel) = 1,
   } CLOSED_ENUM;
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ RegionUnit <> JS RegionUnit (union)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::RegionUnit> final {
-    static inline margelo::nitro::purelyocr::RegionUnit fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::RegionUnit> final {
+    static inline margelo::nitro::glyphocr::RegionUnit fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       std::string unionValue = JSIConverter<std::string>::fromJSI(runtime, arg);
       switch (hashString(unionValue.c_str(), unionValue.size())) {
-        case hashString("normalized"): return margelo::nitro::purelyocr::RegionUnit::NORMALIZED;
-        case hashString("pixel"): return margelo::nitro::purelyocr::RegionUnit::PIXEL;
+        case hashString("normalized"): return margelo::nitro::glyphocr::RegionUnit::NORMALIZED;
+        case hashString("pixel"): return margelo::nitro::glyphocr::RegionUnit::PIXEL;
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert \"" + unionValue + "\" to enum RegionUnit - invalid value!");
       }
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::purelyocr::RegionUnit arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::glyphocr::RegionUnit arg) {
       switch (arg) {
-        case margelo::nitro::purelyocr::RegionUnit::NORMALIZED: return JSIConverter<std::string>::toJSI(runtime, "normalized");
-        case margelo::nitro::purelyocr::RegionUnit::PIXEL: return JSIConverter<std::string>::toJSI(runtime, "pixel");
+        case margelo::nitro::glyphocr::RegionUnit::NORMALIZED: return JSIConverter<std::string>::toJSI(runtime, "normalized");
+        case margelo::nitro::glyphocr::RegionUnit::PIXEL: return JSIConverter<std::string>::toJSI(runtime, "pixel");
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert RegionUnit to JS - invalid value: "
                                     + std::to_string(static_cast<int>(arg)) + "!");

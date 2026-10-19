@@ -10,10 +10,10 @@ import NitroModules
 /**
  * Represents an instance of `FrameRecognizeOptions`, backed by a C++ struct.
  */
-public typealias FrameRecognizeOptions = margelo.nitro.purelyocr.FrameRecognizeOptions
+public typealias FrameRecognizeOptions = margelo.nitro.glyphocr.FrameRecognizeOptions
 
 public extension FrameRecognizeOptions {
-  private typealias bridge = margelo.nitro.purelyocr.bridge.swift
+  private typealias bridge = margelo.nitro.glyphocr.bridge.swift
 
   /**
    * Create a new instance of `FrameRecognizeOptions`.

@@ -10,7 +10,7 @@
 #include <fbjni/fbjni.h>
 #include "OcrOutput.hpp"
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   using namespace facebook;
 
@@ -19,7 +19,7 @@ namespace margelo::nitro::purelyocr {
    */
   struct JOcrOutput final: public jni::JavaClass<JOcrOutput> {
   public:
-    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/OcrOutput;";
+    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/glyphocr/OcrOutput;";
 
   public:
     /**
@@ -58,4 +58,4 @@ namespace margelo::nitro::purelyocr {
     }
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

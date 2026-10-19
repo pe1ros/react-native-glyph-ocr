@@ -14,18 +14,18 @@
 #endif
 
 // Forward declaration of `FrameQuality` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct FrameQuality; }
+namespace margelo::nitro::glyphocr { struct FrameQuality; }
 // Forward declaration of `FrameOrientation` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class FrameOrientation; }
+namespace margelo::nitro::glyphocr { enum class FrameOrientation; }
 // Forward declaration of `OcrRect` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct OcrRect; }
+namespace margelo::nitro::glyphocr { struct OcrRect; }
 
 #include "FrameQuality.hpp"
 #include "FrameOrientation.hpp"
 #include "OcrRect.hpp"
 #include <optional>
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   using namespace margelo::nitro;
 
@@ -68,4 +68,4 @@ namespace margelo::nitro::purelyocr {
       static constexpr auto TAG = "OcrFrameMeter";
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

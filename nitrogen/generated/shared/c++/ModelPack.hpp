@@ -29,13 +29,13 @@
 #endif
 
 // Forward declaration of `OcrEngine` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class OcrEngine; }
+namespace margelo::nitro::glyphocr { enum class OcrEngine; }
 
 #include <string>
 #include "OcrEngine.hpp"
 #include <vector>
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * A struct which can be represented as a JavaScript object (ModelPack).
@@ -56,27 +56,27 @@ namespace margelo::nitro::purelyocr {
     friend bool operator==(const ModelPack& lhs, const ModelPack& rhs) = default;
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ ModelPack <> JS ModelPack (object)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::ModelPack> final {
-    static inline margelo::nitro::purelyocr::ModelPack fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::ModelPack> final {
+    static inline margelo::nitro::glyphocr::ModelPack fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       jsi::Object obj = arg.asObject(runtime);
-      return margelo::nitro::purelyocr::ModelPack(
+      return margelo::nitro::glyphocr::ModelPack(
         JSIConverter<std::string>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "id"))),
-        JSIConverter<margelo::nitro::purelyocr::OcrEngine>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "engine"))),
+        JSIConverter<margelo::nitro::glyphocr::OcrEngine>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "engine"))),
         JSIConverter<std::string>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "family"))),
         JSIConverter<std::vector<std::string>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "languages"))),
         JSIConverter<std::vector<std::string>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "files")))
       );
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::purelyocr::ModelPack& arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::glyphocr::ModelPack& arg) {
       jsi::Object obj(runtime);
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "id"), JSIConverter<std::string>::toJSI(runtime, arg.id));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "engine"), JSIConverter<margelo::nitro::purelyocr::OcrEngine>::toJSI(runtime, arg.engine));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "engine"), JSIConverter<margelo::nitro::glyphocr::OcrEngine>::toJSI(runtime, arg.engine));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "family"), JSIConverter<std::string>::toJSI(runtime, arg.family));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "languages"), JSIConverter<std::vector<std::string>>::toJSI(runtime, arg.languages));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "files"), JSIConverter<std::vector<std::string>>::toJSI(runtime, arg.files));
@@ -91,7 +91,7 @@ namespace margelo::nitro {
         return false;
       }
       if (!JSIConverter<std::string>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "id")))) return false;
-      if (!JSIConverter<margelo::nitro::purelyocr::OcrEngine>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "engine")))) return false;
+      if (!JSIConverter<margelo::nitro::glyphocr::OcrEngine>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "engine")))) return false;
       if (!JSIConverter<std::string>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "family")))) return false;
       if (!JSIConverter<std::vector<std::string>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "languages")))) return false;
       if (!JSIConverter<std::vector<std::string>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "files")))) return false;

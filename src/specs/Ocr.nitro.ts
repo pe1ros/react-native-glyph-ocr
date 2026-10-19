@@ -4,7 +4,7 @@ import type { HybridObject, UInt64 } from 'react-native-nitro-modules';
 
 /**
  * Recognition engine. `'mlkit'` is produced only by the dev entry point
- * (`react-native-purely-ocr/dev`) and only in Android builds with ML Kit enabled.
+ * (`react-native-glyph-ocr/dev`) and only in Android builds with ML Kit enabled.
  */
 export type OcrEngine = 'vision' | 'paddle' | 'mlkit';
 
@@ -441,7 +441,7 @@ export interface OcrFrameMeter
 }
 
 /** Entry object, autolinked. */
-export interface OcrFactory
+export interface GlyphOcrFactory
   extends HybridObject<{ ios: 'swift'; android: 'kotlin' }> {
   /** `vision` on iOS, `paddle` on Android. */
   readonly defaultEngine: OcrEngine;

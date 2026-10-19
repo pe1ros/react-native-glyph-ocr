@@ -12,7 +12,7 @@
 
 
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   using namespace facebook;
 
@@ -21,7 +21,7 @@ namespace margelo::nitro::purelyocr {
    */
   struct JFrameQuality final: public jni::JavaClass<JFrameQuality> {
   public:
-    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/FrameQuality;";
+    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/glyphocr/FrameQuality;";
 
   public:
     /**
@@ -62,4 +62,4 @@ namespace margelo::nitro::purelyocr {
     }
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

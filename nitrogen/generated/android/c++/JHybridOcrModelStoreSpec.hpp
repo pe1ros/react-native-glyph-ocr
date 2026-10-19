@@ -14,18 +14,18 @@
 
 
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   using namespace facebook;
 
   class JHybridOcrModelStoreSpec: public virtual HybridOcrModelStoreSpec, public virtual JHybridObject {
   public:
     struct JavaPart: public jni::JavaClass<JavaPart, JHybridObject::JavaPart> {
-      static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/HybridOcrModelStoreSpec;";
+      static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/glyphocr/HybridOcrModelStoreSpec;";
       std::shared_ptr<JHybridOcrModelStoreSpec> getJHybridOcrModelStoreSpec();
     };
     struct CxxPart: public jni::HybridClass<CxxPart, JHybridObject::CxxPart> {
-      static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/HybridOcrModelStoreSpec$CxxPart;";
+      static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/glyphocr/HybridOcrModelStoreSpec$CxxPart;";
       static jni::local_ref<jhybriddata> initHybrid(jni::alias_ref<jhybridobject> jThis);
       static void registerNatives();
       using HybridBase::HybridBase;
@@ -66,4 +66,4 @@ namespace margelo::nitro::purelyocr {
     jni::global_ref<JHybridOcrModelStoreSpec::JavaPart> _javaPart;
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

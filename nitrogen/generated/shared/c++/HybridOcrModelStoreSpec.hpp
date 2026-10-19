@@ -14,15 +14,15 @@
 #endif
 
 // Forward declaration of `ModelManifest` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct ModelManifest; }
+namespace margelo::nitro::glyphocr { struct ModelManifest; }
 // Forward declaration of `ModelStoreConfig` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct ModelStoreConfig; }
+namespace margelo::nitro::glyphocr { struct ModelStoreConfig; }
 // Forward declaration of `ModelPackStatus` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class ModelPackStatus; }
+namespace margelo::nitro::glyphocr { enum class ModelPackStatus; }
 // Forward declaration of `DownloadResult` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct DownloadResult; }
+namespace margelo::nitro::glyphocr { struct DownloadResult; }
 // Forward declaration of `PrepareProgress` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct PrepareProgress; }
+namespace margelo::nitro::glyphocr { struct PrepareProgress; }
 
 #include "ModelManifest.hpp"
 #include <string>
@@ -34,7 +34,7 @@ namespace margelo::nitro::purelyocr { struct PrepareProgress; }
 #include "PrepareProgress.hpp"
 #include <functional>
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   using namespace margelo::nitro;
 
@@ -82,4 +82,4 @@ namespace margelo::nitro::purelyocr {
       static constexpr auto TAG = "OcrModelStore";
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

@@ -29,15 +29,15 @@
 #endif
 
 // Forward declaration of `OcrRect` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct OcrRect; }
+namespace margelo::nitro::glyphocr { struct OcrRect; }
 // Forward declaration of `RecognitionLevel` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class RecognitionLevel; }
+namespace margelo::nitro::glyphocr { enum class RecognitionLevel; }
 // Forward declaration of `ReadingOrder` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class ReadingOrder; }
+namespace margelo::nitro::glyphocr { enum class ReadingOrder; }
 // Forward declaration of `OcrOutput` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class OcrOutput; }
+namespace margelo::nitro::glyphocr { enum class OcrOutput; }
 // Forward declaration of `PaddleTuning` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct PaddleTuning; }
+namespace margelo::nitro::glyphocr { struct PaddleTuning; }
 
 #include "OcrRect.hpp"
 #include <optional>
@@ -46,7 +46,7 @@ namespace margelo::nitro::purelyocr { struct PaddleTuning; }
 #include "OcrOutput.hpp"
 #include "PaddleTuning.hpp"
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * A struct which can be represented as a JavaScript object (FrameRecognizeOptions).
@@ -72,40 +72,40 @@ namespace margelo::nitro::purelyocr {
     friend bool operator==(const FrameRecognizeOptions& lhs, const FrameRecognizeOptions& rhs) = default;
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ FrameRecognizeOptions <> JS FrameRecognizeOptions (object)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::FrameRecognizeOptions> final {
-    static inline margelo::nitro::purelyocr::FrameRecognizeOptions fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::FrameRecognizeOptions> final {
+    static inline margelo::nitro::glyphocr::FrameRecognizeOptions fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       jsi::Object obj = arg.asObject(runtime);
-      return margelo::nitro::purelyocr::FrameRecognizeOptions(
-        JSIConverter<std::optional<margelo::nitro::purelyocr::OcrRect>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "roi"))),
+      return margelo::nitro::glyphocr::FrameRecognizeOptions(
+        JSIConverter<std::optional<margelo::nitro::glyphocr::OcrRect>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "roi"))),
         JSIConverter<std::optional<bool>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "mirrored"))),
-        JSIConverter<std::optional<margelo::nitro::purelyocr::RecognitionLevel>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "recognitionLevel"))),
+        JSIConverter<std::optional<margelo::nitro::glyphocr::RecognitionLevel>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "recognitionLevel"))),
         JSIConverter<std::optional<bool>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "usesLanguageCorrection"))),
         JSIConverter<std::optional<double>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "minConfidence"))),
         JSIConverter<std::optional<double>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "maxImageSide"))),
-        JSIConverter<std::optional<margelo::nitro::purelyocr::ReadingOrder>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "readingOrder"))),
-        JSIConverter<std::optional<margelo::nitro::purelyocr::OcrOutput>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "output"))),
+        JSIConverter<std::optional<margelo::nitro::glyphocr::ReadingOrder>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "readingOrder"))),
+        JSIConverter<std::optional<margelo::nitro::glyphocr::OcrOutput>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "output"))),
         JSIConverter<std::optional<bool>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "diagnostics"))),
-        JSIConverter<std::optional<margelo::nitro::purelyocr::PaddleTuning>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "paddle")))
+        JSIConverter<std::optional<margelo::nitro::glyphocr::PaddleTuning>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "paddle")))
       );
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::purelyocr::FrameRecognizeOptions& arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::glyphocr::FrameRecognizeOptions& arg) {
       jsi::Object obj(runtime);
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "roi"), JSIConverter<std::optional<margelo::nitro::purelyocr::OcrRect>>::toJSI(runtime, arg.roi));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "roi"), JSIConverter<std::optional<margelo::nitro::glyphocr::OcrRect>>::toJSI(runtime, arg.roi));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "mirrored"), JSIConverter<std::optional<bool>>::toJSI(runtime, arg.mirrored));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "recognitionLevel"), JSIConverter<std::optional<margelo::nitro::purelyocr::RecognitionLevel>>::toJSI(runtime, arg.recognitionLevel));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "recognitionLevel"), JSIConverter<std::optional<margelo::nitro::glyphocr::RecognitionLevel>>::toJSI(runtime, arg.recognitionLevel));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "usesLanguageCorrection"), JSIConverter<std::optional<bool>>::toJSI(runtime, arg.usesLanguageCorrection));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "minConfidence"), JSIConverter<std::optional<double>>::toJSI(runtime, arg.minConfidence));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "maxImageSide"), JSIConverter<std::optional<double>>::toJSI(runtime, arg.maxImageSide));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "readingOrder"), JSIConverter<std::optional<margelo::nitro::purelyocr::ReadingOrder>>::toJSI(runtime, arg.readingOrder));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "output"), JSIConverter<std::optional<margelo::nitro::purelyocr::OcrOutput>>::toJSI(runtime, arg.output));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "readingOrder"), JSIConverter<std::optional<margelo::nitro::glyphocr::ReadingOrder>>::toJSI(runtime, arg.readingOrder));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "output"), JSIConverter<std::optional<margelo::nitro::glyphocr::OcrOutput>>::toJSI(runtime, arg.output));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "diagnostics"), JSIConverter<std::optional<bool>>::toJSI(runtime, arg.diagnostics));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "paddle"), JSIConverter<std::optional<margelo::nitro::purelyocr::PaddleTuning>>::toJSI(runtime, arg.paddle));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "paddle"), JSIConverter<std::optional<margelo::nitro::glyphocr::PaddleTuning>>::toJSI(runtime, arg.paddle));
       return obj;
     }
     static inline bool canConvert(jsi::Runtime& runtime, const jsi::Value& value) {
@@ -116,16 +116,16 @@ namespace margelo::nitro {
       if (!nitro::isPlainObject(runtime, obj)) {
         return false;
       }
-      if (!JSIConverter<std::optional<margelo::nitro::purelyocr::OcrRect>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "roi")))) return false;
+      if (!JSIConverter<std::optional<margelo::nitro::glyphocr::OcrRect>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "roi")))) return false;
       if (!JSIConverter<std::optional<bool>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "mirrored")))) return false;
-      if (!JSIConverter<std::optional<margelo::nitro::purelyocr::RecognitionLevel>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "recognitionLevel")))) return false;
+      if (!JSIConverter<std::optional<margelo::nitro::glyphocr::RecognitionLevel>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "recognitionLevel")))) return false;
       if (!JSIConverter<std::optional<bool>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "usesLanguageCorrection")))) return false;
       if (!JSIConverter<std::optional<double>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "minConfidence")))) return false;
       if (!JSIConverter<std::optional<double>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "maxImageSide")))) return false;
-      if (!JSIConverter<std::optional<margelo::nitro::purelyocr::ReadingOrder>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "readingOrder")))) return false;
-      if (!JSIConverter<std::optional<margelo::nitro::purelyocr::OcrOutput>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "output")))) return false;
+      if (!JSIConverter<std::optional<margelo::nitro::glyphocr::ReadingOrder>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "readingOrder")))) return false;
+      if (!JSIConverter<std::optional<margelo::nitro::glyphocr::OcrOutput>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "output")))) return false;
       if (!JSIConverter<std::optional<bool>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "diagnostics")))) return false;
-      if (!JSIConverter<std::optional<margelo::nitro::purelyocr::PaddleTuning>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "paddle")))) return false;
+      if (!JSIConverter<std::optional<margelo::nitro::glyphocr::PaddleTuning>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "paddle")))) return false;
       return true;
     }
   };

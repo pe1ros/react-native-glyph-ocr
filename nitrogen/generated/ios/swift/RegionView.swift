@@ -10,10 +10,10 @@ import NitroModules
 /**
  * Represents an instance of `RegionView`, backed by a C++ struct.
  */
-public typealias RegionView = margelo.nitro.purelyocr.RegionView
+public typealias RegionView = margelo.nitro.glyphocr.RegionView
 
 public extension RegionView {
-  private typealias bridge = margelo.nitro.purelyocr.bridge.swift
+  private typealias bridge = margelo.nitro.glyphocr.bridge.swift
 
   /**
    * Create a new instance of `RegionView`.

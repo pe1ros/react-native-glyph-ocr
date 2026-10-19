@@ -8,7 +8,7 @@
 /**
  * Represents the JS union `RecognitionLevel`, backed by a C++ enum.
  */
-public typealias RecognitionLevel = margelo.nitro.purelyocr.RecognitionLevel
+public typealias RecognitionLevel = margelo.nitro.glyphocr.RecognitionLevel
 
 public extension RecognitionLevel {
   /**

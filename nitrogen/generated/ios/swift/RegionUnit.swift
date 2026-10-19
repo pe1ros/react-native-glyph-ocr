@@ -8,7 +8,7 @@
 /**
  * Represents the JS union `RegionUnit`, backed by a C++ enum.
  */
-public typealias RegionUnit = margelo.nitro.purelyocr.RegionUnit
+public typealias RegionUnit = margelo.nitro.glyphocr.RegionUnit
 
 public extension RegionUnit {
   /**

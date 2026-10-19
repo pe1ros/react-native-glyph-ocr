@@ -23,7 +23,7 @@
 #error NitroModules cannot be found! Are you sure you installed NitroModules properly?
 #endif
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * An enum which can be represented as a JavaScript union (RawPixelFormat).
@@ -37,34 +37,34 @@ namespace margelo::nitro::purelyocr {
     BGR      SWIFT_NAME(bgr) = 5,
   } CLOSED_ENUM;
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ RawPixelFormat <> JS RawPixelFormat (union)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::RawPixelFormat> final {
-    static inline margelo::nitro::purelyocr::RawPixelFormat fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::RawPixelFormat> final {
+    static inline margelo::nitro::glyphocr::RawPixelFormat fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       std::string unionValue = JSIConverter<std::string>::fromJSI(runtime, arg);
       switch (hashString(unionValue.c_str(), unionValue.size())) {
-        case hashString("rgba"): return margelo::nitro::purelyocr::RawPixelFormat::RGBA;
-        case hashString("bgra"): return margelo::nitro::purelyocr::RawPixelFormat::BGRA;
-        case hashString("argb"): return margelo::nitro::purelyocr::RawPixelFormat::ARGB;
-        case hashString("abgr"): return margelo::nitro::purelyocr::RawPixelFormat::ABGR;
-        case hashString("rgb"): return margelo::nitro::purelyocr::RawPixelFormat::RGB;
-        case hashString("bgr"): return margelo::nitro::purelyocr::RawPixelFormat::BGR;
+        case hashString("rgba"): return margelo::nitro::glyphocr::RawPixelFormat::RGBA;
+        case hashString("bgra"): return margelo::nitro::glyphocr::RawPixelFormat::BGRA;
+        case hashString("argb"): return margelo::nitro::glyphocr::RawPixelFormat::ARGB;
+        case hashString("abgr"): return margelo::nitro::glyphocr::RawPixelFormat::ABGR;
+        case hashString("rgb"): return margelo::nitro::glyphocr::RawPixelFormat::RGB;
+        case hashString("bgr"): return margelo::nitro::glyphocr::RawPixelFormat::BGR;
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert \"" + unionValue + "\" to enum RawPixelFormat - invalid value!");
       }
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::purelyocr::RawPixelFormat arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::glyphocr::RawPixelFormat arg) {
       switch (arg) {
-        case margelo::nitro::purelyocr::RawPixelFormat::RGBA: return JSIConverter<std::string>::toJSI(runtime, "rgba");
-        case margelo::nitro::purelyocr::RawPixelFormat::BGRA: return JSIConverter<std::string>::toJSI(runtime, "bgra");
-        case margelo::nitro::purelyocr::RawPixelFormat::ARGB: return JSIConverter<std::string>::toJSI(runtime, "argb");
-        case margelo::nitro::purelyocr::RawPixelFormat::ABGR: return JSIConverter<std::string>::toJSI(runtime, "abgr");
-        case margelo::nitro::purelyocr::RawPixelFormat::RGB: return JSIConverter<std::string>::toJSI(runtime, "rgb");
-        case margelo::nitro::purelyocr::RawPixelFormat::BGR: return JSIConverter<std::string>::toJSI(runtime, "bgr");
+        case margelo::nitro::glyphocr::RawPixelFormat::RGBA: return JSIConverter<std::string>::toJSI(runtime, "rgba");
+        case margelo::nitro::glyphocr::RawPixelFormat::BGRA: return JSIConverter<std::string>::toJSI(runtime, "bgra");
+        case margelo::nitro::glyphocr::RawPixelFormat::ARGB: return JSIConverter<std::string>::toJSI(runtime, "argb");
+        case margelo::nitro::glyphocr::RawPixelFormat::ABGR: return JSIConverter<std::string>::toJSI(runtime, "abgr");
+        case margelo::nitro::glyphocr::RawPixelFormat::RGB: return JSIConverter<std::string>::toJSI(runtime, "rgb");
+        case margelo::nitro::glyphocr::RawPixelFormat::BGR: return JSIConverter<std::string>::toJSI(runtime, "bgr");
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert RawPixelFormat to JS - invalid value: "
                                     + std::to_string(static_cast<int>(arg)) + "!");

@@ -10,10 +10,10 @@ import NitroModules
 /**
  * Represents an instance of `OcrRegion`, backed by a C++ struct.
  */
-public typealias OcrRegion = margelo.nitro.purelyocr.OcrRegion
+public typealias OcrRegion = margelo.nitro.glyphocr.OcrRegion
 
 public extension OcrRegion {
-  private typealias bridge = margelo.nitro.purelyocr.bridge.swift
+  private typealias bridge = margelo.nitro.glyphocr.bridge.swift
 
   /**
    * Create a new instance of `OcrRegion`.

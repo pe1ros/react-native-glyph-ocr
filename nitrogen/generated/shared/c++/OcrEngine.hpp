@@ -23,7 +23,7 @@
 #error NitroModules cannot be found! Are you sure you installed NitroModules properly?
 #endif
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * An enum which can be represented as a JavaScript union (OcrEngine).
@@ -34,28 +34,28 @@ namespace margelo::nitro::purelyocr {
     MLKIT      SWIFT_NAME(mlkit) = 2,
   } CLOSED_ENUM;
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ OcrEngine <> JS OcrEngine (union)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::OcrEngine> final {
-    static inline margelo::nitro::purelyocr::OcrEngine fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::OcrEngine> final {
+    static inline margelo::nitro::glyphocr::OcrEngine fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       std::string unionValue = JSIConverter<std::string>::fromJSI(runtime, arg);
       switch (hashString(unionValue.c_str(), unionValue.size())) {
-        case hashString("vision"): return margelo::nitro::purelyocr::OcrEngine::VISION;
-        case hashString("paddle"): return margelo::nitro::purelyocr::OcrEngine::PADDLE;
-        case hashString("mlkit"): return margelo::nitro::purelyocr::OcrEngine::MLKIT;
+        case hashString("vision"): return margelo::nitro::glyphocr::OcrEngine::VISION;
+        case hashString("paddle"): return margelo::nitro::glyphocr::OcrEngine::PADDLE;
+        case hashString("mlkit"): return margelo::nitro::glyphocr::OcrEngine::MLKIT;
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert \"" + unionValue + "\" to enum OcrEngine - invalid value!");
       }
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::purelyocr::OcrEngine arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::glyphocr::OcrEngine arg) {
       switch (arg) {
-        case margelo::nitro::purelyocr::OcrEngine::VISION: return JSIConverter<std::string>::toJSI(runtime, "vision");
-        case margelo::nitro::purelyocr::OcrEngine::PADDLE: return JSIConverter<std::string>::toJSI(runtime, "paddle");
-        case margelo::nitro::purelyocr::OcrEngine::MLKIT: return JSIConverter<std::string>::toJSI(runtime, "mlkit");
+        case margelo::nitro::glyphocr::OcrEngine::VISION: return JSIConverter<std::string>::toJSI(runtime, "vision");
+        case margelo::nitro::glyphocr::OcrEngine::PADDLE: return JSIConverter<std::string>::toJSI(runtime, "paddle");
+        case margelo::nitro::glyphocr::OcrEngine::MLKIT: return JSIConverter<std::string>::toJSI(runtime, "mlkit");
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert OcrEngine to JS - invalid value: "
                                     + std::to_string(static_cast<int>(arg)) + "!");

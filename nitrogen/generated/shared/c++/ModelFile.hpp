@@ -29,16 +29,16 @@
 #endif
 
 // Forward declaration of `ModelRole` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class ModelRole; }
+namespace margelo::nitro::glyphocr { enum class ModelRole; }
 // Forward declaration of `ModelFormat` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class ModelFormat; }
+namespace margelo::nitro::glyphocr { enum class ModelFormat; }
 
 #include <string>
 #include "ModelRole.hpp"
 #include "ModelFormat.hpp"
 #include <optional>
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * A struct which can be represented as a JavaScript object (ModelFile).
@@ -62,19 +62,19 @@ namespace margelo::nitro::purelyocr {
     friend bool operator==(const ModelFile& lhs, const ModelFile& rhs) = default;
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ ModelFile <> JS ModelFile (object)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::ModelFile> final {
-    static inline margelo::nitro::purelyocr::ModelFile fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::ModelFile> final {
+    static inline margelo::nitro::glyphocr::ModelFile fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       jsi::Object obj = arg.asObject(runtime);
-      return margelo::nitro::purelyocr::ModelFile(
+      return margelo::nitro::glyphocr::ModelFile(
         JSIConverter<std::string>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "id"))),
-        JSIConverter<margelo::nitro::purelyocr::ModelRole>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "role"))),
-        JSIConverter<margelo::nitro::purelyocr::ModelFormat>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "format"))),
+        JSIConverter<margelo::nitro::glyphocr::ModelRole>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "role"))),
+        JSIConverter<margelo::nitro::glyphocr::ModelFormat>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "format"))),
         JSIConverter<std::string>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "path"))),
         JSIConverter<std::optional<std::string>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "url"))),
         JSIConverter<std::string>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "sha256"))),
@@ -82,11 +82,11 @@ namespace margelo::nitro {
         JSIConverter<std::optional<std::string>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "license")))
       );
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::purelyocr::ModelFile& arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::glyphocr::ModelFile& arg) {
       jsi::Object obj(runtime);
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "id"), JSIConverter<std::string>::toJSI(runtime, arg.id));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "role"), JSIConverter<margelo::nitro::purelyocr::ModelRole>::toJSI(runtime, arg.role));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "format"), JSIConverter<margelo::nitro::purelyocr::ModelFormat>::toJSI(runtime, arg.format));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "role"), JSIConverter<margelo::nitro::glyphocr::ModelRole>::toJSI(runtime, arg.role));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "format"), JSIConverter<margelo::nitro::glyphocr::ModelFormat>::toJSI(runtime, arg.format));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "path"), JSIConverter<std::string>::toJSI(runtime, arg.path));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "url"), JSIConverter<std::optional<std::string>>::toJSI(runtime, arg.url));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "sha256"), JSIConverter<std::string>::toJSI(runtime, arg.sha256));
@@ -103,8 +103,8 @@ namespace margelo::nitro {
         return false;
       }
       if (!JSIConverter<std::string>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "id")))) return false;
-      if (!JSIConverter<margelo::nitro::purelyocr::ModelRole>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "role")))) return false;
-      if (!JSIConverter<margelo::nitro::purelyocr::ModelFormat>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "format")))) return false;
+      if (!JSIConverter<margelo::nitro::glyphocr::ModelRole>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "role")))) return false;
+      if (!JSIConverter<margelo::nitro::glyphocr::ModelFormat>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "format")))) return false;
       if (!JSIConverter<std::string>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "path")))) return false;
       if (!JSIConverter<std::optional<std::string>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "url")))) return false;
       if (!JSIConverter<std::string>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "sha256")))) return false;

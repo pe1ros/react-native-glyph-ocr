@@ -19,7 +19,7 @@
 #include <string>
 #include <vector>
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   using namespace facebook;
 
@@ -28,7 +28,7 @@ namespace margelo::nitro::purelyocr {
    */
   struct JOcrLine final: public jni::JavaClass<JOcrLine> {
   public:
-    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/OcrLine;";
+    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/glyphocr/OcrLine;";
 
   public:
     /**
@@ -121,4 +121,4 @@ namespace margelo::nitro::purelyocr {
     }
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

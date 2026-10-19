@@ -23,7 +23,7 @@
 #error NitroModules cannot be found! Are you sure you installed NitroModules properly?
 #endif
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * An enum which can be represented as a JavaScript union (ModelPackStatus).
@@ -36,32 +36,32 @@ namespace margelo::nitro::purelyocr {
     CORRUPT      SWIFT_NAME(corrupt) = 4,
   } CLOSED_ENUM;
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ ModelPackStatus <> JS ModelPackStatus (union)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::ModelPackStatus> final {
-    static inline margelo::nitro::purelyocr::ModelPackStatus fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::ModelPackStatus> final {
+    static inline margelo::nitro::glyphocr::ModelPackStatus fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       std::string unionValue = JSIConverter<std::string>::fromJSI(runtime, arg);
       switch (hashString(unionValue.c_str(), unionValue.size())) {
-        case hashString("embedded"): return margelo::nitro::purelyocr::ModelPackStatus::EMBEDDED;
-        case hashString("installed"): return margelo::nitro::purelyocr::ModelPackStatus::INSTALLED;
-        case hashString("missing"): return margelo::nitro::purelyocr::ModelPackStatus::MISSING;
-        case hashString("downloading"): return margelo::nitro::purelyocr::ModelPackStatus::DOWNLOADING;
-        case hashString("corrupt"): return margelo::nitro::purelyocr::ModelPackStatus::CORRUPT;
+        case hashString("embedded"): return margelo::nitro::glyphocr::ModelPackStatus::EMBEDDED;
+        case hashString("installed"): return margelo::nitro::glyphocr::ModelPackStatus::INSTALLED;
+        case hashString("missing"): return margelo::nitro::glyphocr::ModelPackStatus::MISSING;
+        case hashString("downloading"): return margelo::nitro::glyphocr::ModelPackStatus::DOWNLOADING;
+        case hashString("corrupt"): return margelo::nitro::glyphocr::ModelPackStatus::CORRUPT;
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert \"" + unionValue + "\" to enum ModelPackStatus - invalid value!");
       }
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::purelyocr::ModelPackStatus arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::glyphocr::ModelPackStatus arg) {
       switch (arg) {
-        case margelo::nitro::purelyocr::ModelPackStatus::EMBEDDED: return JSIConverter<std::string>::toJSI(runtime, "embedded");
-        case margelo::nitro::purelyocr::ModelPackStatus::INSTALLED: return JSIConverter<std::string>::toJSI(runtime, "installed");
-        case margelo::nitro::purelyocr::ModelPackStatus::MISSING: return JSIConverter<std::string>::toJSI(runtime, "missing");
-        case margelo::nitro::purelyocr::ModelPackStatus::DOWNLOADING: return JSIConverter<std::string>::toJSI(runtime, "downloading");
-        case margelo::nitro::purelyocr::ModelPackStatus::CORRUPT: return JSIConverter<std::string>::toJSI(runtime, "corrupt");
+        case margelo::nitro::glyphocr::ModelPackStatus::EMBEDDED: return JSIConverter<std::string>::toJSI(runtime, "embedded");
+        case margelo::nitro::glyphocr::ModelPackStatus::INSTALLED: return JSIConverter<std::string>::toJSI(runtime, "installed");
+        case margelo::nitro::glyphocr::ModelPackStatus::MISSING: return JSIConverter<std::string>::toJSI(runtime, "missing");
+        case margelo::nitro::glyphocr::ModelPackStatus::DOWNLOADING: return JSIConverter<std::string>::toJSI(runtime, "downloading");
+        case margelo::nitro::glyphocr::ModelPackStatus::CORRUPT: return JSIConverter<std::string>::toJSI(runtime, "corrupt");
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert ModelPackStatus to JS - invalid value: "
                                     + std::to_string(static_cast<int>(arg)) + "!");

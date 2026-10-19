@@ -12,7 +12,7 @@
 
 #include <string>
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   using namespace facebook;
 
@@ -21,7 +21,7 @@ namespace margelo::nitro::purelyocr {
    */
   struct JTestFrameInfo final: public jni::JavaClass<JTestFrameInfo> {
   public:
-    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/TestFrameInfo;";
+    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/glyphocr/TestFrameInfo;";
 
   public:
     /**
@@ -62,4 +62,4 @@ namespace margelo::nitro::purelyocr {
     }
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

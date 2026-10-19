@@ -29,16 +29,16 @@
 #endif
 
 // Forward declaration of `OcrEngine` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class OcrEngine; }
+namespace margelo::nitro::glyphocr { enum class OcrEngine; }
 // Forward declaration of `LanguageStatus` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class LanguageStatus; }
+namespace margelo::nitro::glyphocr { enum class LanguageStatus; }
 
 #include <string>
 #include "OcrEngine.hpp"
 #include <optional>
 #include "LanguageStatus.hpp"
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * A struct which can be represented as a JavaScript object (SupportedLanguage).
@@ -59,29 +59,29 @@ namespace margelo::nitro::purelyocr {
     friend bool operator==(const SupportedLanguage& lhs, const SupportedLanguage& rhs) = default;
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ SupportedLanguage <> JS SupportedLanguage (object)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::SupportedLanguage> final {
-    static inline margelo::nitro::purelyocr::SupportedLanguage fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::SupportedLanguage> final {
+    static inline margelo::nitro::glyphocr::SupportedLanguage fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       jsi::Object obj = arg.asObject(runtime);
-      return margelo::nitro::purelyocr::SupportedLanguage(
+      return margelo::nitro::glyphocr::SupportedLanguage(
         JSIConverter<std::string>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "language"))),
-        JSIConverter<margelo::nitro::purelyocr::OcrEngine>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "engine"))),
+        JSIConverter<margelo::nitro::glyphocr::OcrEngine>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "engine"))),
         JSIConverter<std::optional<std::string>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "packId"))),
-        JSIConverter<margelo::nitro::purelyocr::LanguageStatus>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "status"))),
+        JSIConverter<margelo::nitro::glyphocr::LanguageStatus>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "status"))),
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "downloadBytes")))
       );
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::purelyocr::SupportedLanguage& arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::glyphocr::SupportedLanguage& arg) {
       jsi::Object obj(runtime);
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "language"), JSIConverter<std::string>::toJSI(runtime, arg.language));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "engine"), JSIConverter<margelo::nitro::purelyocr::OcrEngine>::toJSI(runtime, arg.engine));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "engine"), JSIConverter<margelo::nitro::glyphocr::OcrEngine>::toJSI(runtime, arg.engine));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "packId"), JSIConverter<std::optional<std::string>>::toJSI(runtime, arg.packId));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "status"), JSIConverter<margelo::nitro::purelyocr::LanguageStatus>::toJSI(runtime, arg.status));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "status"), JSIConverter<margelo::nitro::glyphocr::LanguageStatus>::toJSI(runtime, arg.status));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "downloadBytes"), JSIConverter<double>::toJSI(runtime, arg.downloadBytes));
       return obj;
     }
@@ -94,9 +94,9 @@ namespace margelo::nitro {
         return false;
       }
       if (!JSIConverter<std::string>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "language")))) return false;
-      if (!JSIConverter<margelo::nitro::purelyocr::OcrEngine>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "engine")))) return false;
+      if (!JSIConverter<margelo::nitro::glyphocr::OcrEngine>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "engine")))) return false;
       if (!JSIConverter<std::optional<std::string>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "packId")))) return false;
-      if (!JSIConverter<margelo::nitro::purelyocr::LanguageStatus>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "status")))) return false;
+      if (!JSIConverter<margelo::nitro::glyphocr::LanguageStatus>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "status")))) return false;
       if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "downloadBytes")))) return false;
       return true;
     }

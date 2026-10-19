@@ -9,7 +9,7 @@ import type {
   ModelManifest,
   ModelStoreConfig,
   OcrEngine,
-  OcrFactory,
+  GlyphOcrFactory,
   OcrModelStore,
   OcrRecognizer,
   OcrResult,
@@ -63,11 +63,11 @@ export interface Ocr {
   dispose(): void;
 }
 
-let factory: OcrFactory | undefined;
+let factory: GlyphOcrFactory | undefined;
 
 /** @internal */
-export function getFactory(): OcrFactory {
-  factory ??= NitroModules.createHybridObject<OcrFactory>('OcrFactory');
+export function getFactory(): GlyphOcrFactory {
+  factory ??= NitroModules.createHybridObject<GlyphOcrFactory>('GlyphOcrFactory');
   return factory;
 }
 

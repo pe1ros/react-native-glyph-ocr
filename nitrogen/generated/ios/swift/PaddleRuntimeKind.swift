@@ -8,7 +8,7 @@
 /**
  * Represents the JS union `PaddleRuntimeKind`, backed by a C++ enum.
  */
-public typealias PaddleRuntimeKind = margelo.nitro.purelyocr.PaddleRuntimeKind
+public typealias PaddleRuntimeKind = margelo.nitro.glyphocr.PaddleRuntimeKind
 
 public extension PaddleRuntimeKind {
   /**

@@ -12,7 +12,7 @@
 
 
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   using namespace facebook;
 
@@ -21,7 +21,7 @@ namespace margelo::nitro::purelyocr {
    */
   struct JOcrImageSize final: public jni::JavaClass<JOcrImageSize> {
   public:
-    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/OcrImageSize;";
+    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/glyphocr/OcrImageSize;";
 
   public:
     /**
@@ -58,4 +58,4 @@ namespace margelo::nitro::purelyocr {
     }
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

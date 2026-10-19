@@ -10,10 +10,10 @@ import NitroModules
 /**
  * Represents an instance of `ModelFile`, backed by a C++ struct.
  */
-public typealias ModelFile = margelo.nitro.purelyocr.ModelFile
+public typealias ModelFile = margelo.nitro.glyphocr.ModelFile
 
 public extension ModelFile {
-  private typealias bridge = margelo.nitro.purelyocr.bridge.swift
+  private typealias bridge = margelo.nitro.glyphocr.bridge.swift
 
   /**
    * Create a new instance of `ModelFile`.

@@ -54,8 +54,8 @@ export interface TestFrameInfo {
   pixelFormat: string;
 }
 
-/** Bench helpers of the OCR spike. Imported only from `react-native-purely-ocr/dev`. */
-export interface OcrDevTools
+/** Bench helpers of the OCR spike. Imported only from `react-native-glyph-ocr/dev`. */
+export interface GlyphOcrDevTools
   extends HybridObject<{ ios: 'swift'; android: 'kotlin' }> {
   /** `<app external files>/ocr-bench` on Android, `<Documents>/ocr-bench` on iOS, with `in/` and `out/`. */
   readonly benchDir: string;
@@ -71,7 +71,7 @@ export interface OcrDevTools
     tuning: DevTuning,
   ): OcrRecognizer;
 
-  /** Android builds with `PurelyOcr_devMlKit=true` only. */
+  /** Android builds with `GlyphOcr_devMlKit=true` only. */
   readonly isMlKitAvailable: boolean;
   /** ML Kit Text Recognition v2 (Latin) on the same decode path. */
   recognizeMlKit(uri: string, maxImageSide: number): Promise<OcrResult>;

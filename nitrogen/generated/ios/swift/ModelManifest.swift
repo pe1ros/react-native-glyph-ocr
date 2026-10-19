@@ -10,10 +10,10 @@ import NitroModules
 /**
  * Represents an instance of `ModelManifest`, backed by a C++ struct.
  */
-public typealias ModelManifest = margelo.nitro.purelyocr.ModelManifest
+public typealias ModelManifest = margelo.nitro.glyphocr.ModelManifest
 
 public extension ModelManifest {
-  private typealias bridge = margelo.nitro.purelyocr.bridge.swift
+  private typealias bridge = margelo.nitro.glyphocr.bridge.swift
 
   /**
    * Create a new instance of `ModelManifest`.

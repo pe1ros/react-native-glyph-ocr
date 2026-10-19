@@ -10,10 +10,10 @@ import NitroModules
 /**
  * Represents an instance of `TestFrameInfo`, backed by a C++ struct.
  */
-public typealias TestFrameInfo = margelo.nitro.purelyocr.TestFrameInfo
+public typealias TestFrameInfo = margelo.nitro.glyphocr.TestFrameInfo
 
 public extension TestFrameInfo {
-  private typealias bridge = margelo.nitro.purelyocr.bridge.swift
+  private typealias bridge = margelo.nitro.glyphocr.bridge.swift
 
   /**
    * Create a new instance of `TestFrameInfo`.

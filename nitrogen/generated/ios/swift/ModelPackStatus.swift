@@ -8,7 +8,7 @@
 /**
  * Represents the JS union `ModelPackStatus`, backed by a C++ enum.
  */
-public typealias ModelPackStatus = margelo.nitro.purelyocr.ModelPackStatus
+public typealias ModelPackStatus = margelo.nitro.glyphocr.ModelPackStatus
 
 public extension ModelPackStatus {
   /**

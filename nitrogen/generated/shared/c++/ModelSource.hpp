@@ -23,7 +23,7 @@
 #error NitroModules cannot be found! Are you sure you installed NitroModules properly?
 #endif
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * An enum which can be represented as a JavaScript union (ModelSource).
@@ -34,28 +34,28 @@ namespace margelo::nitro::purelyocr {
     EMBEDDED_OR_REMOTE      SWIFT_NAME(embeddedOrRemote) = 2,
   } CLOSED_ENUM;
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ ModelSource <> JS ModelSource (union)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::ModelSource> final {
-    static inline margelo::nitro::purelyocr::ModelSource fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::ModelSource> final {
+    static inline margelo::nitro::glyphocr::ModelSource fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       std::string unionValue = JSIConverter<std::string>::fromJSI(runtime, arg);
       switch (hashString(unionValue.c_str(), unionValue.size())) {
-        case hashString("remote"): return margelo::nitro::purelyocr::ModelSource::REMOTE;
-        case hashString("embedded"): return margelo::nitro::purelyocr::ModelSource::EMBEDDED;
-        case hashString("embedded-or-remote"): return margelo::nitro::purelyocr::ModelSource::EMBEDDED_OR_REMOTE;
+        case hashString("remote"): return margelo::nitro::glyphocr::ModelSource::REMOTE;
+        case hashString("embedded"): return margelo::nitro::glyphocr::ModelSource::EMBEDDED;
+        case hashString("embedded-or-remote"): return margelo::nitro::glyphocr::ModelSource::EMBEDDED_OR_REMOTE;
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert \"" + unionValue + "\" to enum ModelSource - invalid value!");
       }
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::purelyocr::ModelSource arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::glyphocr::ModelSource arg) {
       switch (arg) {
-        case margelo::nitro::purelyocr::ModelSource::REMOTE: return JSIConverter<std::string>::toJSI(runtime, "remote");
-        case margelo::nitro::purelyocr::ModelSource::EMBEDDED: return JSIConverter<std::string>::toJSI(runtime, "embedded");
-        case margelo::nitro::purelyocr::ModelSource::EMBEDDED_OR_REMOTE: return JSIConverter<std::string>::toJSI(runtime, "embedded-or-remote");
+        case margelo::nitro::glyphocr::ModelSource::REMOTE: return JSIConverter<std::string>::toJSI(runtime, "remote");
+        case margelo::nitro::glyphocr::ModelSource::EMBEDDED: return JSIConverter<std::string>::toJSI(runtime, "embedded");
+        case margelo::nitro::glyphocr::ModelSource::EMBEDDED_OR_REMOTE: return JSIConverter<std::string>::toJSI(runtime, "embedded-or-remote");
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert ModelSource to JS - invalid value: "
                                     + std::to_string(static_cast<int>(arg)) + "!");

@@ -29,11 +29,11 @@
 #endif
 
 // Forward declaration of `ViewResizeMode` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class ViewResizeMode; }
+namespace margelo::nitro::glyphocr { enum class ViewResizeMode; }
 
 #include "ViewResizeMode.hpp"
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * A struct which can be represented as a JavaScript object (RegionView).
@@ -52,26 +52,26 @@ namespace margelo::nitro::purelyocr {
     friend bool operator==(const RegionView& lhs, const RegionView& rhs) = default;
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ RegionView <> JS RegionView (object)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::RegionView> final {
-    static inline margelo::nitro::purelyocr::RegionView fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::RegionView> final {
+    static inline margelo::nitro::glyphocr::RegionView fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       jsi::Object obj = arg.asObject(runtime);
-      return margelo::nitro::purelyocr::RegionView(
+      return margelo::nitro::glyphocr::RegionView(
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "width"))),
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "height"))),
-        JSIConverter<margelo::nitro::purelyocr::ViewResizeMode>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "resizeMode")))
+        JSIConverter<margelo::nitro::glyphocr::ViewResizeMode>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "resizeMode")))
       );
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::purelyocr::RegionView& arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::glyphocr::RegionView& arg) {
       jsi::Object obj(runtime);
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "width"), JSIConverter<double>::toJSI(runtime, arg.width));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "height"), JSIConverter<double>::toJSI(runtime, arg.height));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "resizeMode"), JSIConverter<margelo::nitro::purelyocr::ViewResizeMode>::toJSI(runtime, arg.resizeMode));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "resizeMode"), JSIConverter<margelo::nitro::glyphocr::ViewResizeMode>::toJSI(runtime, arg.resizeMode));
       return obj;
     }
     static inline bool canConvert(jsi::Runtime& runtime, const jsi::Value& value) {
@@ -84,7 +84,7 @@ namespace margelo::nitro {
       }
       if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "width")))) return false;
       if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "height")))) return false;
-      if (!JSIConverter<margelo::nitro::purelyocr::ViewResizeMode>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "resizeMode")))) return false;
+      if (!JSIConverter<margelo::nitro::glyphocr::ViewResizeMode>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "resizeMode")))) return false;
       return true;
     }
   };

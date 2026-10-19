@@ -18,7 +18,7 @@
 #include "ViewResizeMode.hpp"
 #include <optional>
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   using namespace facebook;
 
@@ -27,7 +27,7 @@ namespace margelo::nitro::purelyocr {
    */
   struct JOcrRegion final: public jni::JavaClass<JOcrRegion> {
   public:
-    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/OcrRegion;";
+    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/glyphocr/OcrRegion;";
 
   public:
     /**
@@ -80,4 +80,4 @@ namespace margelo::nitro::purelyocr {
     }
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

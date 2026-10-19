@@ -10,10 +10,10 @@ import NitroModules
 /**
  * Represents an instance of `PrepareProgress`, backed by a C++ struct.
  */
-public typealias PrepareProgress = margelo.nitro.purelyocr.PrepareProgress
+public typealias PrepareProgress = margelo.nitro.glyphocr.PrepareProgress
 
 public extension PrepareProgress {
-  private typealias bridge = margelo.nitro.purelyocr.bridge.swift
+  private typealias bridge = margelo.nitro.glyphocr.bridge.swift
 
   /**
    * Create a new instance of `PrepareProgress`.

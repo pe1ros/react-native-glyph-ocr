@@ -7,7 +7,7 @@
 
 #include "HybridOcrModelStoreSpec.hpp"
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   void HybridOcrModelStoreSpec::loadHybridMethods() {
     // load base methods/properties
@@ -25,4 +25,4 @@ namespace margelo::nitro::purelyocr {
     });
   }
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

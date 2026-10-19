@@ -10,7 +10,7 @@
 #include <fbjni/fbjni.h>
 #include "RegionUnit.hpp"
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   using namespace facebook;
 
@@ -19,7 +19,7 @@ namespace margelo::nitro::purelyocr {
    */
   struct JRegionUnit final: public jni::JavaClass<JRegionUnit> {
   public:
-    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/RegionUnit;";
+    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/glyphocr/RegionUnit;";
 
   public:
     /**
@@ -55,4 +55,4 @@ namespace margelo::nitro::purelyocr {
     }
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

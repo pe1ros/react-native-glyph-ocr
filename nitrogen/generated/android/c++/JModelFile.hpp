@@ -17,7 +17,7 @@
 #include <optional>
 #include <string>
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   using namespace facebook;
 
@@ -26,7 +26,7 @@ namespace margelo::nitro::purelyocr {
    */
   struct JModelFile final: public jni::JavaClass<JModelFile> {
   public:
-    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/ModelFile;";
+    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/glyphocr/ModelFile;";
 
   public:
     /**
@@ -87,4 +87,4 @@ namespace margelo::nitro::purelyocr {
     }
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

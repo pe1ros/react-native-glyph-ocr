@@ -32,7 +32,7 @@
 
 
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * A struct which can be represented as a JavaScript object (FrameQuality).
@@ -51,22 +51,22 @@ namespace margelo::nitro::purelyocr {
     friend bool operator==(const FrameQuality& lhs, const FrameQuality& rhs) = default;
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ FrameQuality <> JS FrameQuality (object)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::FrameQuality> final {
-    static inline margelo::nitro::purelyocr::FrameQuality fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::FrameQuality> final {
+    static inline margelo::nitro::glyphocr::FrameQuality fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       jsi::Object obj = arg.asObject(runtime);
-      return margelo::nitro::purelyocr::FrameQuality(
+      return margelo::nitro::glyphocr::FrameQuality(
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "sharpness"))),
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "motion"))),
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "brightness")))
       );
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::purelyocr::FrameQuality& arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::glyphocr::FrameQuality& arg) {
       jsi::Object obj(runtime);
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "sharpness"), JSIConverter<double>::toJSI(runtime, arg.sharpness));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "motion"), JSIConverter<double>::toJSI(runtime, arg.motion));

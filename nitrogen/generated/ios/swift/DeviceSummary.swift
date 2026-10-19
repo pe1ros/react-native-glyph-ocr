@@ -10,10 +10,10 @@ import NitroModules
 /**
  * Represents an instance of `DeviceSummary`, backed by a C++ struct.
  */
-public typealias DeviceSummary = margelo.nitro.purelyocr.DeviceSummary
+public typealias DeviceSummary = margelo.nitro.glyphocr.DeviceSummary
 
 public extension DeviceSummary {
-  private typealias bridge = margelo.nitro.purelyocr.bridge.swift
+  private typealias bridge = margelo.nitro.glyphocr.bridge.swift
 
   /**
    * Create a new instance of `DeviceSummary`.

@@ -23,7 +23,7 @@
 #error NitroModules cannot be found! Are you sure you installed NitroModules properly?
 #endif
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * An enum which can be represented as a JavaScript union (LanguageStatus).
@@ -34,28 +34,28 @@ namespace margelo::nitro::purelyocr {
     UNAVAILABLE      SWIFT_NAME(unavailable) = 2,
   } CLOSED_ENUM;
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ LanguageStatus <> JS LanguageStatus (union)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::LanguageStatus> final {
-    static inline margelo::nitro::purelyocr::LanguageStatus fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::LanguageStatus> final {
+    static inline margelo::nitro::glyphocr::LanguageStatus fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       std::string unionValue = JSIConverter<std::string>::fromJSI(runtime, arg);
       switch (hashString(unionValue.c_str(), unionValue.size())) {
-        case hashString("ready"): return margelo::nitro::purelyocr::LanguageStatus::READY;
-        case hashString("needs-download"): return margelo::nitro::purelyocr::LanguageStatus::NEEDS_DOWNLOAD;
-        case hashString("unavailable"): return margelo::nitro::purelyocr::LanguageStatus::UNAVAILABLE;
+        case hashString("ready"): return margelo::nitro::glyphocr::LanguageStatus::READY;
+        case hashString("needs-download"): return margelo::nitro::glyphocr::LanguageStatus::NEEDS_DOWNLOAD;
+        case hashString("unavailable"): return margelo::nitro::glyphocr::LanguageStatus::UNAVAILABLE;
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert \"" + unionValue + "\" to enum LanguageStatus - invalid value!");
       }
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::purelyocr::LanguageStatus arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::glyphocr::LanguageStatus arg) {
       switch (arg) {
-        case margelo::nitro::purelyocr::LanguageStatus::READY: return JSIConverter<std::string>::toJSI(runtime, "ready");
-        case margelo::nitro::purelyocr::LanguageStatus::NEEDS_DOWNLOAD: return JSIConverter<std::string>::toJSI(runtime, "needs-download");
-        case margelo::nitro::purelyocr::LanguageStatus::UNAVAILABLE: return JSIConverter<std::string>::toJSI(runtime, "unavailable");
+        case margelo::nitro::glyphocr::LanguageStatus::READY: return JSIConverter<std::string>::toJSI(runtime, "ready");
+        case margelo::nitro::glyphocr::LanguageStatus::NEEDS_DOWNLOAD: return JSIConverter<std::string>::toJSI(runtime, "needs-download");
+        case margelo::nitro::glyphocr::LanguageStatus::UNAVAILABLE: return JSIConverter<std::string>::toJSI(runtime, "unavailable");
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert LanguageStatus to JS - invalid value: "
                                     + std::to_string(static_cast<int>(arg)) + "!");

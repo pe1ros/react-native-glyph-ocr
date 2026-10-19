@@ -8,7 +8,7 @@
 /**
  * Represents the JS union `ModelRole`, backed by a C++ enum.
  */
-public typealias ModelRole = margelo.nitro.purelyocr.ModelRole
+public typealias ModelRole = margelo.nitro.glyphocr.ModelRole
 
 public extension ModelRole {
   /**

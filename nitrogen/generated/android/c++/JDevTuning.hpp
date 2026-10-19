@@ -16,7 +16,7 @@
 #include <string>
 #include <vector>
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   using namespace facebook;
 
@@ -25,7 +25,7 @@ namespace margelo::nitro::purelyocr {
    */
   struct JDevTuning final: public jni::JavaClass<JDevTuning> {
   public:
-    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/DevTuning;";
+    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/glyphocr/DevTuning;";
 
   public:
     /**
@@ -84,4 +84,4 @@ namespace margelo::nitro::purelyocr {
     }
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

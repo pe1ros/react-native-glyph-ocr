@@ -22,7 +22,7 @@
 #include "RecognitionLevel.hpp"
 #include <optional>
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   using namespace facebook;
 
@@ -31,7 +31,7 @@ namespace margelo::nitro::purelyocr {
    */
   struct JFrameRecognizeOptions final: public jni::JavaClass<JFrameRecognizeOptions> {
   public:
-    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/FrameRecognizeOptions;";
+    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/glyphocr/FrameRecognizeOptions;";
 
   public:
     /**
@@ -100,4 +100,4 @@ namespace margelo::nitro::purelyocr {
     }
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

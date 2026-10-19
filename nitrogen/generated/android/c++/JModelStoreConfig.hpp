@@ -29,7 +29,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   using namespace facebook;
 
@@ -38,7 +38,7 @@ namespace margelo::nitro::purelyocr {
    */
   struct JModelStoreConfig final: public jni::JavaClass<JModelStoreConfig> {
   public:
-    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/ModelStoreConfig;";
+    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/glyphocr/ModelStoreConfig;";
 
   public:
     /**
@@ -100,4 +100,4 @@ namespace margelo::nitro::purelyocr {
     }
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

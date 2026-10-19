@@ -18,11 +18,11 @@ import NitroModules
  */
 open class HybridOcrRecognizerSpec_cxx {
   /**
-   * The Swift <> C++ bridge's namespace (`margelo::nitro::purelyocr::bridge::swift`)
-   * from `NitroPurelyOcr-Swift-Cxx-Bridge.hpp`.
+   * The Swift <> C++ bridge's namespace (`margelo::nitro::glyphocr::bridge::swift`)
+   * from `NitroGlyphOcr-Swift-Cxx-Bridge.hpp`.
    * This contains specialized C++ templates, and C++ helper functions that can be accessed from Swift.
    */
-  public typealias bridge = margelo.nitro.purelyocr.bridge.swift
+  public typealias bridge = margelo.nitro.glyphocr.bridge.swift
 
   /**
    * Holds an instance of the `HybridOcrRecognizerSpec` Swift protocol.
@@ -234,7 +234,7 @@ open class HybridOcrRecognizerSpec_cxx {
   @inline(__always)
   public final func recognizePixels(pixels: ArrayBuffer, width: Double, height: Double, bytesPerRow: Double, format: Int32, options: RecognizeOptions, requestId: Double) -> bridge.Result_std__shared_ptr_Promise_OcrResult___ {
     do {
-      let __result = try self.__implementation.recognizePixels(pixels: pixels, width: width, height: height, bytesPerRow: bytesPerRow, format: margelo.nitro.purelyocr.RawPixelFormat(rawValue: format)!, options: options, requestId: requestId)
+      let __result = try self.__implementation.recognizePixels(pixels: pixels, width: width, height: height, bytesPerRow: bytesPerRow, format: margelo.nitro.glyphocr.RawPixelFormat(rawValue: format)!, options: options, requestId: requestId)
       let __resultCpp = { () -> bridge.std__shared_ptr_Promise_OcrResult__ in
         let __promise = bridge.create_std__shared_ptr_Promise_OcrResult__()
         let __promiseHolder = bridge.wrap_std__shared_ptr_Promise_OcrResult__(__promise)
@@ -253,7 +253,7 @@ open class HybridOcrRecognizerSpec_cxx {
   @inline(__always)
   public final func recognizeFrame(nativeBufferPointer: UInt64, orientation: Int32, options: bridge.std__optional_FrameRecognizeOptions_) -> bridge.Result_OcrResult_ {
     do {
-      let __result = try self.__implementation.recognizeFrame(nativeBufferPointer: nativeBufferPointer, orientation: margelo.nitro.purelyocr.FrameOrientation(rawValue: orientation)!, options: options.value)
+      let __result = try self.__implementation.recognizeFrame(nativeBufferPointer: nativeBufferPointer, orientation: margelo.nitro.glyphocr.FrameOrientation(rawValue: orientation)!, options: options.value)
       let __resultCpp = __result
       return bridge.create_Result_OcrResult_(__resultCpp)
     } catch (let __error) {

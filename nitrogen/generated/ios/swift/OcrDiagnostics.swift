@@ -10,10 +10,10 @@ import NitroModules
 /**
  * Represents an instance of `OcrDiagnostics`, backed by a C++ struct.
  */
-public typealias OcrDiagnostics = margelo.nitro.purelyocr.OcrDiagnostics
+public typealias OcrDiagnostics = margelo.nitro.glyphocr.OcrDiagnostics
 
 public extension OcrDiagnostics {
-  private typealias bridge = margelo.nitro.purelyocr.bridge.swift
+  private typealias bridge = margelo.nitro.glyphocr.bridge.swift
 
   /**
    * Create a new instance of `OcrDiagnostics`.

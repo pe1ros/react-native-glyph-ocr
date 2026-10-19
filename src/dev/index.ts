@@ -1,19 +1,19 @@
 import { NitroModules } from 'react-native-nitro-modules';
 
-import type { OcrDevTools } from '../specs/OcrDevTools.nitro';
+import type { GlyphOcrDevTools } from '../specs/OcrDevTools.nitro';
 
 export type {
   DeviceSummary,
   DevTuning,
-  OcrDevTools,
+  GlyphOcrDevTools,
   PaddleRuntimeKind,
   TestFrameInfo,
 } from '../specs/OcrDevTools.nitro';
 
-let tools: OcrDevTools | undefined;
+let tools: GlyphOcrDevTools | undefined;
 
 /** Bench helpers. Not for app code: the API may change in any release. */
-export function getOcrDevTools(): OcrDevTools {
-  tools ??= NitroModules.createHybridObject<OcrDevTools>('OcrDevTools');
+export function getOcrDevTools(): GlyphOcrDevTools {
+  tools ??= NitroModules.createHybridObject<GlyphOcrDevTools>('GlyphOcrDevTools');
   return tools;
 }

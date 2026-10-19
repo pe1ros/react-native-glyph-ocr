@@ -10,7 +10,7 @@
 #include <fbjni/fbjni.h>
 #include "LanguageStatus.hpp"
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   using namespace facebook;
 
@@ -19,7 +19,7 @@ namespace margelo::nitro::purelyocr {
    */
   struct JLanguageStatus final: public jni::JavaClass<JLanguageStatus> {
   public:
-    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/LanguageStatus;";
+    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/glyphocr/LanguageStatus;";
 
   public:
     /**
@@ -58,4 +58,4 @@ namespace margelo::nitro::purelyocr {
     }
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

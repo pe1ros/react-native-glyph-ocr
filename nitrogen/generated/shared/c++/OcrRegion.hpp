@@ -29,15 +29,15 @@
 #endif
 
 // Forward declaration of `RegionUnit` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class RegionUnit; }
+namespace margelo::nitro::glyphocr { enum class RegionUnit; }
 // Forward declaration of `RegionView` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct RegionView; }
+namespace margelo::nitro::glyphocr { struct RegionView; }
 
 #include "RegionUnit.hpp"
 #include "RegionView.hpp"
 #include <optional>
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * A struct which can be represented as a JavaScript object (OcrRegion).
@@ -59,32 +59,32 @@ namespace margelo::nitro::purelyocr {
     friend bool operator==(const OcrRegion& lhs, const OcrRegion& rhs) = default;
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ OcrRegion <> JS OcrRegion (object)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::OcrRegion> final {
-    static inline margelo::nitro::purelyocr::OcrRegion fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::OcrRegion> final {
+    static inline margelo::nitro::glyphocr::OcrRegion fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       jsi::Object obj = arg.asObject(runtime);
-      return margelo::nitro::purelyocr::OcrRegion(
+      return margelo::nitro::glyphocr::OcrRegion(
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "x"))),
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "y"))),
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "width"))),
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "height"))),
-        JSIConverter<margelo::nitro::purelyocr::RegionUnit>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "unit"))),
-        JSIConverter<std::optional<margelo::nitro::purelyocr::RegionView>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "view")))
+        JSIConverter<margelo::nitro::glyphocr::RegionUnit>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "unit"))),
+        JSIConverter<std::optional<margelo::nitro::glyphocr::RegionView>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "view")))
       );
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::purelyocr::OcrRegion& arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::glyphocr::OcrRegion& arg) {
       jsi::Object obj(runtime);
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "x"), JSIConverter<double>::toJSI(runtime, arg.x));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "y"), JSIConverter<double>::toJSI(runtime, arg.y));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "width"), JSIConverter<double>::toJSI(runtime, arg.width));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "height"), JSIConverter<double>::toJSI(runtime, arg.height));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "unit"), JSIConverter<margelo::nitro::purelyocr::RegionUnit>::toJSI(runtime, arg.unit));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "view"), JSIConverter<std::optional<margelo::nitro::purelyocr::RegionView>>::toJSI(runtime, arg.view));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "unit"), JSIConverter<margelo::nitro::glyphocr::RegionUnit>::toJSI(runtime, arg.unit));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "view"), JSIConverter<std::optional<margelo::nitro::glyphocr::RegionView>>::toJSI(runtime, arg.view));
       return obj;
     }
     static inline bool canConvert(jsi::Runtime& runtime, const jsi::Value& value) {
@@ -99,8 +99,8 @@ namespace margelo::nitro {
       if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "y")))) return false;
       if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "width")))) return false;
       if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "height")))) return false;
-      if (!JSIConverter<margelo::nitro::purelyocr::RegionUnit>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "unit")))) return false;
-      if (!JSIConverter<std::optional<margelo::nitro::purelyocr::RegionView>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "view")))) return false;
+      if (!JSIConverter<margelo::nitro::glyphocr::RegionUnit>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "unit")))) return false;
+      if (!JSIConverter<std::optional<margelo::nitro::glyphocr::RegionView>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "view")))) return false;
       return true;
     }
   };

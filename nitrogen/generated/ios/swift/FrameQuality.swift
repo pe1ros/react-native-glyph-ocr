@@ -10,10 +10,10 @@ import NitroModules
 /**
  * Represents an instance of `FrameQuality`, backed by a C++ struct.
  */
-public typealias FrameQuality = margelo.nitro.purelyocr.FrameQuality
+public typealias FrameQuality = margelo.nitro.glyphocr.FrameQuality
 
 public extension FrameQuality {
-  private typealias bridge = margelo.nitro.purelyocr.bridge.swift
+  private typealias bridge = margelo.nitro.glyphocr.bridge.swift
 
   /**
    * Create a new instance of `FrameQuality`.

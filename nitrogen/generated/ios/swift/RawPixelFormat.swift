@@ -8,7 +8,7 @@
 /**
  * Represents the JS union `RawPixelFormat`, backed by a C++ enum.
  */
-public typealias RawPixelFormat = margelo.nitro.purelyocr.RawPixelFormat
+public typealias RawPixelFormat = margelo.nitro.glyphocr.RawPixelFormat
 
 public extension RawPixelFormat {
   /**

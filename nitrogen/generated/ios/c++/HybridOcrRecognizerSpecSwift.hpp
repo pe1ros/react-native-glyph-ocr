@@ -10,62 +10,62 @@
 #include "HybridOcrRecognizerSpec.hpp"
 
 // Forward declaration of `HybridOcrRecognizerSpec_cxx` to properly resolve imports.
-namespace NitroPurelyOcr { class HybridOcrRecognizerSpec_cxx; }
+namespace NitroGlyphOcr { class HybridOcrRecognizerSpec_cxx; }
 
 // Forward declaration of `OcrEngine` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class OcrEngine; }
+namespace margelo::nitro::glyphocr { enum class OcrEngine; }
 // Forward declaration of `LoadResult` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct LoadResult; }
+namespace margelo::nitro::glyphocr { struct LoadResult; }
 // Forward declaration of `PrepareProgress` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct PrepareProgress; }
+namespace margelo::nitro::glyphocr { struct PrepareProgress; }
 // Forward declaration of `PreparePhase` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class PreparePhase; }
+namespace margelo::nitro::glyphocr { enum class PreparePhase; }
 // Forward declaration of `OcrResult` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct OcrResult; }
+namespace margelo::nitro::glyphocr { struct OcrResult; }
 // Forward declaration of `OcrBlock` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct OcrBlock; }
+namespace margelo::nitro::glyphocr { struct OcrBlock; }
 // Forward declaration of `OcrRect` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct OcrRect; }
+namespace margelo::nitro::glyphocr { struct OcrRect; }
 // Forward declaration of `OcrPoint` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct OcrPoint; }
+namespace margelo::nitro::glyphocr { struct OcrPoint; }
 // Forward declaration of `OcrLine` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct OcrLine; }
+namespace margelo::nitro::glyphocr { struct OcrLine; }
 // Forward declaration of `OcrElement` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct OcrElement; }
+namespace margelo::nitro::glyphocr { struct OcrElement; }
 // Forward declaration of `OcrImageSize` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct OcrImageSize; }
+namespace margelo::nitro::glyphocr { struct OcrImageSize; }
 // Forward declaration of `OcrTimings` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct OcrTimings; }
+namespace margelo::nitro::glyphocr { struct OcrTimings; }
 // Forward declaration of `OcrDiagnostics` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct OcrDiagnostics; }
+namespace margelo::nitro::glyphocr { struct OcrDiagnostics; }
 // Forward declaration of `RecognizeOptions` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct RecognizeOptions; }
+namespace margelo::nitro::glyphocr { struct RecognizeOptions; }
 // Forward declaration of `RecognitionLevel` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class RecognitionLevel; }
+namespace margelo::nitro::glyphocr { enum class RecognitionLevel; }
 // Forward declaration of `OcrRegion` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct OcrRegion; }
+namespace margelo::nitro::glyphocr { struct OcrRegion; }
 // Forward declaration of `RegionUnit` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class RegionUnit; }
+namespace margelo::nitro::glyphocr { enum class RegionUnit; }
 // Forward declaration of `RegionView` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct RegionView; }
+namespace margelo::nitro::glyphocr { struct RegionView; }
 // Forward declaration of `ViewResizeMode` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class ViewResizeMode; }
+namespace margelo::nitro::glyphocr { enum class ViewResizeMode; }
 // Forward declaration of `ImageOrientation` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class ImageOrientation; }
+namespace margelo::nitro::glyphocr { enum class ImageOrientation; }
 // Forward declaration of `ReadingOrder` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class ReadingOrder; }
+namespace margelo::nitro::glyphocr { enum class ReadingOrder; }
 // Forward declaration of `OcrOutput` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class OcrOutput; }
+namespace margelo::nitro::glyphocr { enum class OcrOutput; }
 // Forward declaration of `PaddleTuning` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct PaddleTuning; }
+namespace margelo::nitro::glyphocr { struct PaddleTuning; }
 // Forward declaration of `ArrayBufferHolder` to properly resolve imports.
 namespace NitroModules { class ArrayBufferHolder; }
 // Forward declaration of `RawPixelFormat` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class RawPixelFormat; }
+namespace margelo::nitro::glyphocr { enum class RawPixelFormat; }
 // Forward declaration of `FrameOrientation` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class FrameOrientation; }
+namespace margelo::nitro::glyphocr { enum class FrameOrientation; }
 // Forward declaration of `FrameRecognizeOptions` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct FrameRecognizeOptions; }
+namespace margelo::nitro::glyphocr { struct FrameRecognizeOptions; }
 
 #include "OcrEngine.hpp"
 #include <string>
@@ -101,9 +101,9 @@ namespace margelo::nitro::purelyocr { struct FrameRecognizeOptions; }
 #include "FrameOrientation.hpp"
 #include "FrameRecognizeOptions.hpp"
 
-#include "NitroPurelyOcr-Swift-Cxx-Umbrella.hpp"
+#include "NitroGlyphOcr-Swift-Cxx-Umbrella.hpp"
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * The C++ part of HybridOcrRecognizerSpec_cxx.swift.
@@ -118,13 +118,13 @@ namespace margelo::nitro::purelyocr {
   class HybridOcrRecognizerSpecSwift: public virtual HybridOcrRecognizerSpec {
   public:
     // Constructor from a Swift instance
-    explicit HybridOcrRecognizerSpecSwift(const NitroPurelyOcr::HybridOcrRecognizerSpec_cxx& swiftPart):
+    explicit HybridOcrRecognizerSpecSwift(const NitroGlyphOcr::HybridOcrRecognizerSpec_cxx& swiftPart):
       HybridObject(HybridOcrRecognizerSpec::TAG),
       _swiftPart(swiftPart) { }
 
   public:
     // Get the Swift part
-    inline NitroPurelyOcr::HybridOcrRecognizerSpec_cxx& getSwiftPart() noexcept {
+    inline NitroGlyphOcr::HybridOcrRecognizerSpec_cxx& getSwiftPart() noexcept {
       return _swiftPart;
     }
 
@@ -216,7 +216,7 @@ namespace margelo::nitro::purelyocr {
     }
 
   private:
-    NitroPurelyOcr::HybridOcrRecognizerSpec_cxx _swiftPart;
+    NitroGlyphOcr::HybridOcrRecognizerSpec_cxx _swiftPart;
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

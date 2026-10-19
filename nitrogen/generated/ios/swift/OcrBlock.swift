@@ -10,10 +10,10 @@ import NitroModules
 /**
  * Represents an instance of `OcrBlock`, backed by a C++ struct.
  */
-public typealias OcrBlock = margelo.nitro.purelyocr.OcrBlock
+public typealias OcrBlock = margelo.nitro.glyphocr.OcrBlock
 
 public extension OcrBlock {
-  private typealias bridge = margelo.nitro.purelyocr.bridge.swift
+  private typealias bridge = margelo.nitro.glyphocr.bridge.swift
 
   /**
    * Create a new instance of `OcrBlock`.

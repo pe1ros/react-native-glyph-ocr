@@ -13,7 +13,7 @@
 #include <string>
 #include <vector>
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   using namespace facebook;
 
@@ -22,7 +22,7 @@ namespace margelo::nitro::purelyocr {
    */
   struct JDeviceSummary final: public jni::JavaClass<JDeviceSummary> {
   public:
-    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/DeviceSummary;";
+    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/glyphocr/DeviceSummary;";
 
   public:
     /**
@@ -93,4 +93,4 @@ namespace margelo::nitro::purelyocr {
     }
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

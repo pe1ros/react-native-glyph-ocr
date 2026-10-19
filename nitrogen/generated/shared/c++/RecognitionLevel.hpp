@@ -23,7 +23,7 @@
 #error NitroModules cannot be found! Are you sure you installed NitroModules properly?
 #endif
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * An enum which can be represented as a JavaScript union (RecognitionLevel).
@@ -33,26 +33,26 @@ namespace margelo::nitro::purelyocr {
     FAST      SWIFT_NAME(fast) = 1,
   } CLOSED_ENUM;
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ RecognitionLevel <> JS RecognitionLevel (union)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::RecognitionLevel> final {
-    static inline margelo::nitro::purelyocr::RecognitionLevel fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::RecognitionLevel> final {
+    static inline margelo::nitro::glyphocr::RecognitionLevel fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       std::string unionValue = JSIConverter<std::string>::fromJSI(runtime, arg);
       switch (hashString(unionValue.c_str(), unionValue.size())) {
-        case hashString("accurate"): return margelo::nitro::purelyocr::RecognitionLevel::ACCURATE;
-        case hashString("fast"): return margelo::nitro::purelyocr::RecognitionLevel::FAST;
+        case hashString("accurate"): return margelo::nitro::glyphocr::RecognitionLevel::ACCURATE;
+        case hashString("fast"): return margelo::nitro::glyphocr::RecognitionLevel::FAST;
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert \"" + unionValue + "\" to enum RecognitionLevel - invalid value!");
       }
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::purelyocr::RecognitionLevel arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::glyphocr::RecognitionLevel arg) {
       switch (arg) {
-        case margelo::nitro::purelyocr::RecognitionLevel::ACCURATE: return JSIConverter<std::string>::toJSI(runtime, "accurate");
-        case margelo::nitro::purelyocr::RecognitionLevel::FAST: return JSIConverter<std::string>::toJSI(runtime, "fast");
+        case margelo::nitro::glyphocr::RecognitionLevel::ACCURATE: return JSIConverter<std::string>::toJSI(runtime, "accurate");
+        case margelo::nitro::glyphocr::RecognitionLevel::FAST: return JSIConverter<std::string>::toJSI(runtime, "fast");
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert RecognitionLevel to JS - invalid value: "
                                     + std::to_string(static_cast<int>(arg)) + "!");

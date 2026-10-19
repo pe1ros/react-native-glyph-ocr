@@ -4,7 +4,7 @@ import NitroModules
 
 /**
  * Model files of the manifest: downloaded into `directory` as `<sha256>.<ext>` or shipped in the
- * pod's resources (`NitroPurelyOcr.bundle/models/<path>`). The same logic as ModelStore.kt.
+ * pod's resources (`NitroGlyphOcr.bundle/models/<path>`). The same logic as ModelStore.kt.
  * On iOS no engine needs these files yet (Paddle on iOS is not built), but the API is the same.
  */
 final class ModelStore: @unchecked Sendable {
@@ -22,7 +22,7 @@ final class ModelStore: @unchecked Sendable {
   private lazy var resources: URL? = {
     let candidates = [Bundle(for: ModelStore.self), Bundle.main]
     for bundle in candidates {
-      if let url = bundle.url(forResource: "NitroPurelyOcr", withExtension: "bundle") { return url }
+      if let url = bundle.url(forResource: "NitroGlyphOcr", withExtension: "bundle") { return url }
     }
     return nil
   }()

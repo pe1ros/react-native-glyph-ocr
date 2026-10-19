@@ -10,7 +10,7 @@
 #include <fbjni/fbjni.h>
 #include "RecognitionLevel.hpp"
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   using namespace facebook;
 
@@ -19,7 +19,7 @@ namespace margelo::nitro::purelyocr {
    */
   struct JRecognitionLevel final: public jni::JavaClass<JRecognitionLevel> {
   public:
-    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/RecognitionLevel;";
+    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/glyphocr/RecognitionLevel;";
 
   public:
     /**
@@ -55,4 +55,4 @@ namespace margelo::nitro::purelyocr {
     }
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

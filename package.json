@@ -1,5 +1,5 @@
 {
-  "name": "react-native-purely-ocr",
+  "name": "react-native-glyph-ocr",
   "version": "0.1.0",
   "private": true,
   "description": "On-device text recognition for React Native: Apple Vision on iOS, PaddleOCR (PP-OCRv5) on Android, as a Nitro module",

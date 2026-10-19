@@ -10,10 +10,10 @@ import NitroModules
 /**
  * Represents an instance of `OcrPoint`, backed by a C++ struct.
  */
-public typealias OcrPoint = margelo.nitro.purelyocr.OcrPoint
+public typealias OcrPoint = margelo.nitro.glyphocr.OcrPoint
 
 public extension OcrPoint {
-  private typealias bridge = margelo.nitro.purelyocr.bridge.swift
+  private typealias bridge = margelo.nitro.glyphocr.bridge.swift
 
   /**
    * Create a new instance of `OcrPoint`.

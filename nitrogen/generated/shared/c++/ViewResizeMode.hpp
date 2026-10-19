@@ -23,7 +23,7 @@
 #error NitroModules cannot be found! Are you sure you installed NitroModules properly?
 #endif
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * An enum which can be represented as a JavaScript union (ViewResizeMode).
@@ -33,26 +33,26 @@ namespace margelo::nitro::purelyocr {
     CONTAIN      SWIFT_NAME(contain) = 1,
   } CLOSED_ENUM;
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ ViewResizeMode <> JS ViewResizeMode (union)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::ViewResizeMode> final {
-    static inline margelo::nitro::purelyocr::ViewResizeMode fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::ViewResizeMode> final {
+    static inline margelo::nitro::glyphocr::ViewResizeMode fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       std::string unionValue = JSIConverter<std::string>::fromJSI(runtime, arg);
       switch (hashString(unionValue.c_str(), unionValue.size())) {
-        case hashString("cover"): return margelo::nitro::purelyocr::ViewResizeMode::COVER;
-        case hashString("contain"): return margelo::nitro::purelyocr::ViewResizeMode::CONTAIN;
+        case hashString("cover"): return margelo::nitro::glyphocr::ViewResizeMode::COVER;
+        case hashString("contain"): return margelo::nitro::glyphocr::ViewResizeMode::CONTAIN;
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert \"" + unionValue + "\" to enum ViewResizeMode - invalid value!");
       }
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::purelyocr::ViewResizeMode arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::glyphocr::ViewResizeMode arg) {
       switch (arg) {
-        case margelo::nitro::purelyocr::ViewResizeMode::COVER: return JSIConverter<std::string>::toJSI(runtime, "cover");
-        case margelo::nitro::purelyocr::ViewResizeMode::CONTAIN: return JSIConverter<std::string>::toJSI(runtime, "contain");
+        case margelo::nitro::glyphocr::ViewResizeMode::COVER: return JSIConverter<std::string>::toJSI(runtime, "cover");
+        case margelo::nitro::glyphocr::ViewResizeMode::CONTAIN: return JSIConverter<std::string>::toJSI(runtime, "contain");
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert ViewResizeMode to JS - invalid value: "
                                     + std::to_string(static_cast<int>(arg)) + "!");

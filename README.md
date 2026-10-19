@@ -1,14 +1,18 @@
-# react-native-purely-ocr (working name)
+# react-native-glyph-ocr
 
 On-device text recognition for React Native, as a [Nitro](https://nitro.margelo.com) module (New Architecture only):
 Apple Vision on iOS, PaddleOCR PP-OCRv5 on ONNX Runtime on Android. Russian and the other Cyrillic,
 Latin, Arabic, Devanagari, Korean, Thai, Greek, Tamil, Telugu and Chinese packs of PP-OCRv5 on Android; whatever Vision reads on iOS.
 Images never leave the device.
 
-The API and its decisions are in `docs/ocr-library-api.md` of the Purely repository; measurements in `docs/spikes/`.
+Not published to npm yet. Install it from this repository by tag:
+
+```json
+"react-native-glyph-ocr": "git+ssh://git@github.com/pe1ros/react-native-glyph-ocr.git#v0.1.0"
+```
 
 ```ts
-import { createOcr, recognize, useOcr } from 'react-native-purely-ocr';
+import { createOcr, recognize, useOcr } from 'react-native-glyph-ocr';
 
 const text = (await recognize('file:///…/label.jpg', { languages: ['ru', 'en'] })).text;
 
@@ -23,9 +27,9 @@ ocr.dispose();
 
 | Import | What |
 |---|---|
-| `react-native-purely-ocr` | `recognize`, `recognizeText`, `createOcr`, `useOcr`, `prepare`, `isReady`, `getSupportedLanguages`, `configureModels`, `getModelStore`, `OcrError` |
-| `react-native-purely-ocr/camera` | `useTextScanner` (VisionCamera 5: waits for a sharp, still frame and recognizes it once), `createFrameMeter`, `viewRectToImageRect`, `imageRectToViewRect`. Needs `react-native-vision-camera` ≥ 5, `react-native-vision-camera-worklets` and `react-native-worklets` |
-| `react-native-purely-ocr/dev` | bench helpers: tuned recognizers (threads, pinned cores, ExecuTorch), ML Kit for comparison, camera-like test frames |
+| `react-native-glyph-ocr` | `recognize`, `recognizeText`, `createOcr`, `useOcr`, `prepare`, `isReady`, `getSupportedLanguages`, `configureModels`, `getModelStore`, `OcrError` |
+| `react-native-glyph-ocr/camera` | `useTextScanner` (VisionCamera 5: waits for a sharp, still frame and recognizes it once), `createFrameMeter`, `viewRectToImageRect`, `imageRectToViewRect`. Needs `react-native-vision-camera` ≥ 5, `react-native-vision-camera-worklets` and `react-native-worklets` |
+| `react-native-glyph-ocr/dev` | bench helpers: tuned recognizers (threads, pinned cores, ExecuTorch), ML Kit for comparison, camera-like test frames |
 
 On Android, `frame.getNativeBuffer()` of VisionCamera 5.0.11 works only when the app is built with `minSdk` ≥ 26, and
 `recognizeFrame` needs Android 10 on the device.
@@ -51,10 +55,10 @@ The detector (4.8 MB) is shared by all packs and downloaded once.
 
 | Flag | Where | Default | Effect |
 |---|---|---|---|
-| `PurelyOcr_embedPacks=eslav,…` | `gradle.properties` | empty | downloads these packs at build time, checks sha256, packs them into `assets/ocr-models` |
-| `PurelyOcr_devMlKit=true` | `gradle.properties` | off | compiles ML Kit Text Recognition (Latin) for `/dev` (+12.5 MB, ML Kit Terms of Service) |
-| `PurelyOcr_executorch=auto\|true\|false` | `gradle.properties` | `auto` | compiles the ExecuTorch runtime from `android/executorch` (built by `scripts/ocr-spike/executorch/build-android.sh`; arm64 only) |
-| `PurelyOcr_paddleOnIos=1` | `ENV` of `pod install` | off | reserved for PaddleOCR on iOS; not implemented yet, `pod install` stops with an error |
+| `GlyphOcr_embedPacks=eslav,…` | `gradle.properties` | empty | downloads these packs at build time, checks sha256, packs them into `assets/ocr-models` |
+| `GlyphOcr_devMlKit=true` | `gradle.properties` | off | compiles ML Kit Text Recognition (Latin) for `/dev` (+12.5 MB, ML Kit Terms of Service) |
+| `GlyphOcr_executorch=auto\|true\|false` | `gradle.properties` | `auto` | compiles the ExecuTorch runtime from `android/executorch` (built by `scripts/ocr-spike/executorch/build-android.sh`; arm64 only) |
+| `GlyphOcr_paddleOnIos=1` | `ENV` of `pod install` | off | reserved for PaddleOCR on iOS; not implemented yet, `pod install` stops with an error |
 
 ## Notes
 

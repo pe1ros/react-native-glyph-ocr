@@ -8,7 +8,7 @@
 /**
  * Represents the JS union `OcrEngine`, backed by a C++ enum.
  */
-public typealias OcrEngine = margelo.nitro.purelyocr.OcrEngine
+public typealias OcrEngine = margelo.nitro.glyphocr.OcrEngine
 
 public extension OcrEngine {
   /**

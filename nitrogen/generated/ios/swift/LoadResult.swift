@@ -10,10 +10,10 @@ import NitroModules
 /**
  * Represents an instance of `LoadResult`, backed by a C++ struct.
  */
-public typealias LoadResult = margelo.nitro.purelyocr.LoadResult
+public typealias LoadResult = margelo.nitro.glyphocr.LoadResult
 
 public extension LoadResult {
-  private typealias bridge = margelo.nitro.purelyocr.bridge.swift
+  private typealias bridge = margelo.nitro.glyphocr.bridge.swift
 
   /**
    * Create a new instance of `LoadResult`.

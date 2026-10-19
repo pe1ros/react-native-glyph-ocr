@@ -14,21 +14,21 @@
 #endif
 
 // Forward declaration of `OcrEngine` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class OcrEngine; }
+namespace margelo::nitro::glyphocr { enum class OcrEngine; }
 // Forward declaration of `LoadResult` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct LoadResult; }
+namespace margelo::nitro::glyphocr { struct LoadResult; }
 // Forward declaration of `PrepareProgress` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct PrepareProgress; }
+namespace margelo::nitro::glyphocr { struct PrepareProgress; }
 // Forward declaration of `OcrResult` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct OcrResult; }
+namespace margelo::nitro::glyphocr { struct OcrResult; }
 // Forward declaration of `RecognizeOptions` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct RecognizeOptions; }
+namespace margelo::nitro::glyphocr { struct RecognizeOptions; }
 // Forward declaration of `RawPixelFormat` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class RawPixelFormat; }
+namespace margelo::nitro::glyphocr { enum class RawPixelFormat; }
 // Forward declaration of `FrameOrientation` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class FrameOrientation; }
+namespace margelo::nitro::glyphocr { enum class FrameOrientation; }
 // Forward declaration of `FrameRecognizeOptions` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct FrameRecognizeOptions; }
+namespace margelo::nitro::glyphocr { struct FrameRecognizeOptions; }
 
 #include "OcrEngine.hpp"
 #include <string>
@@ -45,7 +45,7 @@ namespace margelo::nitro::purelyocr { struct FrameRecognizeOptions; }
 #include "FrameOrientation.hpp"
 #include "FrameRecognizeOptions.hpp"
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   using namespace margelo::nitro;
 
@@ -96,4 +96,4 @@ namespace margelo::nitro::purelyocr {
       static constexpr auto TAG = "OcrRecognizer";
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

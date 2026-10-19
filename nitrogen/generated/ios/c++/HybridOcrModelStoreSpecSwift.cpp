@@ -7,5 +7,5 @@
 
 #include "HybridOcrModelStoreSpecSwift.hpp"
 
-namespace margelo::nitro::purelyocr {
-} // namespace margelo::nitro::purelyocr
+namespace margelo::nitro::glyphocr {
+} // namespace margelo::nitro::glyphocr

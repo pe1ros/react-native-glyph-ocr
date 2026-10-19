@@ -17,7 +17,7 @@ final class HybridOcrRecognizer: HybridOcrRecognizerSpec {
   private let engineLanguages: [String]
   private let customWords: [String]
 
-  private let queue = DispatchQueue(label: "PurelyOcr.vision", qos: .userInitiated)
+  private let queue = DispatchQueue(label: "GlyphOcr.vision", qos: .userInitiated)
   private let lock = NSLock()
   private var loaded = false
   private var warmedUp = false

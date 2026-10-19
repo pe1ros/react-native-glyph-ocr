@@ -29,11 +29,11 @@
 #endif
 
 // Forward declaration of `OcrRect` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct OcrRect; }
+namespace margelo::nitro::glyphocr { struct OcrRect; }
 // Forward declaration of `OcrPoint` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct OcrPoint; }
+namespace margelo::nitro::glyphocr { struct OcrPoint; }
 // Forward declaration of `OcrLine` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct OcrLine; }
+namespace margelo::nitro::glyphocr { struct OcrLine; }
 
 #include <string>
 #include "OcrRect.hpp"
@@ -41,7 +41,7 @@ namespace margelo::nitro::purelyocr { struct OcrLine; }
 #include <vector>
 #include "OcrLine.hpp"
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * A struct which can be represented as a JavaScript object (OcrBlock).
@@ -64,34 +64,34 @@ namespace margelo::nitro::purelyocr {
     friend bool operator==(const OcrBlock& lhs, const OcrBlock& rhs) = default;
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ OcrBlock <> JS OcrBlock (object)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::OcrBlock> final {
-    static inline margelo::nitro::purelyocr::OcrBlock fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::OcrBlock> final {
+    static inline margelo::nitro::glyphocr::OcrBlock fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       jsi::Object obj = arg.asObject(runtime);
-      return margelo::nitro::purelyocr::OcrBlock(
+      return margelo::nitro::glyphocr::OcrBlock(
         JSIConverter<std::string>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "text"))),
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "confidence"))),
-        JSIConverter<margelo::nitro::purelyocr::OcrRect>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "boundingBox"))),
-        JSIConverter<margelo::nitro::purelyocr::OcrRect>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "pixelBoundingBox"))),
-        JSIConverter<std::vector<margelo::nitro::purelyocr::OcrPoint>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "cornerPoints"))),
+        JSIConverter<margelo::nitro::glyphocr::OcrRect>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "boundingBox"))),
+        JSIConverter<margelo::nitro::glyphocr::OcrRect>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "pixelBoundingBox"))),
+        JSIConverter<std::vector<margelo::nitro::glyphocr::OcrPoint>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "cornerPoints"))),
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "angle"))),
-        JSIConverter<std::vector<margelo::nitro::purelyocr::OcrLine>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "lines")))
+        JSIConverter<std::vector<margelo::nitro::glyphocr::OcrLine>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "lines")))
       );
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::purelyocr::OcrBlock& arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::glyphocr::OcrBlock& arg) {
       jsi::Object obj(runtime);
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "text"), JSIConverter<std::string>::toJSI(runtime, arg.text));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "confidence"), JSIConverter<double>::toJSI(runtime, arg.confidence));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "boundingBox"), JSIConverter<margelo::nitro::purelyocr::OcrRect>::toJSI(runtime, arg.boundingBox));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "pixelBoundingBox"), JSIConverter<margelo::nitro::purelyocr::OcrRect>::toJSI(runtime, arg.pixelBoundingBox));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "cornerPoints"), JSIConverter<std::vector<margelo::nitro::purelyocr::OcrPoint>>::toJSI(runtime, arg.cornerPoints));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "boundingBox"), JSIConverter<margelo::nitro::glyphocr::OcrRect>::toJSI(runtime, arg.boundingBox));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "pixelBoundingBox"), JSIConverter<margelo::nitro::glyphocr::OcrRect>::toJSI(runtime, arg.pixelBoundingBox));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "cornerPoints"), JSIConverter<std::vector<margelo::nitro::glyphocr::OcrPoint>>::toJSI(runtime, arg.cornerPoints));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "angle"), JSIConverter<double>::toJSI(runtime, arg.angle));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "lines"), JSIConverter<std::vector<margelo::nitro::purelyocr::OcrLine>>::toJSI(runtime, arg.lines));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "lines"), JSIConverter<std::vector<margelo::nitro::glyphocr::OcrLine>>::toJSI(runtime, arg.lines));
       return obj;
     }
     static inline bool canConvert(jsi::Runtime& runtime, const jsi::Value& value) {
@@ -104,11 +104,11 @@ namespace margelo::nitro {
       }
       if (!JSIConverter<std::string>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "text")))) return false;
       if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "confidence")))) return false;
-      if (!JSIConverter<margelo::nitro::purelyocr::OcrRect>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "boundingBox")))) return false;
-      if (!JSIConverter<margelo::nitro::purelyocr::OcrRect>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "pixelBoundingBox")))) return false;
-      if (!JSIConverter<std::vector<margelo::nitro::purelyocr::OcrPoint>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "cornerPoints")))) return false;
+      if (!JSIConverter<margelo::nitro::glyphocr::OcrRect>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "boundingBox")))) return false;
+      if (!JSIConverter<margelo::nitro::glyphocr::OcrRect>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "pixelBoundingBox")))) return false;
+      if (!JSIConverter<std::vector<margelo::nitro::glyphocr::OcrPoint>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "cornerPoints")))) return false;
       if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "angle")))) return false;
-      if (!JSIConverter<std::vector<margelo::nitro::purelyocr::OcrLine>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "lines")))) return false;
+      if (!JSIConverter<std::vector<margelo::nitro::glyphocr::OcrLine>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "lines")))) return false;
       return true;
     }
   };

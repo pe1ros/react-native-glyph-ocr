@@ -10,10 +10,10 @@ import NitroModules
 /**
  * Represents an instance of `DevTuning`, backed by a C++ struct.
  */
-public typealias DevTuning = margelo.nitro.purelyocr.DevTuning
+public typealias DevTuning = margelo.nitro.glyphocr.DevTuning
 
 public extension DevTuning {
-  private typealias bridge = margelo.nitro.purelyocr.bridge.swift
+  private typealias bridge = margelo.nitro.glyphocr.bridge.swift
 
   /**
    * Create a new instance of `DevTuning`.

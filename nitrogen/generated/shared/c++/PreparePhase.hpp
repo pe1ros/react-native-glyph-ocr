@@ -23,7 +23,7 @@
 #error NitroModules cannot be found! Are you sure you installed NitroModules properly?
 #endif
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * An enum which can be represented as a JavaScript union (PreparePhase).
@@ -35,30 +35,30 @@ namespace margelo::nitro::purelyocr {
     WARMING_UP      SWIFT_NAME(warmingUp) = 3,
   } CLOSED_ENUM;
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ PreparePhase <> JS PreparePhase (union)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::PreparePhase> final {
-    static inline margelo::nitro::purelyocr::PreparePhase fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::PreparePhase> final {
+    static inline margelo::nitro::glyphocr::PreparePhase fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       std::string unionValue = JSIConverter<std::string>::fromJSI(runtime, arg);
       switch (hashString(unionValue.c_str(), unionValue.size())) {
-        case hashString("downloading"): return margelo::nitro::purelyocr::PreparePhase::DOWNLOADING;
-        case hashString("verifying"): return margelo::nitro::purelyocr::PreparePhase::VERIFYING;
-        case hashString("loading"): return margelo::nitro::purelyocr::PreparePhase::LOADING;
-        case hashString("warming-up"): return margelo::nitro::purelyocr::PreparePhase::WARMING_UP;
+        case hashString("downloading"): return margelo::nitro::glyphocr::PreparePhase::DOWNLOADING;
+        case hashString("verifying"): return margelo::nitro::glyphocr::PreparePhase::VERIFYING;
+        case hashString("loading"): return margelo::nitro::glyphocr::PreparePhase::LOADING;
+        case hashString("warming-up"): return margelo::nitro::glyphocr::PreparePhase::WARMING_UP;
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert \"" + unionValue + "\" to enum PreparePhase - invalid value!");
       }
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::purelyocr::PreparePhase arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::glyphocr::PreparePhase arg) {
       switch (arg) {
-        case margelo::nitro::purelyocr::PreparePhase::DOWNLOADING: return JSIConverter<std::string>::toJSI(runtime, "downloading");
-        case margelo::nitro::purelyocr::PreparePhase::VERIFYING: return JSIConverter<std::string>::toJSI(runtime, "verifying");
-        case margelo::nitro::purelyocr::PreparePhase::LOADING: return JSIConverter<std::string>::toJSI(runtime, "loading");
-        case margelo::nitro::purelyocr::PreparePhase::WARMING_UP: return JSIConverter<std::string>::toJSI(runtime, "warming-up");
+        case margelo::nitro::glyphocr::PreparePhase::DOWNLOADING: return JSIConverter<std::string>::toJSI(runtime, "downloading");
+        case margelo::nitro::glyphocr::PreparePhase::VERIFYING: return JSIConverter<std::string>::toJSI(runtime, "verifying");
+        case margelo::nitro::glyphocr::PreparePhase::LOADING: return JSIConverter<std::string>::toJSI(runtime, "loading");
+        case margelo::nitro::glyphocr::PreparePhase::WARMING_UP: return JSIConverter<std::string>::toJSI(runtime, "warming-up");
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert PreparePhase to JS - invalid value: "
                                     + std::to_string(static_cast<int>(arg)) + "!");

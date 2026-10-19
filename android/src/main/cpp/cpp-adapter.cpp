@@ -2,17 +2,17 @@
 #include <fbjni/fbjni.h>
 #include <sched.h>
 #include <cerrno>
-#include "NitroPurelyOcrOnLoad.hpp"
+#include "NitroGlyphOcrOnLoad.hpp"
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void*) {
   return facebook::jni::initialize(vm, []() {
-    margelo::nitro::purelyocr::registerAllNatives();
+    margelo::nitro::glyphocr::registerAllNatives();
   });
 }
 
 // Pins the calling thread to the given CPU cores (0-based). Returns 0 or errno.
 extern "C" JNIEXPORT jint JNICALL
-Java_com_margelo_nitro_purelyocr_CpuAffinity_setCurrentThreadCpus(JNIEnv* env, jclass, jintArray cpus) {
+Java_com_margelo_nitro_glyphocr_CpuAffinity_setCurrentThreadCpus(JNIEnv* env, jclass, jintArray cpus) {
   cpu_set_t set;
   CPU_ZERO(&set);
   jsize count = env->GetArrayLength(cpus);

@@ -10,7 +10,7 @@
 #include <fbjni/fbjni.h>
 #include "PreparePhase.hpp"
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   using namespace facebook;
 
@@ -19,7 +19,7 @@ namespace margelo::nitro::purelyocr {
    */
   struct JPreparePhase final: public jni::JavaClass<JPreparePhase> {
   public:
-    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/PreparePhase;";
+    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/glyphocr/PreparePhase;";
 
   public:
     /**
@@ -61,4 +61,4 @@ namespace margelo::nitro::purelyocr {
     }
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

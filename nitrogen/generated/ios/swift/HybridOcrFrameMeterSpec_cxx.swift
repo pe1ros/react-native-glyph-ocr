@@ -18,11 +18,11 @@ import NitroModules
  */
 open class HybridOcrFrameMeterSpec_cxx {
   /**
-   * The Swift <> C++ bridge's namespace (`margelo::nitro::purelyocr::bridge::swift`)
-   * from `NitroPurelyOcr-Swift-Cxx-Bridge.hpp`.
+   * The Swift <> C++ bridge's namespace (`margelo::nitro::glyphocr::bridge::swift`)
+   * from `NitroGlyphOcr-Swift-Cxx-Bridge.hpp`.
    * This contains specialized C++ templates, and C++ helper functions that can be accessed from Swift.
    */
-  public typealias bridge = margelo.nitro.purelyocr.bridge.swift
+  public typealias bridge = margelo.nitro.glyphocr.bridge.swift
 
   /**
    * Holds an instance of the `HybridOcrFrameMeterSpec` Swift protocol.
@@ -127,7 +127,7 @@ open class HybridOcrFrameMeterSpec_cxx {
   @inline(__always)
   public final func measure(nativeBufferPointer: UInt64, orientation: Int32, roi: bridge.std__optional_OcrRect_) -> bridge.Result_FrameQuality_ {
     do {
-      let __result = try self.__implementation.measure(nativeBufferPointer: nativeBufferPointer, orientation: margelo.nitro.purelyocr.FrameOrientation(rawValue: orientation)!, roi: roi.value)
+      let __result = try self.__implementation.measure(nativeBufferPointer: nativeBufferPointer, orientation: margelo.nitro.glyphocr.FrameOrientation(rawValue: orientation)!, roi: roi.value)
       let __resultCpp = __result
       return bridge.create_Result_FrameQuality_(__resultCpp)
     } catch (let __error) {

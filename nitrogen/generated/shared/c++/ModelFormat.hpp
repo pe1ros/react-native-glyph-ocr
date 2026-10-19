@@ -23,7 +23,7 @@
 #error NitroModules cannot be found! Are you sure you installed NitroModules properly?
 #endif
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * An enum which can be represented as a JavaScript union (ModelFormat).
@@ -35,30 +35,30 @@ namespace margelo::nitro::purelyocr {
     DICT      SWIFT_NAME(dict) = 3,
   } CLOSED_ENUM;
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ ModelFormat <> JS ModelFormat (union)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::ModelFormat> final {
-    static inline margelo::nitro::purelyocr::ModelFormat fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::ModelFormat> final {
+    static inline margelo::nitro::glyphocr::ModelFormat fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       std::string unionValue = JSIConverter<std::string>::fromJSI(runtime, arg);
       switch (hashString(unionValue.c_str(), unionValue.size())) {
-        case hashString("onnx"): return margelo::nitro::purelyocr::ModelFormat::ONNX;
-        case hashString("ort"): return margelo::nitro::purelyocr::ModelFormat::ORT;
-        case hashString("pte"): return margelo::nitro::purelyocr::ModelFormat::PTE;
-        case hashString("dict"): return margelo::nitro::purelyocr::ModelFormat::DICT;
+        case hashString("onnx"): return margelo::nitro::glyphocr::ModelFormat::ONNX;
+        case hashString("ort"): return margelo::nitro::glyphocr::ModelFormat::ORT;
+        case hashString("pte"): return margelo::nitro::glyphocr::ModelFormat::PTE;
+        case hashString("dict"): return margelo::nitro::glyphocr::ModelFormat::DICT;
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert \"" + unionValue + "\" to enum ModelFormat - invalid value!");
       }
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::purelyocr::ModelFormat arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::glyphocr::ModelFormat arg) {
       switch (arg) {
-        case margelo::nitro::purelyocr::ModelFormat::ONNX: return JSIConverter<std::string>::toJSI(runtime, "onnx");
-        case margelo::nitro::purelyocr::ModelFormat::ORT: return JSIConverter<std::string>::toJSI(runtime, "ort");
-        case margelo::nitro::purelyocr::ModelFormat::PTE: return JSIConverter<std::string>::toJSI(runtime, "pte");
-        case margelo::nitro::purelyocr::ModelFormat::DICT: return JSIConverter<std::string>::toJSI(runtime, "dict");
+        case margelo::nitro::glyphocr::ModelFormat::ONNX: return JSIConverter<std::string>::toJSI(runtime, "onnx");
+        case margelo::nitro::glyphocr::ModelFormat::ORT: return JSIConverter<std::string>::toJSI(runtime, "ort");
+        case margelo::nitro::glyphocr::ModelFormat::PTE: return JSIConverter<std::string>::toJSI(runtime, "pte");
+        case margelo::nitro::glyphocr::ModelFormat::DICT: return JSIConverter<std::string>::toJSI(runtime, "dict");
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert ModelFormat to JS - invalid value: "
                                     + std::to_string(static_cast<int>(arg)) + "!");

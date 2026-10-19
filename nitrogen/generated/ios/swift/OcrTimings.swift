@@ -10,10 +10,10 @@ import NitroModules
 /**
  * Represents an instance of `OcrTimings`, backed by a C++ struct.
  */
-public typealias OcrTimings = margelo.nitro.purelyocr.OcrTimings
+public typealias OcrTimings = margelo.nitro.glyphocr.OcrTimings
 
 public extension OcrTimings {
-  private typealias bridge = margelo.nitro.purelyocr.bridge.swift
+  private typealias bridge = margelo.nitro.glyphocr.bridge.swift
 
   /**
    * Create a new instance of `OcrTimings`.

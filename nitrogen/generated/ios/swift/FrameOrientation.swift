@@ -8,7 +8,7 @@
 /**
  * Represents the JS union `FrameOrientation`, backed by a C++ enum.
  */
-public typealias FrameOrientation = margelo.nitro.purelyocr.FrameOrientation
+public typealias FrameOrientation = margelo.nitro.glyphocr.FrameOrientation
 
 public extension FrameOrientation {
   /**

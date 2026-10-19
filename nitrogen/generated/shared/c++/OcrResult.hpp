@@ -29,15 +29,15 @@
 #endif
 
 // Forward declaration of `OcrBlock` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct OcrBlock; }
+namespace margelo::nitro::glyphocr { struct OcrBlock; }
 // Forward declaration of `OcrImageSize` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct OcrImageSize; }
+namespace margelo::nitro::glyphocr { struct OcrImageSize; }
 // Forward declaration of `OcrEngine` to properly resolve imports.
-namespace margelo::nitro::purelyocr { enum class OcrEngine; }
+namespace margelo::nitro::glyphocr { enum class OcrEngine; }
 // Forward declaration of `OcrTimings` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct OcrTimings; }
+namespace margelo::nitro::glyphocr { struct OcrTimings; }
 // Forward declaration of `OcrDiagnostics` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct OcrDiagnostics; }
+namespace margelo::nitro::glyphocr { struct OcrDiagnostics; }
 
 #include <string>
 #include "OcrBlock.hpp"
@@ -48,7 +48,7 @@ namespace margelo::nitro::purelyocr { struct OcrDiagnostics; }
 #include "OcrDiagnostics.hpp"
 #include <optional>
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * A struct which can be represented as a JavaScript object (OcrResult).
@@ -71,34 +71,34 @@ namespace margelo::nitro::purelyocr {
     friend bool operator==(const OcrResult& lhs, const OcrResult& rhs) = default;
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ OcrResult <> JS OcrResult (object)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::OcrResult> final {
-    static inline margelo::nitro::purelyocr::OcrResult fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::OcrResult> final {
+    static inline margelo::nitro::glyphocr::OcrResult fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       jsi::Object obj = arg.asObject(runtime);
-      return margelo::nitro::purelyocr::OcrResult(
+      return margelo::nitro::glyphocr::OcrResult(
         JSIConverter<std::string>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "text"))),
-        JSIConverter<std::vector<margelo::nitro::purelyocr::OcrBlock>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "blocks"))),
-        JSIConverter<margelo::nitro::purelyocr::OcrImageSize>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "image"))),
-        JSIConverter<margelo::nitro::purelyocr::OcrEngine>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "engine"))),
+        JSIConverter<std::vector<margelo::nitro::glyphocr::OcrBlock>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "blocks"))),
+        JSIConverter<margelo::nitro::glyphocr::OcrImageSize>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "image"))),
+        JSIConverter<margelo::nitro::glyphocr::OcrEngine>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "engine"))),
         JSIConverter<std::vector<std::string>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "languages"))),
-        JSIConverter<margelo::nitro::purelyocr::OcrTimings>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "timings"))),
-        JSIConverter<std::optional<margelo::nitro::purelyocr::OcrDiagnostics>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "diagnostics")))
+        JSIConverter<margelo::nitro::glyphocr::OcrTimings>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "timings"))),
+        JSIConverter<std::optional<margelo::nitro::glyphocr::OcrDiagnostics>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "diagnostics")))
       );
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::purelyocr::OcrResult& arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::glyphocr::OcrResult& arg) {
       jsi::Object obj(runtime);
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "text"), JSIConverter<std::string>::toJSI(runtime, arg.text));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "blocks"), JSIConverter<std::vector<margelo::nitro::purelyocr::OcrBlock>>::toJSI(runtime, arg.blocks));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "image"), JSIConverter<margelo::nitro::purelyocr::OcrImageSize>::toJSI(runtime, arg.image));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "engine"), JSIConverter<margelo::nitro::purelyocr::OcrEngine>::toJSI(runtime, arg.engine));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "blocks"), JSIConverter<std::vector<margelo::nitro::glyphocr::OcrBlock>>::toJSI(runtime, arg.blocks));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "image"), JSIConverter<margelo::nitro::glyphocr::OcrImageSize>::toJSI(runtime, arg.image));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "engine"), JSIConverter<margelo::nitro::glyphocr::OcrEngine>::toJSI(runtime, arg.engine));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "languages"), JSIConverter<std::vector<std::string>>::toJSI(runtime, arg.languages));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "timings"), JSIConverter<margelo::nitro::purelyocr::OcrTimings>::toJSI(runtime, arg.timings));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "diagnostics"), JSIConverter<std::optional<margelo::nitro::purelyocr::OcrDiagnostics>>::toJSI(runtime, arg.diagnostics));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "timings"), JSIConverter<margelo::nitro::glyphocr::OcrTimings>::toJSI(runtime, arg.timings));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "diagnostics"), JSIConverter<std::optional<margelo::nitro::glyphocr::OcrDiagnostics>>::toJSI(runtime, arg.diagnostics));
       return obj;
     }
     static inline bool canConvert(jsi::Runtime& runtime, const jsi::Value& value) {
@@ -110,12 +110,12 @@ namespace margelo::nitro {
         return false;
       }
       if (!JSIConverter<std::string>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "text")))) return false;
-      if (!JSIConverter<std::vector<margelo::nitro::purelyocr::OcrBlock>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "blocks")))) return false;
-      if (!JSIConverter<margelo::nitro::purelyocr::OcrImageSize>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "image")))) return false;
-      if (!JSIConverter<margelo::nitro::purelyocr::OcrEngine>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "engine")))) return false;
+      if (!JSIConverter<std::vector<margelo::nitro::glyphocr::OcrBlock>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "blocks")))) return false;
+      if (!JSIConverter<margelo::nitro::glyphocr::OcrImageSize>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "image")))) return false;
+      if (!JSIConverter<margelo::nitro::glyphocr::OcrEngine>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "engine")))) return false;
       if (!JSIConverter<std::vector<std::string>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "languages")))) return false;
-      if (!JSIConverter<margelo::nitro::purelyocr::OcrTimings>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "timings")))) return false;
-      if (!JSIConverter<std::optional<margelo::nitro::purelyocr::OcrDiagnostics>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "diagnostics")))) return false;
+      if (!JSIConverter<margelo::nitro::glyphocr::OcrTimings>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "timings")))) return false;
+      if (!JSIConverter<std::optional<margelo::nitro::glyphocr::OcrDiagnostics>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "diagnostics")))) return false;
       return true;
     }
   };

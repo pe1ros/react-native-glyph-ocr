@@ -10,10 +10,10 @@ import NitroModules
 /**
  * Represents an instance of `ModelStoreConfig`, backed by a C++ struct.
  */
-public typealias ModelStoreConfig = margelo.nitro.purelyocr.ModelStoreConfig
+public typealias ModelStoreConfig = margelo.nitro.glyphocr.ModelStoreConfig
 
 public extension ModelStoreConfig {
-  private typealias bridge = margelo.nitro.purelyocr.bridge.swift
+  private typealias bridge = margelo.nitro.glyphocr.bridge.swift
 
   /**
    * Create a new instance of `ModelStoreConfig`.

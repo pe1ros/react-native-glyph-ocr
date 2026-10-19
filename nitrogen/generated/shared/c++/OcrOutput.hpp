@@ -23,7 +23,7 @@
 #error NitroModules cannot be found! Are you sure you installed NitroModules properly?
 #endif
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * An enum which can be represented as a JavaScript union (OcrOutput).
@@ -34,28 +34,28 @@ namespace margelo::nitro::purelyocr {
     ELEMENTS      SWIFT_NAME(elements) = 2,
   } CLOSED_ENUM;
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ OcrOutput <> JS OcrOutput (union)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::OcrOutput> final {
-    static inline margelo::nitro::purelyocr::OcrOutput fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::OcrOutput> final {
+    static inline margelo::nitro::glyphocr::OcrOutput fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       std::string unionValue = JSIConverter<std::string>::fromJSI(runtime, arg);
       switch (hashString(unionValue.c_str(), unionValue.size())) {
-        case hashString("text"): return margelo::nitro::purelyocr::OcrOutput::TEXT;
-        case hashString("lines"): return margelo::nitro::purelyocr::OcrOutput::LINES;
-        case hashString("elements"): return margelo::nitro::purelyocr::OcrOutput::ELEMENTS;
+        case hashString("text"): return margelo::nitro::glyphocr::OcrOutput::TEXT;
+        case hashString("lines"): return margelo::nitro::glyphocr::OcrOutput::LINES;
+        case hashString("elements"): return margelo::nitro::glyphocr::OcrOutput::ELEMENTS;
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert \"" + unionValue + "\" to enum OcrOutput - invalid value!");
       }
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::purelyocr::OcrOutput arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::glyphocr::OcrOutput arg) {
       switch (arg) {
-        case margelo::nitro::purelyocr::OcrOutput::TEXT: return JSIConverter<std::string>::toJSI(runtime, "text");
-        case margelo::nitro::purelyocr::OcrOutput::LINES: return JSIConverter<std::string>::toJSI(runtime, "lines");
-        case margelo::nitro::purelyocr::OcrOutput::ELEMENTS: return JSIConverter<std::string>::toJSI(runtime, "elements");
+        case margelo::nitro::glyphocr::OcrOutput::TEXT: return JSIConverter<std::string>::toJSI(runtime, "text");
+        case margelo::nitro::glyphocr::OcrOutput::LINES: return JSIConverter<std::string>::toJSI(runtime, "lines");
+        case margelo::nitro::glyphocr::OcrOutput::ELEMENTS: return JSIConverter<std::string>::toJSI(runtime, "elements");
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert OcrOutput to JS - invalid value: "
                                     + std::to_string(static_cast<int>(arg)) + "!");

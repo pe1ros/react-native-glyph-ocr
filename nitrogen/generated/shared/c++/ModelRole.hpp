@@ -23,7 +23,7 @@
 #error NitroModules cannot be found! Are you sure you installed NitroModules properly?
 #endif
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   /**
    * An enum which can be represented as a JavaScript union (ModelRole).
@@ -34,28 +34,28 @@ namespace margelo::nitro::purelyocr {
     DICTIONARY      SWIFT_NAME(dictionary) = 2,
   } CLOSED_ENUM;
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr
 
 namespace margelo::nitro {
 
   // C++ ModelRole <> JS ModelRole (union)
   template <>
-  struct JSIConverter<margelo::nitro::purelyocr::ModelRole> final {
-    static inline margelo::nitro::purelyocr::ModelRole fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::glyphocr::ModelRole> final {
+    static inline margelo::nitro::glyphocr::ModelRole fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       std::string unionValue = JSIConverter<std::string>::fromJSI(runtime, arg);
       switch (hashString(unionValue.c_str(), unionValue.size())) {
-        case hashString("detector"): return margelo::nitro::purelyocr::ModelRole::DETECTOR;
-        case hashString("recognizer"): return margelo::nitro::purelyocr::ModelRole::RECOGNIZER;
-        case hashString("dictionary"): return margelo::nitro::purelyocr::ModelRole::DICTIONARY;
+        case hashString("detector"): return margelo::nitro::glyphocr::ModelRole::DETECTOR;
+        case hashString("recognizer"): return margelo::nitro::glyphocr::ModelRole::RECOGNIZER;
+        case hashString("dictionary"): return margelo::nitro::glyphocr::ModelRole::DICTIONARY;
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert \"" + unionValue + "\" to enum ModelRole - invalid value!");
       }
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::purelyocr::ModelRole arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::glyphocr::ModelRole arg) {
       switch (arg) {
-        case margelo::nitro::purelyocr::ModelRole::DETECTOR: return JSIConverter<std::string>::toJSI(runtime, "detector");
-        case margelo::nitro::purelyocr::ModelRole::RECOGNIZER: return JSIConverter<std::string>::toJSI(runtime, "recognizer");
-        case margelo::nitro::purelyocr::ModelRole::DICTIONARY: return JSIConverter<std::string>::toJSI(runtime, "dictionary");
+        case margelo::nitro::glyphocr::ModelRole::DETECTOR: return JSIConverter<std::string>::toJSI(runtime, "detector");
+        case margelo::nitro::glyphocr::ModelRole::RECOGNIZER: return JSIConverter<std::string>::toJSI(runtime, "recognizer");
+        case margelo::nitro::glyphocr::ModelRole::DICTIONARY: return JSIConverter<std::string>::toJSI(runtime, "dictionary");
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert ModelRole to JS - invalid value: "
                                     + std::to_string(static_cast<int>(arg)) + "!");

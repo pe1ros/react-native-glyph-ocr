@@ -10,7 +10,7 @@
 #include <fbjni/fbjni.h>
 #include "ReadingOrder.hpp"
 
-namespace margelo::nitro::purelyocr {
+namespace margelo::nitro::glyphocr {
 
   using namespace facebook;
 
@@ -19,7 +19,7 @@ namespace margelo::nitro::purelyocr {
    */
   struct JReadingOrder final: public jni::JavaClass<JReadingOrder> {
   public:
-    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/ReadingOrder;";
+    static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/glyphocr/ReadingOrder;";
 
   public:
     /**
@@ -55,4 +55,4 @@ namespace margelo::nitro::purelyocr {
     }
   };
 
-} // namespace margelo::nitro::purelyocr
+} // namespace margelo::nitro::glyphocr

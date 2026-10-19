@@ -10,10 +10,10 @@ import NitroModules
 /**
  * Represents an instance of `OcrElement`, backed by a C++ struct.
  */
-public typealias OcrElement = margelo.nitro.purelyocr.OcrElement
+public typealias OcrElement = margelo.nitro.glyphocr.OcrElement
 
 public extension OcrElement {
-  private typealias bridge = margelo.nitro.purelyocr.bridge.swift
+  private typealias bridge = margelo.nitro.glyphocr.bridge.swift
 
   /**
    * Create a new instance of `OcrElement`.
