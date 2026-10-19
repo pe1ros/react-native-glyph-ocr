@@ -33,9 +33,17 @@ target_sources(
   # Autolinking Setup
   ../nitrogen/generated/android/NitroPurelyOcrOnLoad.cpp
   # Shared Nitrogen C++ sources
-  ../nitrogen/generated/shared/c++/HybridPurelyOcrSpec.cpp
+  ../nitrogen/generated/shared/c++/HybridOcrModelStoreSpec.cpp
+  ../nitrogen/generated/shared/c++/HybridOcrRecognizerSpec.cpp
+  ../nitrogen/generated/shared/c++/HybridOcrFrameMeterSpec.cpp
+  ../nitrogen/generated/shared/c++/HybridOcrFactorySpec.cpp
+  ../nitrogen/generated/shared/c++/HybridOcrDevToolsSpec.cpp
   # Android-specific Nitrogen C++ sources
-  ../nitrogen/generated/android/c++/JHybridPurelyOcrSpec.cpp
+  ../nitrogen/generated/android/c++/JHybridOcrModelStoreSpec.cpp
+  ../nitrogen/generated/android/c++/JHybridOcrRecognizerSpec.cpp
+  ../nitrogen/generated/android/c++/JHybridOcrFrameMeterSpec.cpp
+  ../nitrogen/generated/android/c++/JHybridOcrFactorySpec.cpp
+  ../nitrogen/generated/android/c++/JHybridOcrDevToolsSpec.cpp
 )
 
 # From node_modules/react-native/ReactAndroid/cmake-utils/folly-flags.cmake

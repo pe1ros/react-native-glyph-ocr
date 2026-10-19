@@ -12,15 +12,27 @@ import NitroModules
 public final class NitroPurelyOcrAutolinking {
   public typealias bridge = margelo.nitro.purelyocr.bridge.swift
 
-  public static func createPurelyOcr() -> bridge.std__shared_ptr_HybridPurelyOcrSpec_ {
-    let hybridObject = HybridPurelyOcr()
-    return { () -> bridge.std__shared_ptr_HybridPurelyOcrSpec_ in
+  public static func createOcrFactory() -> bridge.std__shared_ptr_HybridOcrFactorySpec_ {
+    let hybridObject = HybridOcrFactory()
+    return { () -> bridge.std__shared_ptr_HybridOcrFactorySpec_ in
       let __cxxWrapped = hybridObject.getCxxWrapper()
       return __cxxWrapped.getCxxPart()
     }()
   }
   
-  public static func isPurelyOcrRecyclable() -> Bool {
-    return HybridPurelyOcr.self is any RecyclableView.Type
+  public static func isOcrFactoryRecyclable() -> Bool {
+    return HybridOcrFactory.self is any RecyclableView.Type
+  }
+  
+  public static func createOcrDevTools() -> bridge.std__shared_ptr_HybridOcrDevToolsSpec_ {
+    let hybridObject = HybridOcrDevTools()
+    return { () -> bridge.std__shared_ptr_HybridOcrDevToolsSpec_ in
+      let __cxxWrapped = hybridObject.getCxxWrapper()
+      return __cxxWrapped.getCxxPart()
+    }()
+  }
+  
+  public static func isOcrDevToolsRecyclable() -> Bool {
+    return HybridOcrDevTools.self is any RecyclableView.Type
   }
 }

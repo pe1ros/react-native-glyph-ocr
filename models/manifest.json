@@ -1,0 +1,512 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "id": "pp-ocrv5-det-mobile",
+      "role": "detector",
+      "format": "onnx",
+      "path": "pp-ocrv5/PP-OCRv5_mobile_det.onnx",
+      "url": "https://huggingface.co/PaddlePaddle/PP-OCRv5_mobile_det_onnx/resolve/e6f4fa85f00e168c862bc462aebca69eef9b3d3d/inference.onnx",
+      "sha256": "a431985659dc921974177a95adcfbb90fd9e51989a5e04d70d0b75f597b6e61d",
+      "bytes": 4826518,
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "pp-ocrv5-rec-en",
+      "role": "recognizer",
+      "format": "onnx",
+      "path": "pp-ocrv5/en_PP-OCRv5_mobile_rec.onnx",
+      "url": "https://huggingface.co/PaddlePaddle/en_PP-OCRv5_mobile_rec_onnx/resolve/3fafbc3b5dcf93dd72add9f48368be8a3a2cd33b/inference.onnx",
+      "sha256": "b5f833dfc5d0eb71da397b4efa06ebeee9b431b690a47d6af40d77d8eabc557f",
+      "bytes": 7848423,
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "pp-ocrv5-dict-en",
+      "role": "dictionary",
+      "format": "dict",
+      "path": "pp-ocrv5/en_PP-OCRv5_mobile_rec.dict.txt",
+      "sha256": "e025a66d31f327ba0c232e03f407ae8d105e1e709e7ccb3f408aa778c24e70d6",
+      "bytes": 1416,
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "pp-ocrv5-rec-eslav",
+      "role": "recognizer",
+      "format": "onnx",
+      "path": "pp-ocrv5/eslav_PP-OCRv5_mobile_rec.onnx",
+      "url": "https://huggingface.co/PaddlePaddle/eslav_PP-OCRv5_mobile_rec_onnx/resolve/9a32171fc5718746875e1a261818884517975013/inference.onnx",
+      "sha256": "b3018ef2b09a0250b6e0c8e871c927098363e5fd4df890cc68e8358eb0aaf1bd",
+      "bytes": 7887627,
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "pp-ocrv5-dict-eslav",
+      "role": "dictionary",
+      "format": "dict",
+      "path": "pp-ocrv5/eslav_PP-OCRv5_mobile_rec.dict.txt",
+      "sha256": "3e95f1581557162870cacdba5af91a4c6be2890710d395b0c3c7578e7ee5e6eb",
+      "bytes": 1663,
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "pp-ocrv5-rec-cyrillic",
+      "role": "recognizer",
+      "format": "onnx",
+      "path": "pp-ocrv5/cyrillic_PP-OCRv5_mobile_rec.onnx",
+      "url": "https://huggingface.co/PaddlePaddle/cyrillic_PP-OCRv5_mobile_rec_onnx/resolve/2cef88145434beb8afa9dd82d77d799eb1ad7b29/inference.onnx",
+      "sha256": "5371ee1ddaa7983cc62d0818d99e982b6804638c85e4f960d59a574094e172e5",
+      "bytes": 8048799,
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "pp-ocrv5-dict-cyrillic",
+      "role": "dictionary",
+      "format": "dict",
+      "path": "pp-ocrv5/cyrillic_PP-OCRv5_mobile_rec.dict.txt",
+      "sha256": "db40aa52ceb112055be80c694afdf655d5d2c4f7873704524cc16a447ca913ba",
+      "bytes": 2781,
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "pp-ocrv5-rec-latin",
+      "role": "recognizer",
+      "format": "onnx",
+      "path": "pp-ocrv5/latin_PP-OCRv5_mobile_rec.onnx",
+      "url": "https://huggingface.co/PaddlePaddle/latin_PP-OCRv5_mobile_rec_onnx/resolve/89d3a50e2c27e2e7cceeab0e944c25c807d5db4f/inference.onnx",
+      "sha256": "7888113072263cb471b93f66dd5e2ad70548dc526fa1ace760d0d973dd121498",
+      "bytes": 8042023,
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "pp-ocrv5-dict-latin",
+      "role": "dictionary",
+      "format": "dict",
+      "path": "pp-ocrv5/latin_PP-OCRv5_mobile_rec.dict.txt",
+      "sha256": "ccbcc45730b3fbbd9050c5bc74db6a99067141ef1035e3d14889a84a6b9b1aff",
+      "bytes": 2616,
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "pp-ocrv5-rec-korean",
+      "role": "recognizer",
+      "format": "onnx",
+      "path": "pp-ocrv5/korean_PP-OCRv5_mobile_rec.onnx",
+      "url": "https://huggingface.co/PaddlePaddle/korean_PP-OCRv5_mobile_rec_onnx/resolve/5c6f574b8e2230adf4287b33e736d71b9fabd28e/inference.onnx",
+      "sha256": "92f0b7785e64fc9090106a241cf4c1eb97472824558272751b88a2a4476d3a08",
+      "bytes": 13418787,
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "pp-ocrv5-dict-korean",
+      "role": "dictionary",
+      "format": "dict",
+      "path": "pp-ocrv5/korean_PP-OCRv5_mobile_rec.dict.txt",
+      "sha256": "a88071c68c01707489baa79ebe0405b7beb5cca229f4fc94cc3ef992328802d7",
+      "bytes": 47451,
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "pp-ocrv5-rec-arabic",
+      "role": "recognizer",
+      "format": "onnx",
+      "path": "pp-ocrv5/arabic_PP-OCRv5_mobile_rec.onnx",
+      "url": "https://huggingface.co/PaddlePaddle/arabic_PP-OCRv5_mobile_rec_onnx/resolve/14aaedcd75825982689ecf5cd64ab33ee083215a/inference.onnx",
+      "sha256": "799113ebf267fbe742deb99eb36e8d42c9ddc5291ceacf92add41b4d52a59110",
+      "bytes": 7998947,
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "pp-ocrv5-dict-arabic",
+      "role": "dictionary",
+      "format": "dict",
+      "path": "pp-ocrv5/arabic_PP-OCRv5_mobile_rec.dict.txt",
+      "sha256": "7f92f7dbb9b75a4787a83bfb4f6d14a8ab515525130c9d40a9036f61cf6999e9",
+      "bytes": 2369,
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "pp-ocrv5-rec-devanagari",
+      "role": "recognizer",
+      "format": "onnx",
+      "path": "pp-ocrv5/devanagari_PP-OCRv5_mobile_rec.onnx",
+      "url": "https://huggingface.co/PaddlePaddle/devanagari_PP-OCRv5_mobile_rec_onnx/resolve/251aec19e36739540d35e2cc943f6aa7503b98e5/inference.onnx",
+      "sha256": "cb789212ce96c69d3e74728ae4309d179281d68cb3945d0616b67cafab41c986",
+      "bytes": 7912311,
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "pp-ocrv5-dict-devanagari",
+      "role": "dictionary",
+      "format": "dict",
+      "path": "pp-ocrv5/devanagari_PP-OCRv5_mobile_rec.dict.txt",
+      "sha256": "09c7440bfc5477e5c41052304b6b185aff8c4a5e8b2b4c23c1c706f6fe1ee9fc",
+      "bytes": 1943,
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "pp-ocrv5-rec-th",
+      "role": "recognizer",
+      "format": "onnx",
+      "path": "pp-ocrv5/th_PP-OCRv5_mobile_rec.onnx",
+      "url": "https://huggingface.co/PaddlePaddle/th_PP-OCRv5_mobile_rec_onnx/resolve/1d4adbbafb1034a2fd6618498575b81ea7b69f69/inference.onnx",
+      "sha256": "27618be66018f8598ac0a526a593f9f1cebf794e7eded93428e8fb016e537f5f",
+      "bytes": 7891015,
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "pp-ocrv5-dict-th",
+      "role": "dictionary",
+      "format": "dict",
+      "path": "pp-ocrv5/th_PP-OCRv5_mobile_rec.dict.txt",
+      "sha256": "57f5406f94bb6688fb7077f7be65f08bbd71cecf48c01ea26c522cb5c4836b7a",
+      "bytes": 1767,
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "pp-ocrv5-rec-el",
+      "role": "recognizer",
+      "format": "onnx",
+      "path": "pp-ocrv5/el_PP-OCRv5_mobile_rec.onnx",
+      "url": "https://huggingface.co/PaddlePaddle/el_PP-OCRv5_mobile_rec_onnx/resolve/8152b89d2ee0e1d4c92decab75fe75e5e3d836b6/inference.onnx",
+      "sha256": "2acf17fcaea2bc81b878e311e6263b8885f48bb03796f75f9f30ed3242bbaa6d",
+      "bytes": 7808735,
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "pp-ocrv5-dict-el",
+      "role": "dictionary",
+      "format": "dict",
+      "path": "pp-ocrv5/el_PP-OCRv5_mobile_rec.dict.txt",
+      "sha256": "31defc62c0c3ad3674a82da6192226a2ba98ef4ff014a7045cb88d59f9c3de31",
+      "bytes": 1103,
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "pp-ocrv5-rec-ta",
+      "role": "recognizer",
+      "format": "onnx",
+      "path": "pp-ocrv5/ta_PP-OCRv5_mobile_rec.onnx",
+      "url": "https://huggingface.co/PaddlePaddle/ta_PP-OCRv5_mobile_rec_onnx/resolve/0db89798af0d5218fad9ea7ace0557526e9077f1/inference.onnx",
+      "sha256": "c6d2b682d2a0ea4cb1fccdba295976f93fd439964d16cdc666cadef531accbee",
+      "bytes": 7885691,
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "pp-ocrv5-dict-ta",
+      "role": "dictionary",
+      "format": "dict",
+      "path": "pp-ocrv5/ta_PP-OCRv5_mobile_rec.dict.txt",
+      "sha256": "85b541352ae18dc6ba6d47152d8bf8adff6b0266e605d2eef2990c1bf466117b",
+      "bytes": 1723,
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "pp-ocrv5-rec-te",
+      "role": "recognizer",
+      "format": "onnx",
+      "path": "pp-ocrv5/te_PP-OCRv5_mobile_rec.onnx",
+      "url": "https://huggingface.co/PaddlePaddle/te_PP-OCRv5_mobile_rec_onnx/resolve/f1197c83430241c58c64b0952b3a80366d04eeba/inference.onnx",
+      "sha256": "8238bfc46d4cffe720ed6706e3842802467343497428693ff2bfb4e6b3caa36b",
+      "bytes": 7898759,
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "pp-ocrv5-dict-te",
+      "role": "dictionary",
+      "format": "dict",
+      "path": "pp-ocrv5/te_PP-OCRv5_mobile_rec.dict.txt",
+      "sha256": "42f83f5d3fdb50778e4fa5b66c58d99a59ab7792151c5e74f34b8ffd7b61c9d6",
+      "bytes": 1831,
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "pp-ocrv5-rec-ch",
+      "role": "recognizer",
+      "format": "onnx",
+      "path": "pp-ocrv5/PP-OCRv5_mobile_rec.onnx",
+      "url": "https://huggingface.co/PaddlePaddle/PP-OCRv5_mobile_rec_onnx/resolve/ed152b8b495f84de93cda5709d768548a9127622/inference.onnx",
+      "sha256": "da72dc72ca4dc220df0dfde68c1dedc31c58d3e76a25871122e5056227d50092",
+      "bytes": 16534782,
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "pp-ocrv5-dict-ch",
+      "role": "dictionary",
+      "format": "dict",
+      "path": "pp-ocrv5/PP-OCRv5_mobile_rec.dict.txt",
+      "sha256": "d1979e9f794c464c0d2e0b70a7fe14dd978e9dc644c0e71f14158cdf8342af1b",
+      "bytes": 74012,
+      "license": "Apache-2.0"
+    }
+  ],
+  "packs": [
+    {
+      "id": "en",
+      "engine": "paddle",
+      "family": "PP-OCRv5",
+      "languages": [
+        "en"
+      ],
+      "files": [
+        "pp-ocrv5-det-mobile",
+        "pp-ocrv5-rec-en",
+        "pp-ocrv5-dict-en"
+      ]
+    },
+    {
+      "id": "eslav",
+      "engine": "paddle",
+      "family": "PP-OCRv5",
+      "languages": [
+        "ru",
+        "uk",
+        "be",
+        "en"
+      ],
+      "files": [
+        "pp-ocrv5-det-mobile",
+        "pp-ocrv5-rec-eslav",
+        "pp-ocrv5-dict-eslav"
+      ]
+    },
+    {
+      "id": "cyrillic",
+      "engine": "paddle",
+      "family": "PP-OCRv5",
+      "languages": [
+        "ru",
+        "uk",
+        "be",
+        "sr-Cyrl",
+        "bg",
+        "mk",
+        "mn",
+        "kk",
+        "ky",
+        "tg",
+        "tt",
+        "ba",
+        "cv",
+        "udm",
+        "kv",
+        "os",
+        "bua",
+        "xal",
+        "tyv",
+        "sah",
+        "kaa",
+        "mhr",
+        "abq",
+        "ady",
+        "kbd",
+        "av",
+        "dar",
+        "inh",
+        "ce",
+        "lbe",
+        "lez",
+        "tab",
+        "en"
+      ],
+      "files": [
+        "pp-ocrv5-det-mobile",
+        "pp-ocrv5-rec-cyrillic",
+        "pp-ocrv5-dict-cyrillic"
+      ]
+    },
+    {
+      "id": "latin",
+      "engine": "paddle",
+      "family": "PP-OCRv5",
+      "languages": [
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "nl",
+        "pl",
+        "cs",
+        "sk",
+        "sl",
+        "hr",
+        "bs",
+        "sr-Latn",
+        "ro",
+        "hu",
+        "sv",
+        "da",
+        "no",
+        "fi",
+        "et",
+        "lv",
+        "lt",
+        "is",
+        "ga",
+        "cy",
+        "mt",
+        "sq",
+        "tr",
+        "az",
+        "uz",
+        "ku-Latn",
+        "vi",
+        "id",
+        "ms",
+        "tl",
+        "sw",
+        "af",
+        "mi",
+        "oc",
+        "ca",
+        "eu",
+        "gl",
+        "lb",
+        "rm",
+        "qu",
+        "la",
+        "pi",
+        "en"
+      ],
+      "files": [
+        "pp-ocrv5-det-mobile",
+        "pp-ocrv5-rec-latin",
+        "pp-ocrv5-dict-latin"
+      ]
+    },
+    {
+      "id": "korean",
+      "engine": "paddle",
+      "family": "PP-OCRv5",
+      "languages": [
+        "ko",
+        "en"
+      ],
+      "files": [
+        "pp-ocrv5-det-mobile",
+        "pp-ocrv5-rec-korean",
+        "pp-ocrv5-dict-korean"
+      ]
+    },
+    {
+      "id": "arabic",
+      "engine": "paddle",
+      "family": "PP-OCRv5",
+      "languages": [
+        "ar",
+        "fa",
+        "ur",
+        "ug",
+        "ps",
+        "sd",
+        "bal",
+        "ku-Arab",
+        "en"
+      ],
+      "files": [
+        "pp-ocrv5-det-mobile",
+        "pp-ocrv5-rec-arabic",
+        "pp-ocrv5-dict-arabic"
+      ]
+    },
+    {
+      "id": "devanagari",
+      "engine": "paddle",
+      "family": "PP-OCRv5",
+      "languages": [
+        "hi",
+        "mr",
+        "ne",
+        "sa",
+        "mai",
+        "bho",
+        "new",
+        "gom",
+        "bh",
+        "ang",
+        "mah",
+        "sck",
+        "bgc",
+        "en"
+      ],
+      "files": [
+        "pp-ocrv5-det-mobile",
+        "pp-ocrv5-rec-devanagari",
+        "pp-ocrv5-dict-devanagari"
+      ]
+    },
+    {
+      "id": "th",
+      "engine": "paddle",
+      "family": "PP-OCRv5",
+      "languages": [
+        "th",
+        "en"
+      ],
+      "files": [
+        "pp-ocrv5-det-mobile",
+        "pp-ocrv5-rec-th",
+        "pp-ocrv5-dict-th"
+      ]
+    },
+    {
+      "id": "el",
+      "engine": "paddle",
+      "family": "PP-OCRv5",
+      "languages": [
+        "el",
+        "en"
+      ],
+      "files": [
+        "pp-ocrv5-det-mobile",
+        "pp-ocrv5-rec-el",
+        "pp-ocrv5-dict-el"
+      ]
+    },
+    {
+      "id": "ta",
+      "engine": "paddle",
+      "family": "PP-OCRv5",
+      "languages": [
+        "ta",
+        "en"
+      ],
+      "files": [
+        "pp-ocrv5-det-mobile",
+        "pp-ocrv5-rec-ta",
+        "pp-ocrv5-dict-ta"
+      ]
+    },
+    {
+      "id": "te",
+      "engine": "paddle",
+      "family": "PP-OCRv5",
+      "languages": [
+        "te",
+        "en"
+      ],
+      "files": [
+        "pp-ocrv5-det-mobile",
+        "pp-ocrv5-rec-te",
+        "pp-ocrv5-dict-te"
+      ]
+    },
+    {
+      "id": "ch",
+      "engine": "paddle",
+      "family": "PP-OCRv5",
+      "languages": [
+        "zh-Hans",
+        "zh-Hant",
+        "ja",
+        "en"
+      ],
+      "files": [
+        "pp-ocrv5-det-mobile",
+        "pp-ocrv5-rec-ch",
+        "pp-ocrv5-dict-ch"
+      ]
+    }
+  ]
+}

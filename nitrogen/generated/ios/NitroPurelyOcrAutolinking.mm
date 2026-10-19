@@ -10,7 +10,8 @@
 #import "NitroPurelyOcr-Swift-Cxx-Umbrella.hpp"
 #import <type_traits>
 
-#include "HybridPurelyOcrSpecSwift.hpp"
+#include "HybridOcrFactorySpecSwift.hpp"
+#include "HybridOcrDevToolsSpecSwift.hpp"
 
 @interface NitroPurelyOcrAutolinking : NSObject
 @end
@@ -22,9 +23,16 @@
   using namespace margelo::nitro::purelyocr;
 
   HybridObjectRegistry::registerHybridObjectConstructor(
-    "PurelyOcr",
+    "OcrFactory",
     []() -> std::shared_ptr<HybridObject> {
-      std::shared_ptr<HybridPurelyOcrSpec> hybridObject = NitroPurelyOcr::NitroPurelyOcrAutolinking::createPurelyOcr();
+      std::shared_ptr<HybridOcrFactorySpec> hybridObject = NitroPurelyOcr::NitroPurelyOcrAutolinking::createOcrFactory();
+      return hybridObject;
+    }
+  );
+  HybridObjectRegistry::registerHybridObjectConstructor(
+    "OcrDevTools",
+    []() -> std::shared_ptr<HybridObject> {
+      std::shared_ptr<HybridOcrDevToolsSpec> hybridObject = NitroPurelyOcr::NitroPurelyOcrAutolinking::createOcrDevTools();
       return hybridObject;
     }
   );

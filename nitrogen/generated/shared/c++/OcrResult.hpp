@@ -28,15 +28,25 @@
 #error NitroModules cannot be found! Are you sure you installed NitroModules properly?
 #endif
 
+// Forward declaration of `OcrBlock` to properly resolve imports.
+namespace margelo::nitro::purelyocr { struct OcrBlock; }
+// Forward declaration of `OcrImageSize` to properly resolve imports.
+namespace margelo::nitro::purelyocr { struct OcrImageSize; }
 // Forward declaration of `OcrEngine` to properly resolve imports.
 namespace margelo::nitro::purelyocr { enum class OcrEngine; }
-// Forward declaration of `OcrLine` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct OcrLine; }
+// Forward declaration of `OcrTimings` to properly resolve imports.
+namespace margelo::nitro::purelyocr { struct OcrTimings; }
+// Forward declaration of `OcrDiagnostics` to properly resolve imports.
+namespace margelo::nitro::purelyocr { struct OcrDiagnostics; }
 
-#include "OcrEngine.hpp"
 #include <string>
-#include "OcrLine.hpp"
+#include "OcrBlock.hpp"
 #include <vector>
+#include "OcrImageSize.hpp"
+#include "OcrEngine.hpp"
+#include "OcrTimings.hpp"
+#include "OcrDiagnostics.hpp"
+#include <optional>
 
 namespace margelo::nitro::purelyocr {
 
@@ -45,22 +55,17 @@ namespace margelo::nitro::purelyocr {
    */
   struct OcrResult final {
   public:
-    OcrEngine engine     SWIFT_PRIVATE;
     std::string text     SWIFT_PRIVATE;
-    std::vector<OcrLine> lines     SWIFT_PRIVATE;
-    double imageWidth     SWIFT_PRIVATE;
-    double imageHeight     SWIFT_PRIVATE;
-    double decodeMs     SWIFT_PRIVATE;
-    double detMs     SWIFT_PRIVATE;
-    double recMs     SWIFT_PRIVATE;
-    double totalMs     SWIFT_PRIVATE;
-    double detInputWidth     SWIFT_PRIVATE;
-    double detInputHeight     SWIFT_PRIVATE;
-    double boxCount     SWIFT_PRIVATE;
+    std::vector<OcrBlock> blocks     SWIFT_PRIVATE;
+    OcrImageSize image     SWIFT_PRIVATE;
+    OcrEngine engine     SWIFT_PRIVATE;
+    std::vector<std::string> languages     SWIFT_PRIVATE;
+    OcrTimings timings     SWIFT_PRIVATE;
+    std::optional<OcrDiagnostics> diagnostics     SWIFT_PRIVATE;
 
   public:
     OcrResult() = default;
-    explicit OcrResult(OcrEngine engine, std::string text, std::vector<OcrLine> lines, double imageWidth, double imageHeight, double decodeMs, double detMs, double recMs, double totalMs, double detInputWidth, double detInputHeight, double boxCount): engine(engine), text(text), lines(lines), imageWidth(imageWidth), imageHeight(imageHeight), decodeMs(decodeMs), detMs(detMs), recMs(recMs), totalMs(totalMs), detInputWidth(detInputWidth), detInputHeight(detInputHeight), boxCount(boxCount) {}
+    explicit OcrResult(std::string text, std::vector<OcrBlock> blocks, OcrImageSize image, OcrEngine engine, std::vector<std::string> languages, OcrTimings timings, std::optional<OcrDiagnostics> diagnostics): text(text), blocks(blocks), image(image), engine(engine), languages(languages), timings(timings), diagnostics(diagnostics) {}
 
   public:
     friend bool operator==(const OcrResult& lhs, const OcrResult& rhs) = default;
@@ -76,34 +81,24 @@ namespace margelo::nitro {
     static inline margelo::nitro::purelyocr::OcrResult fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       jsi::Object obj = arg.asObject(runtime);
       return margelo::nitro::purelyocr::OcrResult(
-        JSIConverter<margelo::nitro::purelyocr::OcrEngine>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "engine"))),
         JSIConverter<std::string>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "text"))),
-        JSIConverter<std::vector<margelo::nitro::purelyocr::OcrLine>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "lines"))),
-        JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "imageWidth"))),
-        JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "imageHeight"))),
-        JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "decodeMs"))),
-        JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "detMs"))),
-        JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "recMs"))),
-        JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "totalMs"))),
-        JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "detInputWidth"))),
-        JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "detInputHeight"))),
-        JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "boxCount")))
+        JSIConverter<std::vector<margelo::nitro::purelyocr::OcrBlock>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "blocks"))),
+        JSIConverter<margelo::nitro::purelyocr::OcrImageSize>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "image"))),
+        JSIConverter<margelo::nitro::purelyocr::OcrEngine>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "engine"))),
+        JSIConverter<std::vector<std::string>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "languages"))),
+        JSIConverter<margelo::nitro::purelyocr::OcrTimings>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "timings"))),
+        JSIConverter<std::optional<margelo::nitro::purelyocr::OcrDiagnostics>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "diagnostics")))
       );
     }
     static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::purelyocr::OcrResult& arg) {
       jsi::Object obj(runtime);
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "engine"), JSIConverter<margelo::nitro::purelyocr::OcrEngine>::toJSI(runtime, arg.engine));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "text"), JSIConverter<std::string>::toJSI(runtime, arg.text));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "lines"), JSIConverter<std::vector<margelo::nitro::purelyocr::OcrLine>>::toJSI(runtime, arg.lines));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "imageWidth"), JSIConverter<double>::toJSI(runtime, arg.imageWidth));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "imageHeight"), JSIConverter<double>::toJSI(runtime, arg.imageHeight));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "decodeMs"), JSIConverter<double>::toJSI(runtime, arg.decodeMs));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "detMs"), JSIConverter<double>::toJSI(runtime, arg.detMs));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "recMs"), JSIConverter<double>::toJSI(runtime, arg.recMs));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "totalMs"), JSIConverter<double>::toJSI(runtime, arg.totalMs));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "detInputWidth"), JSIConverter<double>::toJSI(runtime, arg.detInputWidth));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "detInputHeight"), JSIConverter<double>::toJSI(runtime, arg.detInputHeight));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "boxCount"), JSIConverter<double>::toJSI(runtime, arg.boxCount));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "blocks"), JSIConverter<std::vector<margelo::nitro::purelyocr::OcrBlock>>::toJSI(runtime, arg.blocks));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "image"), JSIConverter<margelo::nitro::purelyocr::OcrImageSize>::toJSI(runtime, arg.image));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "engine"), JSIConverter<margelo::nitro::purelyocr::OcrEngine>::toJSI(runtime, arg.engine));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "languages"), JSIConverter<std::vector<std::string>>::toJSI(runtime, arg.languages));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "timings"), JSIConverter<margelo::nitro::purelyocr::OcrTimings>::toJSI(runtime, arg.timings));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "diagnostics"), JSIConverter<std::optional<margelo::nitro::purelyocr::OcrDiagnostics>>::toJSI(runtime, arg.diagnostics));
       return obj;
     }
     static inline bool canConvert(jsi::Runtime& runtime, const jsi::Value& value) {
@@ -114,18 +109,13 @@ namespace margelo::nitro {
       if (!nitro::isPlainObject(runtime, obj)) {
         return false;
       }
-      if (!JSIConverter<margelo::nitro::purelyocr::OcrEngine>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "engine")))) return false;
       if (!JSIConverter<std::string>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "text")))) return false;
-      if (!JSIConverter<std::vector<margelo::nitro::purelyocr::OcrLine>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "lines")))) return false;
-      if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "imageWidth")))) return false;
-      if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "imageHeight")))) return false;
-      if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "decodeMs")))) return false;
-      if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "detMs")))) return false;
-      if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "recMs")))) return false;
-      if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "totalMs")))) return false;
-      if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "detInputWidth")))) return false;
-      if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "detInputHeight")))) return false;
-      if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "boxCount")))) return false;
+      if (!JSIConverter<std::vector<margelo::nitro::purelyocr::OcrBlock>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "blocks")))) return false;
+      if (!JSIConverter<margelo::nitro::purelyocr::OcrImageSize>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "image")))) return false;
+      if (!JSIConverter<margelo::nitro::purelyocr::OcrEngine>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "engine")))) return false;
+      if (!JSIConverter<std::vector<std::string>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "languages")))) return false;
+      if (!JSIConverter<margelo::nitro::purelyocr::OcrTimings>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "timings")))) return false;
+      if (!JSIConverter<std::optional<margelo::nitro::purelyocr::OcrDiagnostics>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "diagnostics")))) return false;
       return true;
     }
   };

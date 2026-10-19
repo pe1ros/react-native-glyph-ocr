@@ -42,15 +42,15 @@ namespace margelo::nitro::purelyocr {
     static jni::alias_ref<JOcrEngine> fromCpp(OcrEngine value) {
       static const auto clazz = javaClassStatic();
       switch (value) {
+        case OcrEngine::VISION:
+          static const auto fieldVISION = clazz->getStaticField<JOcrEngine>("VISION");
+          return clazz->getStaticFieldValue(fieldVISION);
         case OcrEngine::PADDLE:
           static const auto fieldPADDLE = clazz->getStaticField<JOcrEngine>("PADDLE");
           return clazz->getStaticFieldValue(fieldPADDLE);
         case OcrEngine::MLKIT:
           static const auto fieldMLKIT = clazz->getStaticField<JOcrEngine>("MLKIT");
           return clazz->getStaticFieldValue(fieldMLKIT);
-        case OcrEngine::VISION:
-          static const auto fieldVISION = clazz->getStaticField<JOcrEngine>("VISION");
-          return clazz->getStaticFieldValue(fieldVISION);
         default:
           std::string stringValue = std::to_string(static_cast<int>(value));
           throw std::invalid_argument("Invalid enum value (" + stringValue + "!");

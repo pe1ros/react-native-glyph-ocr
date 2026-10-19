@@ -29,9 +29,9 @@ namespace margelo::nitro::purelyocr {
    * An enum which can be represented as a JavaScript union (OcrEngine).
    */
   enum class OcrEngine {
-    PADDLE      SWIFT_NAME(paddle) = 0,
-    MLKIT      SWIFT_NAME(mlkit) = 1,
-    VISION      SWIFT_NAME(vision) = 2,
+    VISION      SWIFT_NAME(vision) = 0,
+    PADDLE      SWIFT_NAME(paddle) = 1,
+    MLKIT      SWIFT_NAME(mlkit) = 2,
   } CLOSED_ENUM;
 
 } // namespace margelo::nitro::purelyocr
@@ -44,18 +44,18 @@ namespace margelo::nitro {
     static inline margelo::nitro::purelyocr::OcrEngine fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       std::string unionValue = JSIConverter<std::string>::fromJSI(runtime, arg);
       switch (hashString(unionValue.c_str(), unionValue.size())) {
+        case hashString("vision"): return margelo::nitro::purelyocr::OcrEngine::VISION;
         case hashString("paddle"): return margelo::nitro::purelyocr::OcrEngine::PADDLE;
         case hashString("mlkit"): return margelo::nitro::purelyocr::OcrEngine::MLKIT;
-        case hashString("vision"): return margelo::nitro::purelyocr::OcrEngine::VISION;
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert \"" + unionValue + "\" to enum OcrEngine - invalid value!");
       }
     }
     static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::purelyocr::OcrEngine arg) {
       switch (arg) {
+        case margelo::nitro::purelyocr::OcrEngine::VISION: return JSIConverter<std::string>::toJSI(runtime, "vision");
         case margelo::nitro::purelyocr::OcrEngine::PADDLE: return JSIConverter<std::string>::toJSI(runtime, "paddle");
         case margelo::nitro::purelyocr::OcrEngine::MLKIT: return JSIConverter<std::string>::toJSI(runtime, "mlkit");
-        case margelo::nitro::purelyocr::OcrEngine::VISION: return JSIConverter<std::string>::toJSI(runtime, "vision");
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert OcrEngine to JS - invalid value: "
                                     + std::to_string(static_cast<int>(arg)) + "!");
@@ -67,9 +67,9 @@ namespace margelo::nitro {
       }
       std::string unionValue = JSIConverter<std::string>::fromJSI(runtime, value);
       switch (hashString(unionValue.c_str(), unionValue.size())) {
+        case hashString("vision"):
         case hashString("paddle"):
         case hashString("mlkit"):
-        case hashString("vision"):
           return true;
         default:
           return false;

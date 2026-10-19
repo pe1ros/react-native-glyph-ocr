@@ -23,19 +23,22 @@ data class OcrLine(
   val text: String,
   @DoNotStrip
   @Keep
-  val score: Double,
+  val confidence: Double,
   @DoNotStrip
   @Keep
-  val x: Double,
+  val boundingBox: OcrRect,
   @DoNotStrip
   @Keep
-  val y: Double,
+  val pixelBoundingBox: OcrRect,
   @DoNotStrip
   @Keep
-  val width: Double,
+  val cornerPoints: Array<OcrPoint>,
   @DoNotStrip
   @Keep
-  val height: Double
+  val angle: Double,
+  @DoNotStrip
+  @Keep
+  val elements: Array<OcrElement>
 ) {
   /* primary constructor */
 
@@ -43,21 +46,23 @@ data class OcrLine(
     if (this === other) return true
     if (other !is OcrLine) return false
     return Objects.deepEquals(this.text, other.text)
-      && Objects.deepEquals(this.score, other.score)
-      && Objects.deepEquals(this.x, other.x)
-      && Objects.deepEquals(this.y, other.y)
-      && Objects.deepEquals(this.width, other.width)
-      && Objects.deepEquals(this.height, other.height)
+      && Objects.deepEquals(this.confidence, other.confidence)
+      && Objects.deepEquals(this.boundingBox, other.boundingBox)
+      && Objects.deepEquals(this.pixelBoundingBox, other.pixelBoundingBox)
+      && Objects.deepEquals(this.cornerPoints, other.cornerPoints)
+      && Objects.deepEquals(this.angle, other.angle)
+      && Objects.deepEquals(this.elements, other.elements)
   }
 
   override fun hashCode(): Int {
     return arrayOf<Any?>(
       text,
-      score,
-      x,
-      y,
-      width,
-      height
+      confidence,
+      boundingBox,
+      pixelBoundingBox,
+      cornerPoints,
+      angle,
+      elements
     ).contentDeepHashCode()
   }
 
@@ -69,8 +74,8 @@ data class OcrLine(
     @Keep
     @Suppress("unused")
     @JvmStatic
-    private fun fromCpp(text: String, score: Double, x: Double, y: Double, width: Double, height: Double): OcrLine {
-      return OcrLine(text, score, x, y, width, height)
+    private fun fromCpp(text: String, confidence: Double, boundingBox: OcrRect, pixelBoundingBox: OcrRect, cornerPoints: Array<OcrPoint>, angle: Double, elements: Array<OcrElement>): OcrLine {
+      return OcrLine(text, confidence, boundingBox, pixelBoundingBox, cornerPoints, angle, elements)
     }
   }
 }

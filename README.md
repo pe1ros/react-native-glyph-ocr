@@ -1,45 +1,80 @@
-# react-native-purely-ocr (spike)
+# react-native-purely-ocr (working name)
 
-On-device text recognition for the OCR spike, as a [Nitro](https://nitro.margelo.com) module.
-Android only: iOS will use Apple Vision, so the module is not linked there.
+On-device text recognition for React Native, as a [Nitro](https://nitro.margelo.com) module (New Architecture only):
+Apple Vision on iOS, PaddleOCR PP-OCRv5 on ONNX Runtime on Android. Russian and the other Cyrillic,
+Latin, Arabic, Devanagari, Korean, Thai, Greek, Tamil, Telugu and Chinese packs of PP-OCRv5 on Android; whatever Vision reads on iOS.
+Images never leave the device.
 
-- **PaddleOCR**: PP-OCRv5 mobile detector plus a Cyrillic recognizer (`eslav` or `cyrillic`), run with ONNX Runtime.
-  Pre- and post-processing follow PaddleOCR, with two changes for food labels:
-  - curved lines (cans, bottles) are straightened along their centerline;
-  - lines are scored by their own pixels, so curved lines are not dropped.
-- **ML Kit Text Recognition v2** (Latin script) runs on the same decoded photo for comparison.
+The API and its decisions are in `docs/ocr-library-api.md` of the Purely repository; measurements in `docs/spikes/`.
 
-The spike screen that uses it lives in `src/spikes/ocr`. The report is in `docs/spikes/paddleocr-android.md`.
+```ts
+import { createOcr, recognize, useOcr } from 'react-native-purely-ocr';
 
-Things learned on the way:
-- **Thread affinity.** ONNX Runtime ignores `session.intra_op_thread_affinities` on Android (the code is behind `#if !defined(__ANDROID__)`).
-  `PaddleModelConfig.cpus` works around it: it pins the worker thread before the sessions are created, and ONNX Runtime's pool threads inherit that CPU mask.
-  This is how the spike estimated a budget phone on the little cores of a faster one.
-- **XNNPACK.** `useXnnpack: true` crashes ONNX Runtime 1.30 (SIGSEGV in `OrtSession.run`) on the recognizer. The spike screen does not offer it.
+const text = (await recognize('file:///…/label.jpg', { languages: ['ru', 'en'] })).text;
 
-## Models
+const ocr = createOcr({ languages: ['ru', 'en'] });  // Vision on iOS, the `eslav` pack on Android
+await ocr.prepare({ onProgress: p => console.log(p.fraction) });  // download, load, warm up
+const result = await ocr.recognize(uri, { roi: { x: 0.1, y: 0.3, width: 0.8, height: 0.4, unit: 'normalized' } });
+// result.blocks[].lines[].elements[]: text, confidence, boundingBox (0..1), pixelBoundingBox, cornerPoints, angle
+ocr.dispose();
+```
 
-`android/build.gradle` downloads the models into the APK assets at build time. They are pinned by revision and checked by SHA-256.
-The real app will download them from our server on first launch instead.
+## Entry points
 
-| File | Source | License |
+| Import | What |
+|---|---|
+| `react-native-purely-ocr` | `recognize`, `recognizeText`, `createOcr`, `useOcr`, `prepare`, `isReady`, `getSupportedLanguages`, `configureModels`, `getModelStore`, `OcrError` |
+| `react-native-purely-ocr/camera` | `useTextScanner` (VisionCamera 5: waits for a sharp, still frame and recognizes it once), `createFrameMeter`, `viewRectToImageRect`, `imageRectToViewRect`. Needs `react-native-vision-camera` ≥ 5, `react-native-vision-camera-worklets` and `react-native-worklets` |
+| `react-native-purely-ocr/dev` | bench helpers: tuned recognizers (threads, pinned cores, ExecuTorch), ML Kit for comparison, camera-like test frames |
+
+On Android, `frame.getNativeBuffer()` of VisionCamera 5.0.11 works only when the app is built with `minSdk` ≥ 26, and
+`recognizeFrame` needs Android 10 on the device.
+
+## Models (Android)
+
+`models/manifest.json` lists the PP-OCRv5 packs, pinned to Hugging Face revisions and checked by sha256. Files are stored as
+`<sha256>.<ext>` in `noBackupFilesDir/ocr-models` (Application Support on iOS) and downloaded on the first `prepare()`,
+or from your own mirror with `configureModels({ baseUrl })`. Dictionaries ship in `models/`.
+`node scripts/build-manifest.mjs` rebuilds the manifest and the dictionaries; `--check` verifies they are current.
+
+| Pack | Languages | Download |
 |---|---|---|
-| `PP-OCRv5_mobile_det.onnx` | [PaddlePaddle/PP-OCRv5_mobile_det_onnx](https://huggingface.co/PaddlePaddle/PP-OCRv5_mobile_det_onnx) | Apache-2.0 |
-| `eslav_PP-OCRv5_mobile_rec.onnx` | [PaddlePaddle/eslav_PP-OCRv5_mobile_rec_onnx](https://huggingface.co/PaddlePaddle/eslav_PP-OCRv5_mobile_rec_onnx) | Apache-2.0 |
-| `cyrillic_PP-OCRv5_mobile_rec.onnx` | [PaddlePaddle/cyrillic_PP-OCRv5_mobile_rec_onnx](https://huggingface.co/PaddlePaddle/cyrillic_PP-OCRv5_mobile_rec_onnx) | Apache-2.0 |
+| `en` | en | 12.7 MB |
+| `eslav` | ru, uk, be, en | 12.7 MB |
+| `cyrillic` | ru, uk, be, sr-Cyrl, bg, mk, kk, ky, tg, tt, … (33) | 12.9 MB |
+| `latin` | de, fr, es, it, pt, pl, cs, tr, vi, … (48, with en) | 12.9 MB |
+| `korean`, `arabic`, `devanagari`, `th`, `el`, `ta`, `te`, `ch` | by name, plus en | 12.6–21.3 MB |
 
-`android/src/main/assets/ocr/*.dict.txt` holds each recognizer's `character_dict`, taken from the `inference.yml` next to the model (Apache-2.0, PaddlePaddle).
+The detector (4.8 MB) is shared by all packs and downloaded once.
 
-Other dependencies:
-- ONNX Runtime Android (`com.microsoft.onnxruntime:onnxruntime-android`), MIT license.
-- ML Kit Text Recognition (`com.google.mlkit:text-recognition`), under the ML Kit Terms of Service.
+## Build flags
+
+| Flag | Where | Default | Effect |
+|---|---|---|---|
+| `PurelyOcr_embedPacks=eslav,…` | `gradle.properties` | empty | downloads these packs at build time, checks sha256, packs them into `assets/ocr-models` |
+| `PurelyOcr_devMlKit=true` | `gradle.properties` | off | compiles ML Kit Text Recognition (Latin) for `/dev` (+12.5 MB, ML Kit Terms of Service) |
+| `PurelyOcr_executorch=auto\|true\|false` | `gradle.properties` | `auto` | compiles the ExecuTorch runtime from `android/executorch` (built by `scripts/ocr-spike/executorch/build-android.sh`; arm64 only) |
+| `PurelyOcr_paddleOnIos=1` | `ENV` of `pod install` | off | reserved for PaddleOCR on iOS; not implemented yet, `pod install` stops with an error |
+
+## Notes
+
+- **Thread affinity.** ONNX Runtime ignores `session.intra_op_thread_affinities` on Android. `DevTuning.cpus` pins the
+  recognizer's thread before the sessions are created, and ONNX Runtime's pool threads inherit that CPU mask.
+- **XNNPACK.** `DevTuning.useXnnpack` crashes ONNX Runtime 1.30 (SIGSEGV in `OrtSession.run`) on the recognizer.
+- **Nitro.** The generated code is from nitrogen 0.35.9, the version of `react-native-nitro-modules` in the app. Keep the two equal.
+  Two nitrogen limits shaped the spec: an optional `string[]` in a struct does not compile in Swift (so `customWords` belong to
+  `createOcr`), and a `UInt64` in a struct does not compile in Kotlin (so `createTestFrame` returns the pointer alone).
+- The iOS pod builds its Swift with `-O` even in Debug: the frame meter loops over pixels on every camera frame.
+
+## Licenses
+
+- PP-OCRv5 models and dictionaries: Apache-2.0, PaddlePaddle ([Hugging Face](https://huggingface.co/PaddlePaddle)).
+- ONNX Runtime Android: MIT. ExecuTorch: BSD-3-Clause. ML Kit (dev builds only): ML Kit Terms of Service.
 
 ## Regenerating the bindings
 
-The bindings in `nitrogen/generated` are generated from `src/specs/PurelyOcr.nitro.ts`. After editing the spec, run this from this folder:
+The bindings in `nitrogen/generated` are generated from `src/specs/*.nitro.ts`. After editing a spec, run from this folder:
 
 ```bash
 npx nitrogen@0.35.9
 ```
-
-Keep the nitrogen version the same as `react-native-nitro-modules`.

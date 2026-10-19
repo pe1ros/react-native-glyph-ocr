@@ -18,8 +18,20 @@ public extension OcrLine {
   /**
    * Create a new instance of `OcrLine`.
    */
-  init(text: String, score: Double, x: Double, y: Double, width: Double, height: Double) {
-    self.init(std.string(text), score, x, y, width, height)
+  init(text: String, confidence: Double, boundingBox: OcrRect, pixelBoundingBox: OcrRect, cornerPoints: [OcrPoint], angle: Double, elements: [OcrElement]) {
+    self.init(std.string(text), confidence, boundingBox, pixelBoundingBox, { () -> bridge.std__vector_OcrPoint_ in
+      var __vector = bridge.create_std__vector_OcrPoint_(cornerPoints.count)
+      for __item in cornerPoints {
+        __vector.push_back(__item)
+      }
+      return __vector
+    }(), angle, { () -> bridge.std__vector_OcrElement_ in
+      var __vector = bridge.create_std__vector_OcrElement_(elements.count)
+      for __item in elements {
+        __vector.push_back(__item)
+      }
+      return __vector
+    }())
   }
 
   @inline(__always)
@@ -28,27 +40,32 @@ public extension OcrLine {
   }
   
   @inline(__always)
-  var score: Double {
-    return self.__score
+  var confidence: Double {
+    return self.__confidence
   }
   
   @inline(__always)
-  var x: Double {
-    return self.__x
+  var boundingBox: OcrRect {
+    return self.__boundingBox
   }
   
   @inline(__always)
-  var y: Double {
-    return self.__y
+  var pixelBoundingBox: OcrRect {
+    return self.__pixelBoundingBox
   }
   
   @inline(__always)
-  var width: Double {
-    return self.__width
+  var cornerPoints: [OcrPoint] {
+    return self.__cornerPoints.map({ __item in __item })
   }
   
   @inline(__always)
-  var height: Double {
-    return self.__height
+  var angle: Double {
+    return self.__angle
+  }
+  
+  @inline(__always)
+  var elements: [OcrElement] {
+    return self.__elements.map({ __item in __item })
   }
 }

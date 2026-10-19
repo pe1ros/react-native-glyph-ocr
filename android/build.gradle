@@ -26,27 +26,33 @@ def getExtOrIntegerDefault(name) {
   return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties["NitroPurelyOcr_" + name]).toInteger()
 }
 
-// PaddleOCR models (Apache-2.0), official ONNX exports by PaddlePaddle, pinned to a revision.
-// They are downloaded at build time and packed into the APK assets for the spike only:
-// the real app will download them from our server on first launch.
-def ocrModels = [
-  [
-    name  : "PP-OCRv5_mobile_det.onnx",
-    url   : "https://huggingface.co/PaddlePaddle/PP-OCRv5_mobile_det_onnx/resolve/e6f4fa85f00e168c862bc462aebca69eef9b3d3d/inference.onnx",
-    sha256: "a431985659dc921974177a95adcfbb90fd9e51989a5e04d70d0b75f597b6e61d",
-  ],
-  [
-    name  : "eslav_PP-OCRv5_mobile_rec.onnx",
-    url   : "https://huggingface.co/PaddlePaddle/eslav_PP-OCRv5_mobile_rec_onnx/resolve/9a32171fc5718746875e1a261818884517975013/inference.onnx",
-    sha256: "b3018ef2b09a0250b6e0c8e871c927098363e5fd4df890cc68e8358eb0aaf1bd",
-  ],
-  [
-    name  : "cyrillic_PP-OCRv5_mobile_rec.onnx",
-    url   : "https://huggingface.co/PaddlePaddle/cyrillic_PP-OCRv5_mobile_rec_onnx/resolve/2cef88145434beb8afa9dd82d77d799eb1ad7b29/inference.onnx",
-    sha256: "5371ee1ddaa7983cc62d0818d99e982b6804638c85e4f960d59a574094e172e5",
-  ],
-]
-def ocrAssetsDir = file("${buildDir}/generated/ocr-assets")
+def flag(name, defaultValue) {
+  def key = "PurelyOcr_" + name
+  if (rootProject.ext.has(key)) return rootProject.ext.get(key).toString()
+  def value = project.findProperty(key) ?: System.getenv(key)
+  return value != null ? value.toString() : defaultValue
+}
+
+// ─── Build flags (docs/ocr-library-api.md, section 2) ─────────────────────
+// PurelyOcr_embedPacks=eslav,cyrillic  packs of models/manifest.json to download at build time, check
+//                                      by sha256 and pack into assets/ocr-models (else downloaded at runtime)
+// PurelyOcr_devMlKit=true             compiles ML Kit for react-native-purely-ocr/dev (+12.5 MB, ML Kit Terms)
+// PurelyOcr_executorch=auto|true|false  the minimal ExecuTorch build in android/executorch, made by
+//                                      scripts/ocr-spike/executorch/build-android.sh; auto = if it is there
+def embedPacks = flag("embedPacks", "").split(",").collect { it.trim() }.findAll { it }
+def withMlKit = flag("devMlKit", "false").toBoolean()
+def executorchDir = file("executorch")
+def executorchFlag = flag("executorch", "auto")
+def withExecuTorch = executorchFlag == "auto" ? new File(executorchDir, "jni/arm64-v8a/libexecutorch.so").exists() : executorchFlag.toBoolean()
+if (withExecuTorch && !new File(executorchDir, "jni/arm64-v8a/libexecutorch.so").exists()) {
+  throw new GradleException("[PurelyOcr] PurelyOcr_executorch=true, but ${executorchDir} has no build: run scripts/ocr-spike/executorch/build-android.sh")
+}
+
+// The manifest and the recognizer dictionaries always ship in the APK (a few KB);
+// the models only for PurelyOcr_embedPacks.
+def modelsDir = file("../models")
+def ocrAssetsDir = file("${buildDir}/generated/purelyocr-assets")
+def modelCacheDir = file("${rootProject.buildDir}/purelyocr-model-cache")
 
 static String sha256Of(File f) {
   def md = MessageDigest.getInstance("SHA-256")
@@ -58,44 +64,54 @@ static String sha256Of(File f) {
   return md.digest().encodeHex().toString()
 }
 
-tasks.register("downloadOcrModels") {
-  description = "Downloads the PaddleOCR ONNX models into the OCR spike assets"
+tasks.register("preparePurelyOcrAssets") {
+  description = "Copies the OCR model manifest and dictionaries into the assets, and the models of PurelyOcr_embedPacks"
+  inputs.dir(modelsDir)
+  inputs.property("embedPacks", embedPacks.join(","))
   outputs.dir(ocrAssetsDir)
   doLast {
-    def dir = new File(ocrAssetsDir, "ocr")
-    dir.mkdirs()
-    ocrModels.each { m ->
-      def out = new File(dir, m.name)
-      if (out.exists() && sha256Of(out) == m.sha256) return
-      logger.lifecycle("[PurelyOcr] downloading ${m.name}")
-      def tmp = new File(dir, m.name + ".part")
-      new URL(m.url).withInputStream { is -> tmp.withOutputStream { os -> os << is } }
-      def actual = sha256Of(tmp)
-      if (actual != m.sha256) {
-        tmp.delete()
-        throw new GradleException("[PurelyOcr] ${m.name}: sha256 ${actual} != ${m.sha256}")
+    project.delete(ocrAssetsDir)
+    def manifest = new groovy.json.JsonSlurper().parse(new File(modelsDir, "manifest.json"))
+    copy {
+      from(new File(modelsDir, "manifest.json"))
+      into(new File(ocrAssetsDir, "purelyocr"))
+    }
+    def files = manifest.files.collectEntries { [(it.id): it] }
+    manifest.files.findAll { it.format == "dict" }.each { f ->
+      def src = new File(modelsDir, f.path)
+      if (sha256Of(src) != f.sha256) throw new GradleException("[PurelyOcr] ${f.path}: sha256 does not match the manifest")
+      copy {
+        from(src)
+        into(new File(ocrAssetsDir, "ocr-models/" + new File(f.path).parent))
       }
-      out.delete()
-      tmp.renameTo(out)
+    }
+    embedPacks.each { packId ->
+      def pack = manifest.packs.find { it.id == packId }
+      if (pack == null) throw new GradleException("[PurelyOcr] PurelyOcr_embedPacks: no pack ${packId} in models/manifest.json")
+      pack.files.collect { files[it] }.findAll { it.format == "onnx" || it.format == "ort" }.each { f ->
+        modelCacheDir.mkdirs()
+        def cached = new File(modelCacheDir, "${f.sha256}.${f.format}")
+        if (!cached.exists() || sha256Of(cached) != f.sha256) {
+          logger.lifecycle("[PurelyOcr] downloading ${f.path}")
+          def tmp = new File(modelCacheDir, cached.name + ".part")
+          new URL(f.url).withInputStream { is -> tmp.withOutputStream { os -> os << is } }
+          def actual = sha256Of(tmp)
+          if (actual != f.sha256) {
+            tmp.delete()
+            throw new GradleException("[PurelyOcr] ${f.path}: sha256 ${actual} != ${f.sha256}")
+          }
+          cached.delete()
+          tmp.renameTo(cached)
+        }
+        def out = new File(ocrAssetsDir, "ocr-models/" + f.path)
+        out.parentFile.mkdirs()
+        // Packs share the detector.
+        if (!out.exists()) java.nio.file.Files.copy(cached.toPath(), out.toPath())
+      }
     }
   }
 }
-preBuild.dependsOn("downloadOcrModels")
-
-// ExecuTorch runtime for the same models exported to .pte, built from the v1.4.0 sources (the version
-// of the executorch Python package that exports them) by scripts/ocr-spike/executorch/build-android.sh:
-// XNNPACK and only the kernels our programs run outside the delegate, arm64-v8a only. That build also
-// links the app's libc++_shared, so its C++ exceptions reach Kotlin instead of aborting the app.
-def executorchDir = file("executorch")
-
-tasks.register("checkExecuTorch") {
-  doLast {
-    if (!new File(executorchDir, "jni/arm64-v8a/libexecutorch.so").exists()) {
-      throw new GradleException("[PurelyOcr] no ExecuTorch in ${executorchDir}: run scripts/ocr-spike/executorch/build-android.sh")
-    }
-  }
-}
-preBuild.dependsOn("checkExecuTorch")
+preBuild.dependsOn("preparePurelyOcrAssets")
 
 android {
   namespace "com.margelo.nitro.purelyocr"
@@ -107,6 +123,8 @@ android {
     minSdkVersion getExtOrIntegerDefault("minSdkVersion")
     targetSdkVersion getExtOrIntegerDefault("targetSdkVersion")
     buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
+    buildConfigField "boolean", "PURELYOCR_EXECUTORCH", withExecuTorch.toString()
+    buildConfigField "boolean", "PURELYOCR_MLKIT", withMlKit.toString()
 
     externalNativeBuild {
       cmake {
@@ -165,6 +183,11 @@ android {
     }
   }
 
+  androidResources {
+    // Models are read straight from the APK; compressing them only slows the first load.
+    noCompress += ["onnx", "ort", "pte"]
+  }
+
   lintOptions {
     disable "GradleCompatible"
   }
@@ -177,8 +200,13 @@ android {
   sourceSets {
     main {
       assets.srcDirs += [ocrAssetsDir]
-      java.srcDirs += ["${executorchDir}/java"]
-      jniLibs.srcDirs += ["${executorchDir}/jni"]
+      if (withExecuTorch) {
+        java.srcDirs += ["src/executorch/java", "${executorchDir}/java"]
+        jniLibs.srcDirs += ["${executorchDir}/jni"]
+      }
+      if (withMlKit) {
+        java.srcDirs += ["src/mlkit/java"]
+      }
       if (isNewArchitectureEnabled()) {
         java.srcDirs += [
           // React Codegen files
@@ -203,14 +231,18 @@ dependencies {
   // Add a dependency on NitroModules
   implementation project(":react-native-nitro-modules")
 
-  // PaddleOCR inference (MIT)
+  // PaddleOCR inference (MIT): the default runtime
   implementation "com.microsoft.onnxruntime:onnxruntime-android:1.30.0"
-  // ExecuTorch (BSD-3-Clause): libexecutorch.so and its Kotlin API come from executorchDir; the API
-  // needs fbjni and SoLoader's NativeLoader, the versions react-native ships.
-  implementation "com.facebook.fbjni:fbjni:0.7.0"
-  implementation "com.facebook.soloader:nativeloader:0.12.1"
-  // ML Kit Text Recognition v2, Latin script, model bundled into the APK
-  implementation "com.google.mlkit:text-recognition:16.0.1"
+  if (withExecuTorch) {
+    // ExecuTorch (BSD-3-Clause): libexecutorch.so and its Kotlin API come from executorchDir; the API
+    // needs fbjni and SoLoader's NativeLoader, the versions react-native ships.
+    implementation "com.facebook.fbjni:fbjni:0.7.0"
+    implementation "com.facebook.soloader:nativeloader:0.12.1"
+  }
+  if (withMlKit) {
+    // ML Kit Text Recognition v2, Latin script, model bundled into the APK (/dev only)
+    implementation "com.google.mlkit:text-recognition:16.0.1"
+  }
   implementation "androidx.exifinterface:exifinterface:1.4.2"
   implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2"
 }

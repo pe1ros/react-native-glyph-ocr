@@ -43,6 +43,17 @@ class TextLine(
   fun srcX(u: Float, v: Float): Float = (cx + u * cos - v * sin) * scaleX
   fun srcY(u: Float, v: Float): Float = (cy + u * sin + v * cos) * scaleY
 
+  /**
+   * A point on the text's top (`top`) or bottom edge at `share` (0..1) of its length, in source px.
+   * "Top" is the top of the text as the recognizer reads it (see PaddleOcr.sampleLine).
+   */
+  fun edgePoint(share: Float, top: Boolean): Pair<Float, Float> {
+    val u = u0 + share * (u1 - u0)
+    val c = centerAt(u)
+    val v = if (vertical == top) c + halfHeight else c - halfHeight
+    return Pair(srcX(u, v), srcY(u, v))
+  }
+
   /** Length along the text and height across it, in source px. */
   val lengthSrc: Float get() = (u1 - u0) * scaleX
   val heightSrc: Float get() = 2 * halfHeight * scaleY

@@ -8,40 +8,161 @@
 #pragma once
 
 // Forward declarations of C++ defined types
+// Forward declaration of `DevTuning` to properly resolve imports.
+namespace margelo::nitro::purelyocr { struct DevTuning; }
 // Forward declaration of `DeviceSummary` to properly resolve imports.
 namespace margelo::nitro::purelyocr { struct DeviceSummary; }
-// Forward declaration of `HybridPurelyOcrSpec` to properly resolve imports.
-namespace margelo::nitro::purelyocr { class HybridPurelyOcrSpec; }
-// Forward declaration of `ModelLoadInfo` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct ModelLoadInfo; }
+// Forward declaration of `DownloadResult` to properly resolve imports.
+namespace margelo::nitro::purelyocr { struct DownloadResult; }
+// Forward declaration of `FrameOrientation` to properly resolve imports.
+namespace margelo::nitro::purelyocr { enum class FrameOrientation; }
+// Forward declaration of `FrameQuality` to properly resolve imports.
+namespace margelo::nitro::purelyocr { struct FrameQuality; }
+// Forward declaration of `FrameRecognizeOptions` to properly resolve imports.
+namespace margelo::nitro::purelyocr { struct FrameRecognizeOptions; }
+// Forward declaration of `HybridOcrDevToolsSpec` to properly resolve imports.
+namespace margelo::nitro::purelyocr { class HybridOcrDevToolsSpec; }
+// Forward declaration of `HybridOcrFactorySpec` to properly resolve imports.
+namespace margelo::nitro::purelyocr { class HybridOcrFactorySpec; }
+// Forward declaration of `HybridOcrFrameMeterSpec` to properly resolve imports.
+namespace margelo::nitro::purelyocr { class HybridOcrFrameMeterSpec; }
+// Forward declaration of `HybridOcrModelStoreSpec` to properly resolve imports.
+namespace margelo::nitro::purelyocr { class HybridOcrModelStoreSpec; }
+// Forward declaration of `HybridOcrRecognizerSpec` to properly resolve imports.
+namespace margelo::nitro::purelyocr { class HybridOcrRecognizerSpec; }
+// Forward declaration of `ImageOrientation` to properly resolve imports.
+namespace margelo::nitro::purelyocr { enum class ImageOrientation; }
+// Forward declaration of `LanguageResolution` to properly resolve imports.
+namespace margelo::nitro::purelyocr { struct LanguageResolution; }
+// Forward declaration of `LanguageStatus` to properly resolve imports.
+namespace margelo::nitro::purelyocr { enum class LanguageStatus; }
+// Forward declaration of `LoadResult` to properly resolve imports.
+namespace margelo::nitro::purelyocr { struct LoadResult; }
+// Forward declaration of `ModelFile` to properly resolve imports.
+namespace margelo::nitro::purelyocr { struct ModelFile; }
+// Forward declaration of `ModelFormat` to properly resolve imports.
+namespace margelo::nitro::purelyocr { enum class ModelFormat; }
+// Forward declaration of `ModelManifest` to properly resolve imports.
+namespace margelo::nitro::purelyocr { struct ModelManifest; }
+// Forward declaration of `ModelPackStatus` to properly resolve imports.
+namespace margelo::nitro::purelyocr { enum class ModelPackStatus; }
+// Forward declaration of `ModelPack` to properly resolve imports.
+namespace margelo::nitro::purelyocr { struct ModelPack; }
+// Forward declaration of `ModelRole` to properly resolve imports.
+namespace margelo::nitro::purelyocr { enum class ModelRole; }
+// Forward declaration of `ModelSource` to properly resolve imports.
+namespace margelo::nitro::purelyocr { enum class ModelSource; }
+// Forward declaration of `ModelStoreConfig` to properly resolve imports.
+namespace margelo::nitro::purelyocr { struct ModelStoreConfig; }
+// Forward declaration of `OcrBlock` to properly resolve imports.
+namespace margelo::nitro::purelyocr { struct OcrBlock; }
+// Forward declaration of `OcrDiagnostics` to properly resolve imports.
+namespace margelo::nitro::purelyocr { struct OcrDiagnostics; }
+// Forward declaration of `OcrElement` to properly resolve imports.
+namespace margelo::nitro::purelyocr { struct OcrElement; }
 // Forward declaration of `OcrEngine` to properly resolve imports.
 namespace margelo::nitro::purelyocr { enum class OcrEngine; }
+// Forward declaration of `OcrImageSize` to properly resolve imports.
+namespace margelo::nitro::purelyocr { struct OcrImageSize; }
 // Forward declaration of `OcrLine` to properly resolve imports.
 namespace margelo::nitro::purelyocr { struct OcrLine; }
+// Forward declaration of `OcrOutput` to properly resolve imports.
+namespace margelo::nitro::purelyocr { enum class OcrOutput; }
+// Forward declaration of `OcrPoint` to properly resolve imports.
+namespace margelo::nitro::purelyocr { struct OcrPoint; }
+// Forward declaration of `OcrRect` to properly resolve imports.
+namespace margelo::nitro::purelyocr { struct OcrRect; }
+// Forward declaration of `OcrRegion` to properly resolve imports.
+namespace margelo::nitro::purelyocr { struct OcrRegion; }
 // Forward declaration of `OcrResult` to properly resolve imports.
 namespace margelo::nitro::purelyocr { struct OcrResult; }
-// Forward declaration of `PaddleModelConfig` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct PaddleModelConfig; }
-// Forward declaration of `PaddleOptions` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct PaddleOptions; }
-// Forward declaration of `VisionOptions` to properly resolve imports.
-namespace margelo::nitro::purelyocr { struct VisionOptions; }
+// Forward declaration of `OcrTimings` to properly resolve imports.
+namespace margelo::nitro::purelyocr { struct OcrTimings; }
+// Forward declaration of `PaddleRuntimeKind` to properly resolve imports.
+namespace margelo::nitro::purelyocr { enum class PaddleRuntimeKind; }
+// Forward declaration of `PaddleTuning` to properly resolve imports.
+namespace margelo::nitro::purelyocr { struct PaddleTuning; }
+// Forward declaration of `PreparePhase` to properly resolve imports.
+namespace margelo::nitro::purelyocr { enum class PreparePhase; }
+// Forward declaration of `PrepareProgress` to properly resolve imports.
+namespace margelo::nitro::purelyocr { struct PrepareProgress; }
+// Forward declaration of `RawPixelFormat` to properly resolve imports.
+namespace margelo::nitro::purelyocr { enum class RawPixelFormat; }
+// Forward declaration of `ReadingOrder` to properly resolve imports.
+namespace margelo::nitro::purelyocr { enum class ReadingOrder; }
+// Forward declaration of `RecognitionLevel` to properly resolve imports.
+namespace margelo::nitro::purelyocr { enum class RecognitionLevel; }
+// Forward declaration of `RecognizeOptions` to properly resolve imports.
+namespace margelo::nitro::purelyocr { struct RecognizeOptions; }
+// Forward declaration of `RegionUnit` to properly resolve imports.
+namespace margelo::nitro::purelyocr { enum class RegionUnit; }
+// Forward declaration of `RegionView` to properly resolve imports.
+namespace margelo::nitro::purelyocr { struct RegionView; }
+// Forward declaration of `SupportedLanguage` to properly resolve imports.
+namespace margelo::nitro::purelyocr { struct SupportedLanguage; }
+// Forward declaration of `TestFrameInfo` to properly resolve imports.
+namespace margelo::nitro::purelyocr { struct TestFrameInfo; }
+// Forward declaration of `ViewResizeMode` to properly resolve imports.
+namespace margelo::nitro::purelyocr { enum class ViewResizeMode; }
 
 // Include C++ defined types
+#include "DevTuning.hpp"
 #include "DeviceSummary.hpp"
-#include "HybridPurelyOcrSpec.hpp"
-#include "ModelLoadInfo.hpp"
+#include "DownloadResult.hpp"
+#include "FrameOrientation.hpp"
+#include "FrameQuality.hpp"
+#include "FrameRecognizeOptions.hpp"
+#include "HybridOcrDevToolsSpec.hpp"
+#include "HybridOcrFactorySpec.hpp"
+#include "HybridOcrFrameMeterSpec.hpp"
+#include "HybridOcrModelStoreSpec.hpp"
+#include "HybridOcrRecognizerSpec.hpp"
+#include "ImageOrientation.hpp"
+#include "LanguageResolution.hpp"
+#include "LanguageStatus.hpp"
+#include "LoadResult.hpp"
+#include "ModelFile.hpp"
+#include "ModelFormat.hpp"
+#include "ModelManifest.hpp"
+#include "ModelPack.hpp"
+#include "ModelPackStatus.hpp"
+#include "ModelRole.hpp"
+#include "ModelSource.hpp"
+#include "ModelStoreConfig.hpp"
+#include "OcrBlock.hpp"
+#include "OcrDiagnostics.hpp"
+#include "OcrElement.hpp"
 #include "OcrEngine.hpp"
+#include "OcrImageSize.hpp"
 #include "OcrLine.hpp"
+#include "OcrOutput.hpp"
+#include "OcrPoint.hpp"
+#include "OcrRect.hpp"
+#include "OcrRegion.hpp"
 #include "OcrResult.hpp"
-#include "PaddleModelConfig.hpp"
-#include "PaddleOptions.hpp"
-#include "VisionOptions.hpp"
+#include "OcrTimings.hpp"
+#include "PaddleRuntimeKind.hpp"
+#include "PaddleTuning.hpp"
+#include "PreparePhase.hpp"
+#include "PrepareProgress.hpp"
+#include "RawPixelFormat.hpp"
+#include "ReadingOrder.hpp"
+#include "RecognitionLevel.hpp"
+#include "RecognizeOptions.hpp"
+#include "RegionUnit.hpp"
+#include "RegionView.hpp"
+#include "SupportedLanguage.hpp"
+#include "TestFrameInfo.hpp"
+#include "ViewResizeMode.hpp"
+#include <NitroModules/ArrayBuffer.hpp>
 #include <NitroModules/Promise.hpp>
 #include <NitroModules/Result.hpp>
 #include <exception>
+#include <functional>
 #include <memory>
+#include <optional>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 // C++ helpers for Swift
@@ -54,8 +175,16 @@ namespace margelo::nitro::purelyocr { struct VisionOptions; }
 #include <NitroModules/DateToChronoDate.hpp>
 
 // Forward declarations of Swift defined types
-// Forward declaration of `HybridPurelyOcrSpec_cxx` to properly resolve imports.
-namespace NitroPurelyOcr { class HybridPurelyOcrSpec_cxx; }
+// Forward declaration of `HybridOcrDevToolsSpec_cxx` to properly resolve imports.
+namespace NitroPurelyOcr { class HybridOcrDevToolsSpec_cxx; }
+// Forward declaration of `HybridOcrFactorySpec_cxx` to properly resolve imports.
+namespace NitroPurelyOcr { class HybridOcrFactorySpec_cxx; }
+// Forward declaration of `HybridOcrFrameMeterSpec_cxx` to properly resolve imports.
+namespace NitroPurelyOcr { class HybridOcrFrameMeterSpec_cxx; }
+// Forward declaration of `HybridOcrModelStoreSpec_cxx` to properly resolve imports.
+namespace NitroPurelyOcr { class HybridOcrModelStoreSpec_cxx; }
+// Forward declaration of `HybridOcrRecognizerSpec_cxx` to properly resolve imports.
+namespace NitroPurelyOcr { class HybridOcrRecognizerSpec_cxx; }
 
 // Include Swift defined types
 #if __has_include("NitroPurelyOcr-Swift.h")

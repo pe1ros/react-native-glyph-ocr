@@ -10,10 +10,25 @@
 #include <fbjni/fbjni.h>
 #include "OcrResult.hpp"
 
+#include "JOcrBlock.hpp"
+#include "JOcrDiagnostics.hpp"
+#include "JOcrElement.hpp"
 #include "JOcrEngine.hpp"
+#include "JOcrImageSize.hpp"
 #include "JOcrLine.hpp"
+#include "JOcrPoint.hpp"
+#include "JOcrRect.hpp"
+#include "JOcrTimings.hpp"
+#include "OcrBlock.hpp"
+#include "OcrDiagnostics.hpp"
+#include "OcrElement.hpp"
 #include "OcrEngine.hpp"
+#include "OcrImageSize.hpp"
 #include "OcrLine.hpp"
+#include "OcrPoint.hpp"
+#include "OcrRect.hpp"
+#include "OcrTimings.hpp"
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -36,52 +51,46 @@ namespace margelo::nitro::purelyocr {
     [[nodiscard]]
     OcrResult toCpp() const {
       static const auto clazz = javaClassStatic();
-      static const auto fieldEngine = clazz->getField<JOcrEngine>("engine");
-      jni::local_ref<JOcrEngine> engine = this->getFieldValue(fieldEngine);
       static const auto fieldText = clazz->getField<jni::JString>("text");
       jni::local_ref<jni::JString> text = this->getFieldValue(fieldText);
-      static const auto fieldLines = clazz->getField<jni::JArrayClass<JOcrLine>>("lines");
-      jni::local_ref<jni::JArrayClass<JOcrLine>> lines = this->getFieldValue(fieldLines);
-      static const auto fieldImageWidth = clazz->getField<double>("imageWidth");
-      double imageWidth = this->getFieldValue(fieldImageWidth);
-      static const auto fieldImageHeight = clazz->getField<double>("imageHeight");
-      double imageHeight = this->getFieldValue(fieldImageHeight);
-      static const auto fieldDecodeMs = clazz->getField<double>("decodeMs");
-      double decodeMs = this->getFieldValue(fieldDecodeMs);
-      static const auto fieldDetMs = clazz->getField<double>("detMs");
-      double detMs = this->getFieldValue(fieldDetMs);
-      static const auto fieldRecMs = clazz->getField<double>("recMs");
-      double recMs = this->getFieldValue(fieldRecMs);
-      static const auto fieldTotalMs = clazz->getField<double>("totalMs");
-      double totalMs = this->getFieldValue(fieldTotalMs);
-      static const auto fieldDetInputWidth = clazz->getField<double>("detInputWidth");
-      double detInputWidth = this->getFieldValue(fieldDetInputWidth);
-      static const auto fieldDetInputHeight = clazz->getField<double>("detInputHeight");
-      double detInputHeight = this->getFieldValue(fieldDetInputHeight);
-      static const auto fieldBoxCount = clazz->getField<double>("boxCount");
-      double boxCount = this->getFieldValue(fieldBoxCount);
+      static const auto fieldBlocks = clazz->getField<jni::JArrayClass<JOcrBlock>>("blocks");
+      jni::local_ref<jni::JArrayClass<JOcrBlock>> blocks = this->getFieldValue(fieldBlocks);
+      static const auto fieldImage = clazz->getField<JOcrImageSize>("image");
+      jni::local_ref<JOcrImageSize> image = this->getFieldValue(fieldImage);
+      static const auto fieldEngine = clazz->getField<JOcrEngine>("engine");
+      jni::local_ref<JOcrEngine> engine = this->getFieldValue(fieldEngine);
+      static const auto fieldLanguages = clazz->getField<jni::JArrayClass<jni::JString>>("languages");
+      jni::local_ref<jni::JArrayClass<jni::JString>> languages = this->getFieldValue(fieldLanguages);
+      static const auto fieldTimings = clazz->getField<JOcrTimings>("timings");
+      jni::local_ref<JOcrTimings> timings = this->getFieldValue(fieldTimings);
+      static const auto fieldDiagnostics = clazz->getField<JOcrDiagnostics>("diagnostics");
+      jni::local_ref<JOcrDiagnostics> diagnostics = this->getFieldValue(fieldDiagnostics);
       return OcrResult(
-        engine->toCpp(),
         text->toStdString(),
         [&](auto&& __input) {
           size_t __size = __input->size();
-          std::vector<OcrLine> __vector;
+          std::vector<OcrBlock> __vector;
           __vector.reserve(__size);
           for (size_t __i = 0; __i < __size; __i++) {
             auto __element = __input->getElement(__i);
             __vector.push_back(__element->toCpp());
           }
           return __vector;
-        }(lines),
-        imageWidth,
-        imageHeight,
-        decodeMs,
-        detMs,
-        recMs,
-        totalMs,
-        detInputWidth,
-        detInputHeight,
-        boxCount
+        }(blocks),
+        image->toCpp(),
+        engine->toCpp(),
+        [&](auto&& __input) {
+          size_t __size = __input->size();
+          std::vector<std::string> __vector;
+          __vector.reserve(__size);
+          for (size_t __i = 0; __i < __size; __i++) {
+            auto __element = __input->getElement(__i);
+            __vector.push_back(__element->toStdString());
+          }
+          return __vector;
+        }(languages),
+        timings->toCpp(),
+        diagnostics != nullptr ? std::make_optional(diagnostics->toCpp()) : std::nullopt
       );
     }
 
@@ -91,32 +100,36 @@ namespace margelo::nitro::purelyocr {
      */
     [[maybe_unused]]
     static jni::local_ref<JOcrResult::javaobject> fromCpp(const OcrResult& value) {
-      using JSignature = JOcrResult(jni::alias_ref<JOcrEngine>, jni::alias_ref<jni::JString>, jni::alias_ref<jni::JArrayClass<JOcrLine>>, double, double, double, double, double, double, double, double, double);
+      using JSignature = JOcrResult(jni::alias_ref<jni::JString>, jni::alias_ref<jni::JArrayClass<JOcrBlock>>, jni::alias_ref<JOcrImageSize>, jni::alias_ref<JOcrEngine>, jni::alias_ref<jni::JArrayClass<jni::JString>>, jni::alias_ref<JOcrTimings>, jni::alias_ref<JOcrDiagnostics>);
       static const auto clazz = javaClassStatic();
       static const auto create = clazz->getStaticMethod<JSignature>("fromCpp");
       return create(
         clazz,
-        JOcrEngine::fromCpp(value.engine),
         jni::make_jstring(value.text),
         [&](auto&& __input) {
           size_t __size = __input.size();
-          jni::local_ref<jni::JArrayClass<JOcrLine>> __array = jni::JArrayClass<JOcrLine>::newArray(__size);
+          jni::local_ref<jni::JArrayClass<JOcrBlock>> __array = jni::JArrayClass<JOcrBlock>::newArray(__size);
           for (size_t __i = 0; __i < __size; __i++) {
             const auto& __element = __input[__i];
-            auto __elementJni = JOcrLine::fromCpp(__element);
+            auto __elementJni = JOcrBlock::fromCpp(__element);
             __array->setElement(__i, *__elementJni);
           }
           return __array;
-        }(value.lines),
-        value.imageWidth,
-        value.imageHeight,
-        value.decodeMs,
-        value.detMs,
-        value.recMs,
-        value.totalMs,
-        value.detInputWidth,
-        value.detInputHeight,
-        value.boxCount
+        }(value.blocks),
+        JOcrImageSize::fromCpp(value.image),
+        JOcrEngine::fromCpp(value.engine),
+        [&](auto&& __input) {
+          size_t __size = __input.size();
+          jni::local_ref<jni::JArrayClass<jni::JString>> __array = jni::JArrayClass<jni::JString>::newArray(__size);
+          for (size_t __i = 0; __i < __size; __i++) {
+            const auto& __element = __input[__i];
+            auto __elementJni = jni::make_jstring(__element);
+            __array->setElement(__i, *__elementJni);
+          }
+          return __array;
+        }(value.languages),
+        JOcrTimings::fromCpp(value.timings),
+        value.diagnostics.has_value() ? JOcrDiagnostics::fromCpp(value.diagnostics.value()) : nullptr
       );
     }
   };

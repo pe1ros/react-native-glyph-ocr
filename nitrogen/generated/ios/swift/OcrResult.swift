@@ -18,73 +18,60 @@ public extension OcrResult {
   /**
    * Create a new instance of `OcrResult`.
    */
-  init(engine: OcrEngine, text: String, lines: [OcrLine], imageWidth: Double, imageHeight: Double, decodeMs: Double, detMs: Double, recMs: Double, totalMs: Double, detInputWidth: Double, detInputHeight: Double, boxCount: Double) {
-    self.init(engine, std.string(text), { () -> bridge.std__vector_OcrLine_ in
-      var __vector = bridge.create_std__vector_OcrLine_(lines.count)
-      for __item in lines {
+  init(text: String, blocks: [OcrBlock], image: OcrImageSize, engine: OcrEngine, languages: [String], timings: OcrTimings, diagnostics: OcrDiagnostics?) {
+    self.init(std.string(text), { () -> bridge.std__vector_OcrBlock_ in
+      var __vector = bridge.create_std__vector_OcrBlock_(blocks.count)
+      for __item in blocks {
         __vector.push_back(__item)
       }
       return __vector
-    }(), imageWidth, imageHeight, decodeMs, detMs, recMs, totalMs, detInputWidth, detInputHeight, boxCount)
+    }(), image, engine, { () -> bridge.std__vector_std__string_ in
+      var __vector = bridge.create_std__vector_std__string_(languages.count)
+      for __item in languages {
+        __vector.push_back(std.string(__item))
+      }
+      return __vector
+    }(), timings, { () -> bridge.std__optional_OcrDiagnostics_ in
+      if let __unwrappedValue = diagnostics {
+        return bridge.create_std__optional_OcrDiagnostics_(__unwrappedValue)
+      } else {
+        return .init()
+      }
+    }())
   }
 
-  @inline(__always)
-  var engine: OcrEngine {
-    return self.__engine
-  }
-  
   @inline(__always)
   var text: String {
     return String(self.__text)
   }
   
   @inline(__always)
-  var lines: [OcrLine] {
-    return self.__lines.map({ __item in __item })
+  var blocks: [OcrBlock] {
+    return self.__blocks.map({ __item in __item })
   }
   
   @inline(__always)
-  var imageWidth: Double {
-    return self.__imageWidth
+  var image: OcrImageSize {
+    return self.__image
   }
   
   @inline(__always)
-  var imageHeight: Double {
-    return self.__imageHeight
+  var engine: OcrEngine {
+    return self.__engine
   }
   
   @inline(__always)
-  var decodeMs: Double {
-    return self.__decodeMs
+  var languages: [String] {
+    return self.__languages.map({ __item in String(__item) })
   }
   
   @inline(__always)
-  var detMs: Double {
-    return self.__detMs
+  var timings: OcrTimings {
+    return self.__timings
   }
   
   @inline(__always)
-  var recMs: Double {
-    return self.__recMs
-  }
-  
-  @inline(__always)
-  var totalMs: Double {
-    return self.__totalMs
-  }
-  
-  @inline(__always)
-  var detInputWidth: Double {
-    return self.__detInputWidth
-  }
-  
-  @inline(__always)
-  var detInputHeight: Double {
-    return self.__detInputHeight
-  }
-  
-  @inline(__always)
-  var boxCount: Double {
-    return self.__boxCount
+  var diagnostics: OcrDiagnostics? {
+    return self.__diagnostics.value
   }
 }

@@ -1,25 +1,68 @@
-import { NitroModules } from 'react-native-nitro-modules';
-
-import type { PurelyOcr } from './specs/PurelyOcr.nitro';
-
+export type { OcrErrorCode } from './errors';
+export { OcrError } from './errors';
 export type {
-  DeviceSummary,
-  ModelLoadInfo,
+  CallOptions,
+  ConfigureModelsOptions,
+  CreateOcrOptions,
+  EngineOption,
+  Ocr,
+  OneShotOptions,
+  PrepareOptions,
+} from './ocr';
+export {
+  configureModels,
+  createOcr,
+  getModelStore,
+  getSupportedLanguages,
+  isReady,
+  prepare,
+  recognize,
+  recognizeText,
+} from './ocr';
+export type { NitroImageLike, OcrSource } from './sources';
+export type {
+  DownloadResult,
+  FrameOrientation,
+  FrameQuality,
+  FrameRecognizeOptions,
+  ImageOrientation,
+  LanguageResolution,
+  LanguageStatus,
+  LoadResult,
+  ModelFile,
+  ModelFormat,
+  ModelManifest,
+  ModelPack,
+  ModelPackStatus,
+  ModelRole,
+  ModelSource,
+  ModelStoreConfig,
+  OcrBlock,
+  OcrDiagnostics,
+  OcrElement,
   OcrEngine,
+  OcrFrameMeter,
+  OcrImageSize,
   OcrLine,
+  OcrModelStore,
+  OcrOutput,
+  OcrPoint,
+  OcrRecognizer,
+  OcrRect,
+  OcrRegion,
   OcrResult,
-  PaddleModelConfig,
-  PaddleOptions,
-  PurelyOcr,
-  VisionOptions,
-} from './specs/PurelyOcr.nitro';
-
-let instance: PurelyOcr | undefined;
-
-/** Lazily creates the native OCR object. */
-export function getPurelyOcr(): PurelyOcr {
-  if (instance == null) {
-    instance = NitroModules.createHybridObject<PurelyOcr>('PurelyOcr');
-  }
-  return instance;
-}
+  OcrTimings,
+  PaddleTuning,
+  PreparePhase,
+  PrepareProgress,
+  RawPixelFormat,
+  ReadingOrder,
+  RecognitionLevel,
+  RecognizeOptions,
+  RegionUnit,
+  RegionView,
+  SupportedLanguage,
+  ViewResizeMode,
+} from './specs/Ocr.nitro';
+export type { OcrStatus, UseOcrOptions, UseOcrResult } from './useOcr';
+export { useOcr } from './useOcr';

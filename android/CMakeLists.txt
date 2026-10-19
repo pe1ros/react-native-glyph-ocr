@@ -8,6 +8,7 @@ set (CMAKE_CXX_STANDARD 20)
 # Define C++ library and add all sources
 add_library(${PACKAGE_NAME} SHARED
         src/main/cpp/cpp-adapter.cpp
+        src/main/cpp/FrameBuffers.cpp
 )
 
 # Add Nitrogen specs :)
@@ -26,4 +27,5 @@ target_link_libraries(
         ${PACKAGE_NAME}
         ${LOG_LIB}
         android                                   # <-- Android core
+        dl                                        # AHardwareBuffer is loaded with dlsym (minSdk 24)
 )

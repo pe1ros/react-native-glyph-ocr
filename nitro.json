@@ -9,15 +9,13 @@
     "androidCxxLibName": "NitroPurelyOcr"
   },
   "autolinking": {
-    "PurelyOcr": {
-      "ios": {
-        "language": "swift",
-        "implementationClassName": "HybridPurelyOcr"
-      },
-      "android": {
-        "language": "kotlin",
-        "implementationClassName": "HybridPurelyOcr"
-      }
+    "OcrFactory": {
+      "ios": { "language": "swift", "implementationClassName": "HybridOcrFactory" },
+      "android": { "language": "kotlin", "implementationClassName": "HybridOcrFactory" }
+    },
+    "OcrDevTools": {
+      "ios": { "language": "swift", "implementationClassName": "HybridOcrDevTools" },
+      "android": { "language": "kotlin", "implementationClassName": "HybridOcrDevTools" }
     }
   },
   "ignorePaths": ["**/node_modules"]

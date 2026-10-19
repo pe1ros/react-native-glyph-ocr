@@ -15,7 +15,12 @@
 #include <fbjni/fbjni.h>
 #include <NitroModules/HybridObjectRegistry.hpp>
 
-#include "JHybridPurelyOcrSpec.hpp"
+#include "JHybridOcrModelStoreSpec.hpp"
+#include "JFunc_void_PrepareProgress.hpp"
+#include "JHybridOcrRecognizerSpec.hpp"
+#include "JHybridOcrFrameMeterSpec.hpp"
+#include "JHybridOcrFactorySpec.hpp"
+#include "JHybridOcrDevToolsSpec.hpp"
 #include <NitroModules/DefaultConstructableObject.hpp>
 
 namespace margelo::nitro::purelyocr {
@@ -26,12 +31,20 @@ int initialize(JavaVM* vm) {
   });
 }
 
-struct JHybridPurelyOcrSpecImpl: public jni::JavaClass<JHybridPurelyOcrSpecImpl, JHybridPurelyOcrSpec::JavaPart> {
-  static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/HybridPurelyOcr;";
-  static std::shared_ptr<JHybridPurelyOcrSpec> create() {
-    static const auto constructorFn = javaClassStatic()->getConstructor<JHybridPurelyOcrSpecImpl::javaobject()>();
-    jni::local_ref<JHybridPurelyOcrSpec::JavaPart> javaPart = javaClassStatic()->newObject(constructorFn);
-    return javaPart->getJHybridPurelyOcrSpec();
+struct JHybridOcrFactorySpecImpl: public jni::JavaClass<JHybridOcrFactorySpecImpl, JHybridOcrFactorySpec::JavaPart> {
+  static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/HybridOcrFactory;";
+  static std::shared_ptr<JHybridOcrFactorySpec> create() {
+    static const auto constructorFn = javaClassStatic()->getConstructor<JHybridOcrFactorySpecImpl::javaobject()>();
+    jni::local_ref<JHybridOcrFactorySpec::JavaPart> javaPart = javaClassStatic()->newObject(constructorFn);
+    return javaPart->getJHybridOcrFactorySpec();
+  }
+};
+struct JHybridOcrDevToolsSpecImpl: public jni::JavaClass<JHybridOcrDevToolsSpecImpl, JHybridOcrDevToolsSpec::JavaPart> {
+  static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/purelyocr/HybridOcrDevTools;";
+  static std::shared_ptr<JHybridOcrDevToolsSpec> create() {
+    static const auto constructorFn = javaClassStatic()->getConstructor<JHybridOcrDevToolsSpecImpl::javaobject()>();
+    jni::local_ref<JHybridOcrDevToolsSpec::JavaPart> javaPart = javaClassStatic()->newObject(constructorFn);
+    return javaPart->getJHybridOcrDevToolsSpec();
   }
 };
 
@@ -40,13 +53,24 @@ void registerAllNatives() {
   using namespace margelo::nitro::purelyocr;
 
   // Register native JNI methods
-  margelo::nitro::purelyocr::JHybridPurelyOcrSpec::CxxPart::registerNatives();
+  margelo::nitro::purelyocr::JHybridOcrModelStoreSpec::CxxPart::registerNatives();
+  margelo::nitro::purelyocr::JFunc_void_PrepareProgress_cxx::registerNatives();
+  margelo::nitro::purelyocr::JHybridOcrRecognizerSpec::CxxPart::registerNatives();
+  margelo::nitro::purelyocr::JHybridOcrFrameMeterSpec::CxxPart::registerNatives();
+  margelo::nitro::purelyocr::JHybridOcrFactorySpec::CxxPart::registerNatives();
+  margelo::nitro::purelyocr::JHybridOcrDevToolsSpec::CxxPart::registerNatives();
 
   // Register Nitro Hybrid Objects
   HybridObjectRegistry::registerHybridObjectConstructor(
-    "PurelyOcr",
+    "OcrFactory",
     []() -> std::shared_ptr<HybridObject> {
-      return JHybridPurelyOcrSpecImpl::create();
+      return JHybridOcrFactorySpecImpl::create();
+    }
+  );
+  HybridObjectRegistry::registerHybridObjectConstructor(
+    "OcrDevTools",
+    []() -> std::shared_ptr<HybridObject> {
+      return JHybridOcrDevToolsSpecImpl::create();
     }
   );
 }

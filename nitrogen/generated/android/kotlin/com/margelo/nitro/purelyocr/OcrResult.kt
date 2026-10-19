@@ -20,74 +20,49 @@ import java.util.Objects
 data class OcrResult(
   @DoNotStrip
   @Keep
-  val engine: OcrEngine,
-  @DoNotStrip
-  @Keep
   val text: String,
   @DoNotStrip
   @Keep
-  val lines: Array<OcrLine>,
+  val blocks: Array<OcrBlock>,
   @DoNotStrip
   @Keep
-  val imageWidth: Double,
+  val image: OcrImageSize,
   @DoNotStrip
   @Keep
-  val imageHeight: Double,
+  val engine: OcrEngine,
   @DoNotStrip
   @Keep
-  val decodeMs: Double,
+  val languages: Array<String>,
   @DoNotStrip
   @Keep
-  val detMs: Double,
+  val timings: OcrTimings,
   @DoNotStrip
   @Keep
-  val recMs: Double,
-  @DoNotStrip
-  @Keep
-  val totalMs: Double,
-  @DoNotStrip
-  @Keep
-  val detInputWidth: Double,
-  @DoNotStrip
-  @Keep
-  val detInputHeight: Double,
-  @DoNotStrip
-  @Keep
-  val boxCount: Double
+  val diagnostics: OcrDiagnostics?
 ) {
   /* primary constructor */
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other !is OcrResult) return false
-    return Objects.deepEquals(this.engine, other.engine)
-      && Objects.deepEquals(this.text, other.text)
-      && Objects.deepEquals(this.lines, other.lines)
-      && Objects.deepEquals(this.imageWidth, other.imageWidth)
-      && Objects.deepEquals(this.imageHeight, other.imageHeight)
-      && Objects.deepEquals(this.decodeMs, other.decodeMs)
-      && Objects.deepEquals(this.detMs, other.detMs)
-      && Objects.deepEquals(this.recMs, other.recMs)
-      && Objects.deepEquals(this.totalMs, other.totalMs)
-      && Objects.deepEquals(this.detInputWidth, other.detInputWidth)
-      && Objects.deepEquals(this.detInputHeight, other.detInputHeight)
-      && Objects.deepEquals(this.boxCount, other.boxCount)
+    return Objects.deepEquals(this.text, other.text)
+      && Objects.deepEquals(this.blocks, other.blocks)
+      && Objects.deepEquals(this.image, other.image)
+      && Objects.deepEquals(this.engine, other.engine)
+      && Objects.deepEquals(this.languages, other.languages)
+      && Objects.deepEquals(this.timings, other.timings)
+      && Objects.deepEquals(this.diagnostics, other.diagnostics)
   }
 
   override fun hashCode(): Int {
     return arrayOf<Any?>(
-      engine,
       text,
-      lines,
-      imageWidth,
-      imageHeight,
-      decodeMs,
-      detMs,
-      recMs,
-      totalMs,
-      detInputWidth,
-      detInputHeight,
-      boxCount
+      blocks,
+      image,
+      engine,
+      languages,
+      timings,
+      diagnostics
     ).contentDeepHashCode()
   }
 
@@ -99,8 +74,8 @@ data class OcrResult(
     @Keep
     @Suppress("unused")
     @JvmStatic
-    private fun fromCpp(engine: OcrEngine, text: String, lines: Array<OcrLine>, imageWidth: Double, imageHeight: Double, decodeMs: Double, detMs: Double, recMs: Double, totalMs: Double, detInputWidth: Double, detInputHeight: Double, boxCount: Double): OcrResult {
-      return OcrResult(engine, text, lines, imageWidth, imageHeight, decodeMs, detMs, recMs, totalMs, detInputWidth, detInputHeight, boxCount)
+    private fun fromCpp(text: String, blocks: Array<OcrBlock>, image: OcrImageSize, engine: OcrEngine, languages: Array<String>, timings: OcrTimings, diagnostics: OcrDiagnostics?): OcrResult {
+      return OcrResult(text, blocks, image, engine, languages, timings, diagnostics)
     }
   }
 }

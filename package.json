@@ -1,20 +1,52 @@
 {
   "name": "react-native-purely-ocr",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
-  "description": "OCR spike: PaddleOCR (ONNX Runtime) and ML Kit text recognition on Android, Apple Vision on iOS, as a Nitro module",
+  "description": "On-device text recognition for React Native: Apple Vision on iOS, PaddleOCR (PP-OCRv5) on Android, as a Nitro module",
   "main": "src/index",
   "react-native": "src/index",
   "source": "src/index",
+  "types": "src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "react-native": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./camera": {
+      "types": "./src/camera/index.ts",
+      "react-native": "./src/camera/index.ts",
+      "default": "./src/camera/index.ts"
+    },
+    "./dev": {
+      "types": "./src/dev/index.ts",
+      "react-native": "./src/dev/index.ts",
+      "default": "./src/dev/index.ts"
+    },
+    "./models/manifest.json": "./models/manifest.json",
+    "./package.json": "./package.json"
+  },
   "scripts": {
-    "specs": "nitrogen --logLevel=\"debug\""
+    "specs": "nitrogen --logLevel=\"debug\"",
+    "manifest": "node scripts/build-manifest.mjs",
+    "typecheck": "tsc -p tsconfig.json"
   },
   "devDependencies": {
     "nitrogen": "0.35.9"
   },
   "peerDependencies": {
     "react": "*",
-    "react-native": "*",
-    "react-native-nitro-modules": "*"
+    "react-native": ">=0.79",
+    "react-native-nitro-modules": ">=0.35.9",
+    "react-native-nitro-image": ">=0.15",
+    "react-native-vision-camera": ">=5.0.0",
+    "react-native-vision-camera-worklets": "*",
+    "react-native-worklets": ">=0.8.0"
+  },
+  "peerDependenciesMeta": {
+    "react-native-nitro-image": { "optional": true },
+    "react-native-vision-camera": { "optional": true },
+    "react-native-vision-camera-worklets": { "optional": true },
+    "react-native-worklets": { "optional": true }
   }
 }

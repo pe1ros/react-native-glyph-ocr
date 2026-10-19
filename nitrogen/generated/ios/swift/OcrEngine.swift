@@ -17,12 +17,12 @@ public extension OcrEngine {
    */
   init?(fromString string: String) {
     switch string {
+      case "vision":
+        self = .vision
       case "paddle":
         self = .paddle
       case "mlkit":
         self = .mlkit
-      case "vision":
-        self = .vision
       default:
         return nil
     }
@@ -33,12 +33,12 @@ public extension OcrEngine {
    */
   var stringValue: String {
     switch self {
+      case .vision:
+        return "vision"
       case .paddle:
         return "paddle"
       case .mlkit:
         return "mlkit"
-      case .vision:
-        return "vision"
     }
   }
 }

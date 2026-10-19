@@ -10,7 +10,14 @@
 #include <fbjni/fbjni.h>
 #include "OcrLine.hpp"
 
+#include "JOcrElement.hpp"
+#include "JOcrPoint.hpp"
+#include "JOcrRect.hpp"
+#include "OcrElement.hpp"
+#include "OcrPoint.hpp"
+#include "OcrRect.hpp"
 #include <string>
+#include <vector>
 
 namespace margelo::nitro::purelyocr {
 
@@ -33,23 +40,44 @@ namespace margelo::nitro::purelyocr {
       static const auto clazz = javaClassStatic();
       static const auto fieldText = clazz->getField<jni::JString>("text");
       jni::local_ref<jni::JString> text = this->getFieldValue(fieldText);
-      static const auto fieldScore = clazz->getField<double>("score");
-      double score = this->getFieldValue(fieldScore);
-      static const auto fieldX = clazz->getField<double>("x");
-      double x = this->getFieldValue(fieldX);
-      static const auto fieldY = clazz->getField<double>("y");
-      double y = this->getFieldValue(fieldY);
-      static const auto fieldWidth = clazz->getField<double>("width");
-      double width = this->getFieldValue(fieldWidth);
-      static const auto fieldHeight = clazz->getField<double>("height");
-      double height = this->getFieldValue(fieldHeight);
+      static const auto fieldConfidence = clazz->getField<double>("confidence");
+      double confidence = this->getFieldValue(fieldConfidence);
+      static const auto fieldBoundingBox = clazz->getField<JOcrRect>("boundingBox");
+      jni::local_ref<JOcrRect> boundingBox = this->getFieldValue(fieldBoundingBox);
+      static const auto fieldPixelBoundingBox = clazz->getField<JOcrRect>("pixelBoundingBox");
+      jni::local_ref<JOcrRect> pixelBoundingBox = this->getFieldValue(fieldPixelBoundingBox);
+      static const auto fieldCornerPoints = clazz->getField<jni::JArrayClass<JOcrPoint>>("cornerPoints");
+      jni::local_ref<jni::JArrayClass<JOcrPoint>> cornerPoints = this->getFieldValue(fieldCornerPoints);
+      static const auto fieldAngle = clazz->getField<double>("angle");
+      double angle = this->getFieldValue(fieldAngle);
+      static const auto fieldElements = clazz->getField<jni::JArrayClass<JOcrElement>>("elements");
+      jni::local_ref<jni::JArrayClass<JOcrElement>> elements = this->getFieldValue(fieldElements);
       return OcrLine(
         text->toStdString(),
-        score,
-        x,
-        y,
-        width,
-        height
+        confidence,
+        boundingBox->toCpp(),
+        pixelBoundingBox->toCpp(),
+        [&](auto&& __input) {
+          size_t __size = __input->size();
+          std::vector<OcrPoint> __vector;
+          __vector.reserve(__size);
+          for (size_t __i = 0; __i < __size; __i++) {
+            auto __element = __input->getElement(__i);
+            __vector.push_back(__element->toCpp());
+          }
+          return __vector;
+        }(cornerPoints),
+        angle,
+        [&](auto&& __input) {
+          size_t __size = __input->size();
+          std::vector<OcrElement> __vector;
+          __vector.reserve(__size);
+          for (size_t __i = 0; __i < __size; __i++) {
+            auto __element = __input->getElement(__i);
+            __vector.push_back(__element->toCpp());
+          }
+          return __vector;
+        }(elements)
       );
     }
 
@@ -59,17 +87,36 @@ namespace margelo::nitro::purelyocr {
      */
     [[maybe_unused]]
     static jni::local_ref<JOcrLine::javaobject> fromCpp(const OcrLine& value) {
-      using JSignature = JOcrLine(jni::alias_ref<jni::JString>, double, double, double, double, double);
+      using JSignature = JOcrLine(jni::alias_ref<jni::JString>, double, jni::alias_ref<JOcrRect>, jni::alias_ref<JOcrRect>, jni::alias_ref<jni::JArrayClass<JOcrPoint>>, double, jni::alias_ref<jni::JArrayClass<JOcrElement>>);
       static const auto clazz = javaClassStatic();
       static const auto create = clazz->getStaticMethod<JSignature>("fromCpp");
       return create(
         clazz,
         jni::make_jstring(value.text),
-        value.score,
-        value.x,
-        value.y,
-        value.width,
-        value.height
+        value.confidence,
+        JOcrRect::fromCpp(value.boundingBox),
+        JOcrRect::fromCpp(value.pixelBoundingBox),
+        [&](auto&& __input) {
+          size_t __size = __input.size();
+          jni::local_ref<jni::JArrayClass<JOcrPoint>> __array = jni::JArrayClass<JOcrPoint>::newArray(__size);
+          for (size_t __i = 0; __i < __size; __i++) {
+            const auto& __element = __input[__i];
+            auto __elementJni = JOcrPoint::fromCpp(__element);
+            __array->setElement(__i, *__elementJni);
+          }
+          return __array;
+        }(value.cornerPoints),
+        value.angle,
+        [&](auto&& __input) {
+          size_t __size = __input.size();
+          jni::local_ref<jni::JArrayClass<JOcrElement>> __array = jni::JArrayClass<JOcrElement>::newArray(__size);
+          for (size_t __i = 0; __i < __size; __i++) {
+            const auto& __element = __input[__i];
+            auto __elementJni = JOcrElement::fromCpp(__element);
+            __array->setElement(__i, *__elementJni);
+          }
+          return __array;
+        }(value.elements)
       );
     }
   };

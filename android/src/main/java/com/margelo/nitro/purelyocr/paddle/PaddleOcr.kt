@@ -28,7 +28,20 @@ class PaddleOcr(
     val dropScore: Float,
   )
 
-  class Line(val text: String, val score: Float, val left: Float, val top: Float, val right: Float, val bottom: Float)
+  /** A word: `start`..`end` is its share (0..1) of the line's length, from CTC character positions. */
+  class Word(val text: String, val score: Float, val start: Float, val end: Float)
+
+  /** Bounds in the input bitmap, px; `geometry` maps points along the line to the bitmap. */
+  class Line(
+    val text: String,
+    val score: Float,
+    val left: Float,
+    val top: Float,
+    val right: Float,
+    val bottom: Float,
+    val geometry: TextLine,
+    val words: List<Word>,
+  )
 
   class Output(
     val lines: List<Line>,
@@ -38,6 +51,9 @@ class PaddleOcr(
     val detHeight: Int,
     val boxCount: Int,
   )
+
+  /** `onnxruntime-1.30.0`, `executorch-1.4.0`. */
+  val runtimeName: String get() = runtime.name
 
   /** CTC classes: 0 is blank, then the dictionary, then a space. */
   private val classes: Array<String> = arrayOf("") + dictionary.toTypedArray() + " "
@@ -49,7 +65,8 @@ class PaddleOcr(
   private var inferNs = 0L
   private var recColumns = 0
 
-  fun run(bitmap: Bitmap, options: Options): Output {
+  /** `checkCancelled` runs between lines and throws to stop. */
+  fun run(bitmap: Bitmap, options: Options, checkCancelled: () -> Unit = {}): Output {
     val t0 = SystemClock.elapsedRealtimeNanos()
     val srcW = bitmap.width
     val srcH = bitmap.height
@@ -84,9 +101,10 @@ class PaddleOcr(
     bitmap.getPixels(src, 0, srcW, 0, 0, srcW, srcH)
     val lines = ArrayList<Line>()
     for (line in found) {
+      checkCancelled()
       val recognized = recognize(src, srcW, srcH, line) ?: continue
-      if (recognized.second >= options.dropScore && recognized.first.isNotBlank()) {
-        lines.add(bounds(line, recognized.first, recognized.second, srcW, srcH))
+      if (recognized.score >= options.dropScore && recognized.text.isNotBlank()) {
+        lines.add(bounds(line, recognized, srcW, srcH))
       }
     }
     val t2 = SystemClock.elapsedRealtimeNanos()
@@ -96,7 +114,9 @@ class PaddleOcr(
     return Output(lines, (t1 - t0) / 1e6, (t2 - t1) / 1e6, detW, detH, found.size)
   }
 
-  private fun recognize(src: IntArray, srcW: Int, srcH: Int, line: TextLine): Pair<String, Float>? {
+  private class Decoded(val text: String, val score: Float, val words: List<Word>)
+
+  private fun recognize(src: IntArray, srcW: Int, srcH: Int, line: TextLine): Decoded? {
     var length = line.lengthSrc
     var height = line.heightSrc
     if (line.vertical) length = height.also { height = length }
@@ -113,15 +133,31 @@ class PaddleOcr(
 
     val out = runtime.recognize(tensor, padW)
     inferNs += SystemClock.elapsedRealtimeNanos() - ti
-    return ctcDecode(out.probs, out.steps, out.classes)
+    // One CTC step covers padW / steps input columns; the text fills the first outW of them.
+    return ctcDecode(out.probs, out.steps, out.classes, padW.toFloat() / out.steps / outW)
   }
 
-  /** Greedy CTC: argmax per step, merge repeats, drop blanks; score = mean prob of kept chars. */
-  private fun ctcDecode(probs: FloatArray, steps: Int, numClasses: Int): Pair<String, Float> {
+  /**
+   * Greedy CTC: argmax per step, merge repeats, drop blanks; score = mean prob of kept chars.
+   * Words are runs of non-space characters; `stepShare` is one step's share of the line length.
+   */
+  private fun ctcDecode(probs: FloatArray, steps: Int, numClasses: Int, stepShare: Float): Decoded {
     val sb = StringBuilder()
     var scoreSum = 0f
     var kept = 0
     var prev = -1
+    val words = ArrayList<Word>()
+    val word = StringBuilder()
+    var wordScore = 0f
+    var wordFirst = 0
+    var wordLast = 0
+    fun endWord() {
+      if (word.isEmpty()) return
+      words.add(Word(word.toString(), wordScore / word.length,
+        (wordFirst * stepShare).coerceIn(0f, 1f), ((wordLast + 1) * stepShare).coerceIn(0f, 1f)))
+      word.setLength(0)
+      wordScore = 0f
+    }
     for (t in 0 until steps) {
       val base = t * numClasses
       var best = 0
@@ -134,13 +170,25 @@ class PaddleOcr(
         }
       }
       if (best != 0 && best != prev && best < classes.size) {
-        sb.append(classes[best])
+        val ch = classes[best]
+        sb.append(ch)
         scoreSum += bestP
         kept++
+        if (ch.isBlank()) {
+          endWord()
+        } else {
+          if (word.isEmpty()) wordFirst = t
+          word.append(ch)
+          wordScore += bestP
+          wordLast = t
+        }
+      } else if (best != 0 && best == prev && word.isNotEmpty()) {
+        wordLast = t // a repeated step still belongs to the character
       }
       prev = best
     }
-    return Pair(sb.toString(), if (kept == 0) 0f else scoreSum / kept)
+    endWord()
+    return Decoded(sb.toString(), if (kept == 0) 0f else scoreSum / kept, words)
   }
 
   /**
@@ -227,7 +275,7 @@ class PaddleOcr(
     return sampleRgb
   }
 
-  private fun bounds(line: TextLine, text: String, score: Float, srcW: Int, srcH: Int): Line {
+  private fun bounds(line: TextLine, recognized: Decoded, srcW: Int, srcH: Int): Line {
     var left = Float.MAX_VALUE
     var top = Float.MAX_VALUE
     var right = -Float.MAX_VALUE
@@ -244,9 +292,10 @@ class PaddleOcr(
       }
     }
     return Line(
-      text, score,
+      recognized.text, recognized.score,
       left.coerceIn(0f, srcW.toFloat()), top.coerceIn(0f, srcH.toFloat()),
       right.coerceIn(0f, srcW.toFloat()), bottom.coerceIn(0f, srcH.toFloat()),
+      line, recognized.words,
     )
   }
 

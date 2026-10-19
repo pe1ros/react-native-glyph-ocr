@@ -4,15 +4,14 @@ import ai.onnxruntime.OnnxTensor
 import ai.onnxruntime.OrtEnvironment
 import ai.onnxruntime.OrtLoggingLevel
 import ai.onnxruntime.OrtSession
-import android.util.Log
-import org.pytorch.executorch.EValue
-import org.pytorch.executorch.Module
-import org.pytorch.executorch.Tensor
 import java.nio.FloatBuffer
 import kotlin.math.max
 
 /** Runs the two PP-OCRv5 models; pre/post-processing stays in [PaddleOcr]. */
 interface PaddleRuntime : AutoCloseable {
+  /** For diagnostics: `onnxruntime-1.30.0`, `executorch-1.4.0`. */
+  val name: String
+
   /** Input channel order: PaddleOCR's ONNX exports take BGR, our ExecuTorch export takes RGB. */
   val rgbInput: Boolean
 
@@ -28,9 +27,11 @@ interface PaddleRuntime : AutoCloseable {
   class RecOutput(val probs: FloatArray, val steps: Int, val classes: Int)
 }
 
-/** The official PaddleOCR ONNX exports on ONNX Runtime. */
+/** The official PaddleOCR ONNX exports on ONNX Runtime: the default runtime. */
 class OrtRuntime(detModel: ByteArray, recModel: ByteArray, threads: Int, useXnnpack: Boolean) : PaddleRuntime {
   private val env = OrtEnvironment.getEnvironment()
+
+  override val name = "onnxruntime-${OrtEnvironment.getEnvironment().version}"
   private val det = env.createSession(detModel, sessionOptions(threads, useXnnpack))
   private val rec = env.createSession(recModel, sessionOptions(threads, useXnnpack))
   private val detInput = det.inputNames.first()
@@ -80,42 +81,6 @@ class OrtRuntime(detModel: ByteArray, recModel: ByteArray, threads: Int, useXnnp
         setIntraOpNumThreads(threads)
       }
     }
-  }
-}
-
-/**
- * One fused ExecuTorch program with `detect` and `recognize` methods, lowered to XNNPACK or Vulkan
- * (see scripts/ocr-spike/executorch). It takes RGB and recognizer widths that are multiples of 8,
- * the contract of react-native-executorch's createPaddleOcr. Our ExecuTorch build has XNNPACK only:
- * Vulkan programs fail to load with ExecutorchRuntimeException.
- */
-class ExecuTorchRuntime(path: String, threads: Int) : PaddleRuntime {
-  private val module = Module.load(path, Module.LOAD_MODE_MMAP, threads)
-
-  override val rgbInput = true
-  override val recWidthStep = 8
-
-  init {
-    for (method in arrayOf("detect", "recognize")) {
-      Log.i("PurelyOcr", "ExecuTorch: loading $method from $path")
-      module.loadMethod(method)
-    }
-  }
-
-  override fun detect(input: FloatBuffer, h: Int, w: Int): FloatArray {
-    val tensor = Tensor.fromBlob(input, longArrayOf(1, 3, h.toLong(), w.toLong()))
-    return module.execute("detect", EValue.from(tensor))[0].toTensor().dataAsFloatArray
-  }
-
-  override fun recognize(input: FloatBuffer, w: Int): PaddleRuntime.RecOutput {
-    val tensor = Tensor.fromBlob(input, longArrayOf(1, 3, REC_H.toLong(), w.toLong()))
-    val out = module.execute("recognize", EValue.from(tensor))[0].toTensor()
-    val shape = out.shape() // [1, T, C]
-    return PaddleRuntime.RecOutput(out.dataAsFloatArray, shape[1].toInt(), shape[2].toInt())
-  }
-
-  override fun close() {
-    module.destroy()
   }
 }
 
