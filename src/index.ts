@@ -19,6 +19,18 @@ export {
   recognize,
   recognizeText,
 } from './ocr';
+export type {
+  OcrNode,
+  OcrOverlayProps,
+  OverlayLevel,
+  ViewBox,
+} from './overlay';
+export {
+  imagePointToViewPoint,
+  nodesOf,
+  nodeToViewBox,
+  OcrOverlay,
+} from './overlay';
 export type { NitroImageLike, OcrSource } from './sources';
 export type {
   DownloadResult,

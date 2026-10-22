@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Switch, Text, View } from 'react-native';
 import { useOcr } from 'react-native-glyph-ocr';
 import { type ScanRegion, useTextScanner } from 'react-native-glyph-ocr/camera';
 import {
@@ -23,7 +23,8 @@ export function CameraScreen() {
       preview ? { rect: FRAME, view: preview, resizeMode: 'cover' } : undefined,
     [preview],
   );
-  const scanner = useTextScanner({ ocr: ocr.ocr, region });
+  const [continuous, setContinuous] = useState(false);
+  const scanner = useTextScanner({ ocr: ocr.ocr, region, continuous });
 
   useEffect(() => {
     if (!hasPermission) {
@@ -71,6 +72,10 @@ export function CameraScreen() {
         />
       ) : null}
       <View style={styles.panel}>
+        <View style={styles.row}>
+          <Switch value={continuous} onValueChange={setContinuous} />
+          <Text style={styles.state}>Keep scanning (continuous)</Text>
+        </View>
         <Text style={styles.state}>
           {ocr.status !== 'ready' ? `models: ${ocr.status}` : scanner.state}
           {scanner.quality
@@ -117,6 +122,7 @@ const styles = StyleSheet.create({
     gap: 8,
     backgroundColor: 'rgba(0,0,0,0.6)',
   },
+  row: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   state: { color: '#fff', fontVariant: ['tabular-nums'] },
   result: { color: '#fff', fontSize: 15 },
   button: {

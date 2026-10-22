@@ -128,6 +128,12 @@ export interface UseTextScannerOptions {
   stableMs?: number;
   /** After a rejected result, wait this long before trying again. Default 600 ms. */
   retryDelayMs?: number;
+  /**
+   * Keep scanning after a result instead of stopping at `done`: every accepted result calls
+   * `onResult` and replaces `result`, at most once per `intervalMs` (default 500). Suits Vision on
+   * iOS (about 0.15 s per frame); on Android each recognition takes about a second.
+   */
+  continuous?: boolean | { intervalMs?: number };
   recognizeOptions?: Omit<FrameRecognizeOptions, 'roi' | 'mirrored'>;
   /**
    * Take a photo instead of using the video frame once the frame is good: slower but
@@ -204,7 +210,12 @@ export function useTextScanner(
     recognizeOptions,
     photoOutput,
     targetResolution = CommonResolutions.UHD_4_3,
+    continuous = false,
   } = options;
+  const intervalMs =
+    continuous === false
+      ? undefined
+      : ((continuous === true ? undefined : continuous.intervalMs) ?? 500);
 
   const [state, setState] = useState<ScannerState>('idle');
   const [quality, setQuality] = useState<FrameQuality>();
@@ -237,12 +248,23 @@ export function useTextScanner(
         setState('searching');
         return;
       }
-      scan.setBlocking(s => ({ ...s, phase: DONE }));
-      setResult(r);
-      setState('done');
+      if (intervalMs != null) {
+        scan.setBlocking(s => ({
+          ...s,
+          phase: SEARCHING,
+          stableSince: 0,
+          retryAt: Date.now() + intervalMs,
+        }));
+        setResult(r);
+        setState('searching');
+      } else {
+        scan.setBlocking(s => ({ ...s, phase: DONE }));
+        setResult(r);
+        setState('done');
+      }
       callbacks.current.onResult?.(r);
     },
-    [scan, retryDelayMs],
+    [scan, retryDelayMs, intervalMs],
   );
 
   const fail = useCallback(

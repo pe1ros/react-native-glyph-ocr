@@ -7,8 +7,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import { type OcrResult, useOcr } from 'react-native-glyph-ocr';
-import { imageRectToViewRect } from 'react-native-glyph-ocr/camera';
+import { OcrOverlay, type OcrResult, useOcr } from 'react-native-glyph-ocr';
 
 import { SAMPLE_LABEL_BASE64, SAMPLE_SIZE } from './sample';
 
@@ -19,6 +18,7 @@ export function PhotoScreen() {
   const ocr = useOcr({ languages: LANGUAGES });
   const [result, setResult] = useState<OcrResult>();
   const [error, setError] = useState<string>();
+  const [picked, setPicked] = useState<string>();
   const [width, setWidth] = useState(0);
   const view = {
     width,
@@ -27,6 +27,7 @@ export function PhotoScreen() {
 
   const run = async () => {
     setError(undefined);
+    setPicked(undefined);
     try {
       setResult(
         await ocr.recognize(
@@ -56,31 +57,13 @@ export function PhotoScreen() {
           source={{ uri: `data:image/jpeg;base64,${SAMPLE_LABEL_BASE64}` }}
           style={{ width: view.width, height: view.height }}
         />
-        {result?.blocks
-          .flatMap(b => b.lines)
-          .map((line, i) => {
-            const r = imageRectToViewRect(
-              line.boundingBox,
-              view,
-              result.image,
-              'contain',
-            );
-            return (
-              <View
-                key={i}
-                pointerEvents="none"
-                style={[
-                  styles.box,
-                  {
-                    left: r.x * view.width,
-                    top: r.y * view.height,
-                    width: r.width * view.width,
-                    height: r.height * view.height,
-                  },
-                ]}
-              />
-            );
-          })}
+        {result ? (
+          <OcrOverlay
+            result={result}
+            resizeMode="contain"
+            onPress={node => setPicked(node.text)}
+          />
+        ) : null}
       </View>
       <Pressable
         accessibilityRole="button"
@@ -95,8 +78,10 @@ export function PhotoScreen() {
         <>
           <Text style={styles.meta}>
             {result.timings.totalMs.toFixed(0)} ms ·{' '}
-            {result.blocks.reduce((n, b) => n + b.lines.length, 0)} lines
+            {result.blocks.reduce((n, b) => n + b.lines.length, 0)} lines · tap
+            a box to pick a line
           </Text>
+          {picked ? <Text style={styles.picked}>{picked}</Text> : null}
           <Text selectable style={styles.text}>
             {result.text}
           </Text>
@@ -110,12 +95,6 @@ const styles = StyleSheet.create({
   content: { padding: 16, gap: 12 },
   status: { color: '#555' },
   error: { color: '#b00020' },
-  box: {
-    position: 'absolute',
-    borderWidth: 1.5,
-    borderColor: '#1e88e5',
-    backgroundColor: 'rgba(30,136,229,0.08)',
-  },
   button: {
     backgroundColor: '#222',
     padding: 14,
@@ -125,5 +104,6 @@ const styles = StyleSheet.create({
   disabled: { opacity: 0.4 },
   buttonText: { color: '#fff', fontWeight: '600' },
   meta: { color: '#555' },
+  picked: { fontSize: 16, fontWeight: '600', color: '#b26a00' },
   text: { fontSize: 16, lineHeight: 22 },
 });
