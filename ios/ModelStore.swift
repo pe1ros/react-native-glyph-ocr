@@ -77,16 +77,21 @@ final class ModelStore: @unchecked Sendable {
     return p
   }
 
-  /** One file per role, ONNX (the format Paddle on ONNX Runtime would read) or the dictionary. */
+  /**
+   * One file per role, ONNX (the format Paddle on ONNX Runtime would read) or the dictionary, plus
+   * the orientation classifier if the pack lists one.
+   */
   func files(_ pack: ModelPack) throws -> [ModelFile] {
     let byId = Dictionary(manifest.files.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
     let listed = pack.files.compactMap { byId[$0] }
-    return try [ModelRole.detector, .recognizer, .dictionary].map { role in
-      guard let f = listed.first(where: { $0.role == role && ($0.format == .onnx || $0.format == .ort || $0.format == .dict) }) else {
+    let readable: (ModelFile) -> Bool = { $0.format == .onnx || $0.format == .ort || $0.format == .dict }
+    let required = try [ModelRole.detector, .recognizer, .dictionary].map { role in
+      guard let f = listed.first(where: { $0.role == role && readable($0) }) else {
         throw OcrError("models-not-ready", "Pack \(pack.id) has no \(role.stringValue)", ["packId": pack.id])
       }
       return f
     }
+    return required + listed.filter { $0.role == .orientation && readable($0) }.prefix(1)
   }
 
   private func ext(_ format: ModelFormat) -> String { format == .dict ? "txt" : format.stringValue }
@@ -119,6 +124,20 @@ final class ModelStore: @unchecked Sendable {
 
   func isAvailable(_ f: ModelFile) -> Bool {
     (lock.locked({ source }) != .embedded && isInstalled(f)) || (mayUseEmbedded(f) && isEmbedded(f))
+  }
+
+  /** Where to read an available file: the download or the pod's resources; nil when it is not on the device. */
+  func localURL(_ f: ModelFile) -> URL? {
+    if lock.locked({ source }) != .embedded && isInstalled(f) { return installedURL(f) }
+    if mayUseEmbedded(f) && isEmbedded(f) { return resources?.appendingPathComponent("models").appendingPathComponent(f.path) }
+    return nil
+  }
+
+  /** Bytes still to download for the pack (shared files counted once). */
+  func missingBytes(_ pack: ModelPack) -> Int {
+    guard let files = try? files(pack) else { return 0 }
+    var seen = Set<String>()
+    return files.filter { !isAvailable($0) && seen.insert($0.sha256).inserted }.reduce(0) { $0 + Int($1.bytes) }
   }
 
   func status(_ pack: ModelPack) -> ModelPackStatus {

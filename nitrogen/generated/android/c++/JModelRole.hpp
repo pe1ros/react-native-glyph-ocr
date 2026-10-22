@@ -51,6 +51,9 @@ namespace margelo::nitro::glyphocr {
         case ModelRole::DICTIONARY:
           static const auto fieldDICTIONARY = clazz->getStaticField<JModelRole>("DICTIONARY");
           return clazz->getStaticFieldValue(fieldDICTIONARY);
+        case ModelRole::ORIENTATION:
+          static const auto fieldORIENTATION = clazz->getStaticField<JModelRole>("ORIENTATION");
+          return clazz->getStaticFieldValue(fieldORIENTATION);
         default:
           std::string stringValue = std::to_string(static_cast<int>(value));
           throw std::invalid_argument("Invalid enum value (" + stringValue + "!");

@@ -19,7 +19,7 @@ class HybridOcrModelStore : HybridOcrModelStoreSpec() {
   override fun download(packIds: Array<String>, onProgress: (progress: PrepareProgress) -> Unit, requestId: Double): Promise<DownloadResult> =
     Requests.promise(scope, requestId) {
       val packs = packIds.map { ModelStore.pack(it) }
-      val files = packs.flatMap { ModelStore.files(it, ModelStore.allRoles(), ModelStore.ORT_FORMATS) }
+      val files = packs.flatMap { ModelStore.packFiles(it) }
       val bytes = ModelStore.ensure(files, ProgressReporter(onProgress))
       DownloadResult(bytes.toDouble(), packIds)
     }

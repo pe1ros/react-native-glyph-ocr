@@ -1,4 +1,8 @@
-import withGlyphOcr, { getPackIds, setGradleProperties } from '../index';
+import withGlyphOcr, {
+  getPackIds,
+  setGradleProperties,
+  setPodfile,
+} from '../index';
 
 describe('Expo config plugin', () => {
   it('knows the packs of the shipped manifest', () => {
@@ -53,5 +57,32 @@ describe('Expo config plugin', () => {
     expect(result.modResults).toEqual([
       { type: 'property', key: 'GlyphOcr_embedPacks', value: 'eslav' },
     ]);
+  });
+
+  it('adds the Paddle flag and module maps to the Podfile, idempotently', () => {
+    const podfile = [
+      "platform :ios, '16.0'",
+      "target 'App' do",
+      '  use_expo_modules!',
+      '  config = use_native_modules!',
+      'end',
+      '',
+    ].join('\n');
+    const once = setPodfile(podfile, true);
+    expect(once).toContain("ENV['GlyphOcr_paddleOnIos'] = '1'");
+    expect(once).toContain(
+      '  use_expo_modules!\n  # @generated begin react-native-glyph-ocr (pod)',
+    );
+    expect(once).toContain(
+      "  pod 'onnxruntime-objc', :modular_headers => true",
+    );
+    expect(setPodfile(once, true)).toBe(once);
+    expect(setPodfile(once, false)).toBe(podfile);
+  });
+
+  it('needs a place for the pod line', () => {
+    expect(() => setPodfile("target 'App' do\nend\n", true)).toThrow(
+      /no use_expo_modules!/,
+    );
   });
 });

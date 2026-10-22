@@ -47,6 +47,9 @@ data class FrameRecognizeOptions(
   val diagnostics: Boolean?,
   @DoNotStrip
   @Keep
+  val textlineOrientation: Boolean?,
+  @DoNotStrip
+  @Keep
   val paddle: PaddleTuning?
 ) {
   /* primary constructor */
@@ -63,6 +66,7 @@ data class FrameRecognizeOptions(
       && Objects.deepEquals(this.readingOrder, other.readingOrder)
       && Objects.deepEquals(this.output, other.output)
       && Objects.deepEquals(this.diagnostics, other.diagnostics)
+      && Objects.deepEquals(this.textlineOrientation, other.textlineOrientation)
       && Objects.deepEquals(this.paddle, other.paddle)
   }
 
@@ -77,6 +81,7 @@ data class FrameRecognizeOptions(
       readingOrder,
       output,
       diagnostics,
+      textlineOrientation,
       paddle
     ).contentDeepHashCode()
   }
@@ -89,8 +94,8 @@ data class FrameRecognizeOptions(
     @Keep
     @Suppress("unused")
     @JvmStatic
-    private fun fromCpp(roi: OcrRect?, mirrored: Boolean?, recognitionLevel: RecognitionLevel?, usesLanguageCorrection: Boolean?, minConfidence: Double?, maxImageSide: Double?, readingOrder: ReadingOrder?, output: OcrOutput?, diagnostics: Boolean?, paddle: PaddleTuning?): FrameRecognizeOptions {
-      return FrameRecognizeOptions(roi, mirrored, recognitionLevel, usesLanguageCorrection, minConfidence, maxImageSide, readingOrder, output, diagnostics, paddle)
+    private fun fromCpp(roi: OcrRect?, mirrored: Boolean?, recognitionLevel: RecognitionLevel?, usesLanguageCorrection: Boolean?, minConfidence: Double?, maxImageSide: Double?, readingOrder: ReadingOrder?, output: OcrOutput?, diagnostics: Boolean?, textlineOrientation: Boolean?, paddle: PaddleTuning?): FrameRecognizeOptions {
+      return FrameRecognizeOptions(roi, mirrored, recognitionLevel, usesLanguageCorrection, minConfidence, maxImageSide, readingOrder, output, diagnostics, textlineOrientation, paddle)
     }
   }
 }

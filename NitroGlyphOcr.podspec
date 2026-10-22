@@ -3,10 +3,9 @@ require "json"
 package = JSON.parse(File.read(File.join(__dir__, "package.json")))
 
 # Apple Vision on iOS (ios/). Build flags, read from ENV when `pod install` runs:
-#   GlyphOcr_paddleOnIos=1  PaddleOCR on ONNX Runtime on iOS: planned, not implemented yet
-if ENV["GlyphOcr_paddleOnIos"] == "1" || ENV["GlyphOcr_paddleOnIos"] == "true"
-  raise "[GlyphOcr] GlyphOcr_paddleOnIos is not implemented yet: iOS has Apple Vision only"
-end
+#   GlyphOcr_paddleOnIos=1  also PaddleOCR on ONNX Runtime (ios/paddle), for languages Vision does
+#                           not read; adds onnxruntime-objc to the app
+paddle_on_ios = ["1", "true"].include?(ENV["GlyphOcr_paddleOnIos"].to_s)
 
 Pod::Spec.new do |s|
   s.name         = "NitroGlyphOcr"
@@ -30,7 +29,12 @@ Pod::Spec.new do |s|
 
   # Optimized in Debug builds too: the frame meter loops over pixels on every camera frame
   # (60 ms per frame at -Onone, about 1 ms at -O).
-  s.pod_target_xcconfig = { "SWIFT_OPTIMIZATION_LEVEL" => "-O" }
+  xcconfig = { "SWIFT_OPTIMIZATION_LEVEL" => "-O" }
+  if paddle_on_ios
+    s.dependency "onnxruntime-objc", "1.30.0"
+    xcconfig["SWIFT_ACTIVE_COMPILATION_CONDITIONS"] = "$(inherited) GLYPHOCR_PADDLE"
+  end
+  s.pod_target_xcconfig = xcconfig
 
   load 'nitrogen/generated/ios/NitroGlyphOcr+autolinking.rb'
   add_nitrogen_files(s)

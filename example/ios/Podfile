@@ -17,6 +17,12 @@ end
 target 'GlyphOcrExample' do
   config = use_native_modules!
 
+  # react-native-glyph-ocr with PaddleOCR on iOS (GlyphOcr_paddleOnIos=1 pod install): its Swift
+  # imports ONNX Runtime's Objective-C API, which needs module maps.
+  if ['1', 'true'].include?(ENV['GlyphOcr_paddleOnIos'].to_s)
+    pod 'onnxruntime-objc', :modular_headers => true
+  end
+
   use_react_native!(
     :path => config[:reactNativePath],
     # An absolute path to your application root.

@@ -22,6 +22,14 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', 'models');
 const HF = 'https://huggingface.co';
 
 const DETECTOR = { id: 'pp-ocrv5-det-mobile', repo: 'PaddlePaddle/PP-OCRv5_mobile_det_onnx', path: 'pp-ocrv5/PP-OCRv5_mobile_det.onnx' };
+/** PP-OCRv6 has its own, smaller detector (1.8 MB), used by the PP-OCRv6 packs. */
+const DETECTOR_V6 = { id: 'pp-ocrv6-tiny-det', repo: 'PaddlePaddle/PP-OCRv6_tiny_det_onnx', path: 'pp-ocrv6/PP-OCRv6_tiny_det.onnx' };
+/** Finds upside-down lines (0° / 180°), shared by every pack like the detector; about 1 MB. */
+const ORIENTATION = {
+  id: 'pp-lcnet-textline-ori',
+  repo: 'PaddlePaddle/PP-LCNet_x0_25_textline_ori_onnx',
+  path: 'pp-lcnet/PP-LCNet_x0_25_textline_ori.onnx',
+};
 
 /** Narrow packs first: the first pack covering all requested languages wins. */
 const PACKS = [
@@ -60,6 +68,22 @@ const PACKS = [
   { id: 'ta', repo: 'ta_PP-OCRv5_mobile_rec_onnx', languages: ['ta'] },
   { id: 'te', repo: 'te_PP-OCRv5_mobile_rec_onnx', languages: ['te'] },
   { id: 'ch', repo: 'PP-OCRv5_mobile_rec_onnx', languages: ['zh-Hans', 'zh-Hant', 'ja'] },
+  {
+    // PP-OCRv6 tiny: one 4.5 MB multilingual recognizer (6.9k characters). Last, so it is picked
+    // only when asked for (paddlePack: 'multi') or when no single PP-OCRv5 pack covers the
+    // languages (Chinese with German). Languages: those whose letters are all in its dictionary;
+    // no Japanese kana, Korean, Cyrillic, Romanian ș/ț or Vietnamese.
+    id: 'multi',
+    repo: 'PP-OCRv6_tiny_rec_onnx',
+    family: 'PP-OCRv6',
+    dir: 'pp-ocrv6',
+    detector: DETECTOR_V6,
+    languages: [
+      'zh-Hans', 'zh-Hant', 'de', 'fr', 'es', 'it', 'pt', 'nl', 'pl', 'cs', 'sk', 'sl', 'hr', 'bs',
+      'sr-Latn', 'hu', 'sv', 'da', 'no', 'fi', 'et', 'lv', 'lt', 'is', 'ga', 'cy', 'mt', 'sq', 'tr',
+      'ku-Latn', 'id', 'ms', 'tl', 'sw', 'af', 'mi', 'oc', 'ca', 'eu', 'gl', 'lb', 'rm', 'qu', 'la',
+    ],
+  },
 ];
 
 async function json(url) {
@@ -99,10 +123,20 @@ const sha256 = s => createHash('sha256').update(s).digest('hex');
 async function build() {
   const outputs = new Map();
   const det = await onnxFile(DETECTOR.repo);
+  const ori = await onnxFile(ORIENTATION.repo);
+  const detV6 = await onnxFile(DETECTOR_V6.repo);
   const files = [
     {
       id: DETECTOR.id, role: 'detector', format: 'onnx', path: DETECTOR.path,
       url: det.url, sha256: det.sha256, bytes: det.bytes, license: 'Apache-2.0',
+    },
+    {
+      id: ORIENTATION.id, role: 'orientation', format: 'onnx', path: ORIENTATION.path,
+      url: ori.url, sha256: ori.sha256, bytes: ori.bytes, license: 'Apache-2.0',
+    },
+    {
+      id: DETECTOR_V6.id, role: 'detector', format: 'onnx', path: DETECTOR_V6.path,
+      url: detV6.url, sha256: detV6.sha256, bytes: detV6.bytes, license: 'Apache-2.0',
     },
   ];
   const packs = [];
@@ -115,26 +149,28 @@ async function build() {
       throw new Error(`${repo}: no PostProcess.character_dict`);
     }
     const dict = chars.map(String).join('\n') + '\n';
+    const family = p.family ?? 'PP-OCRv5';
+    const prefix = family.toLowerCase();
     const name = p.repo.replace(/_onnx$/, '');
-    const recPath = `pp-ocrv5/${name}.onnx`;
-    const dictPath = `pp-ocrv5/${name}.dict.txt`;
+    const recPath = `${p.dir ?? 'pp-ocrv5'}/${name}.onnx`;
+    const dictPath = `${p.dir ?? 'pp-ocrv5'}/${name}.dict.txt`;
     outputs.set(dictPath, dict);
     const ascii = [...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'].every(c => chars.includes(c));
     const languages = ascii && !p.languages.includes('en') ? [...p.languages, 'en'] : p.languages;
     files.push(
       {
-        id: `pp-ocrv5-rec-${p.id}`, role: 'recognizer', format: 'onnx', path: recPath,
+        id: `${prefix}-rec-${p.id}`, role: 'recognizer', format: 'onnx', path: recPath,
         url: rec.url, sha256: rec.sha256, bytes: rec.bytes, license: 'Apache-2.0',
       },
       {
         // No url: dictionaries are small and always ship inside the package (models/).
-        id: `pp-ocrv5-dict-${p.id}`, role: 'dictionary', format: 'dict', path: dictPath,
+        id: `${prefix}-dict-${p.id}`, role: 'dictionary', format: 'dict', path: dictPath,
         sha256: sha256(dict), bytes: Buffer.byteLength(dict), license: 'Apache-2.0',
       },
     );
     packs.push({
-      id: p.id, engine: 'paddle', family: 'PP-OCRv5', languages,
-      files: [DETECTOR.id, `pp-ocrv5-rec-${p.id}`, `pp-ocrv5-dict-${p.id}`],
+      id: p.id, engine: 'paddle', family, languages,
+      files: [(p.detector ?? DETECTOR).id, `${prefix}-rec-${p.id}`, `${prefix}-dict-${p.id}`, ORIENTATION.id],
     });
     console.error(`${p.id}: ${chars.length} chars, ${(rec.bytes / 1e6).toFixed(1)} MB, ${languages.length} languages`);
   }

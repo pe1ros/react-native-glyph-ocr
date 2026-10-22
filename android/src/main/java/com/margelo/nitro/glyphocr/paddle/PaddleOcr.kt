@@ -26,6 +26,8 @@ class PaddleOcr(
     val boxThresh: Float,
     val unclipRatio: Float,
     val dropScore: Float,
+    /** Run the orientation classifier, if loaded, and read upside-down lines turned. */
+    val textlineOrientation: Boolean,
   )
 
   /** A word: `start`..`end` is its share (0..1) of the line's length, from CTC character positions. */
@@ -50,6 +52,8 @@ class PaddleOcr(
     val detWidth: Int,
     val detHeight: Int,
     val boxCount: Int,
+    /** Lines the orientation classifier turned 180°. */
+    val flippedCount: Int,
   )
 
   /** `onnxruntime-1.30.0`, `executorch-1.4.0`. */
@@ -100,8 +104,27 @@ class PaddleOcr(
     val src = IntArray(srcW * srcH)
     bitmap.getPixels(src, 0, srcW, 0, 0, srcW, srcH)
     val lines = ArrayList<Line>()
-    for (line in found) {
+    // A label photographed upside down is upside down as a whole, and the classifier is unsure
+    // about single lines: the decision is one vote of all lines, weighted by their length.
+    var flippedCount = 0
+    val upsideDown = options.textlineOrientation && runtime.hasOrientation && run {
+      var weight = 0f
+      var sum = 0f
+      for (line in found) {
+        if (line.vertical || line.lengthSrc < 1f || line.heightSrc < 1f) continue
+        sum += line.lengthSrc * upsideDownProbability(src, srcW, srcH, line)
+        weight += line.lengthSrc
+      }
+      weight > 0f && sum / weight > 0.5f
+    }
+    for (detected in found) {
       checkCancelled()
+      val line = if (upsideDown && !detected.vertical) {
+        flippedCount++
+        detected.flipped()
+      } else {
+        detected
+      }
       val recognized = recognize(src, srcW, srcH, line) ?: continue
       if (recognized.score >= options.dropScore && recognized.text.isNotBlank()) {
         lines.add(bounds(line, recognized, srcW, srcH))
@@ -110,8 +133,35 @@ class PaddleOcr(
     val t2 = SystemClock.elapsedRealtimeNanos()
     Log.i(TAG, "det ${(t1 - t0) / 1_000_000} ms (${detW}x$detH), rec ${(t2 - t1) / 1_000_000} ms: " +
       "sampling ${sampleNs / 1_000_000} ms, inference ${inferNs / 1_000_000} ms, " +
-      "${found.size} lines, $recColumns input columns")
-    return Output(lines, (t1 - t0) / 1e6, (t2 - t1) / 1e6, detW, detH, found.size)
+      "${found.size} lines, $recColumns input columns, $flippedCount upside down")
+    return Output(lines, (t1 - t0) / 1e6, (t2 - t1) / 1e6, detW, detH, found.size, flippedCount)
+  }
+
+  /**
+   * PP-LCNet textline orientation: the probability that the line is upside down. The classifier
+   * takes 160 × 80 (BGR, ImageNet mean/std, as PaddleOCR feeds it); squashing a whole long line into
+   * it loses the letter shapes, so it sees the middle of the line at its own proportions, about two
+   * line heights long (a short line is stretched to fill it).
+   */
+  private fun upsideDownProbability(src: IntArray, srcW: Int, srcH: Int, line: TextLine): Float {
+    val tensor = floatBuffer(3 * CLS_H * CLS_W)
+    val plane = CLS_H * CLS_W
+    val h2 = 2 * line.halfHeight
+    val uc = (line.u0 + line.u1) / 2
+    val ua = max(line.u0, uc - h2 * CLS_W / CLS_H / 2)
+    val ub = min(line.u1, uc + h2 * CLS_W / CLS_H / 2)
+    for (j in 0 until CLS_H) {
+      for (i in 0 until CLS_W) {
+        val u = ua + (i + 0.5f) / CLS_W * (ub - ua)
+        val v = line.centerAt(u) - line.halfHeight + (j + 0.5f) / CLS_H * h2
+        val bgr = bilinear(src, srcW, srcH, line.srcX(u, v), line.srcY(u, v))
+        val idx = j * CLS_W + i
+        for (ch in 0 until 3) {
+          tensor.put(ch * plane + idx, (bgr[ch] / 255f - CLS_MEAN[ch]) / CLS_STD[ch])
+        }
+      }
+    }
+    return runtime.classifyOrientation(tensor)[1]
   }
 
   private class Decoded(val text: String, val score: Float, val words: List<Word>)
@@ -333,5 +383,7 @@ class PaddleOcr(
     private const val TAG = "GlyphOcr"
     private const val REC_MIN_W = 320
     private const val REC_MAX_W = 3200
+    private val CLS_MEAN = floatArrayOf(0.485f, 0.456f, 0.406f)
+    private val CLS_STD = floatArrayOf(0.229f, 0.224f, 0.225f)
   }
 }

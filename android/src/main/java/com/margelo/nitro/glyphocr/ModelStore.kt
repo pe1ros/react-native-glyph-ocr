@@ -92,6 +92,14 @@ internal object ModelStore {
 
   fun allRoles() = setOf(ModelRole.DETECTOR, ModelRole.RECOGNIZER, ModelRole.DICTIONARY)
 
+  /** The pack's files: one per required role, plus the orientation classifier if the pack lists one. */
+  fun packFiles(pack: ModelPack, formats: Set<ModelFormat> = ORT_FORMATS): List<ModelFile> {
+    val byId = manifest.files.associateBy { it.id }
+    val orientation = pack.files.mapNotNull { byId[it] }
+      .firstOrNull { it.role == ModelRole.ORIENTATION && it.format in formats }
+    return files(pack, allRoles(), formats) + listOfNotNull(orientation)
+  }
+
   private fun ext(format: ModelFormat) = if (format == ModelFormat.DICT) "txt" else format.name.lowercase()
 
   fun installedFile(file: ModelFile) = File(directory, "${file.sha256}.${ext(file.format)}")
@@ -107,7 +115,7 @@ internal object ModelStore {
 
   fun packStatus(pack: ModelPack, formats: Set<ModelFormat> = ORT_FORMATS): ModelPackStatus {
     val files = try {
-      files(pack, allRoles(), formats)
+      packFiles(pack, formats)
     } catch (e: OcrException) {
       return ModelPackStatus.MISSING
     }
@@ -122,7 +130,7 @@ internal object ModelStore {
 
   /** Bytes still to download for the pack. */
   fun missingBytes(pack: ModelPack, formats: Set<ModelFormat> = ORT_FORMATS): Long = try {
-    files(pack, allRoles(), formats).filterNot { isAvailable(it) }.distinctBy { it.sha256 }.sumOf { it.bytes.toLong() }
+    packFiles(pack, formats).filterNot { isAvailable(it) }.distinctBy { it.sha256 }.sumOf { it.bytes.toLong() }
   } catch (e: OcrException) {
     0
   }
@@ -130,7 +138,7 @@ internal object ModelStore {
   /** Whether the missing files can be fetched at all. */
   fun canDownload(pack: ModelPack, formats: Set<ModelFormat> = ORT_FORMATS): Boolean = try {
     source != ModelSource.EMBEDDED &&
-      files(pack, allRoles(), formats).filterNot { isAvailable(it) }.all { urlFor(it) != null }
+      packFiles(pack, formats).filterNot { isAvailable(it) }.all { urlFor(it) != null }
   } catch (e: OcrException) {
     false
   }

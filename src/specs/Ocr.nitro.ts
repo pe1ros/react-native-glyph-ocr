@@ -186,11 +186,11 @@ export type OcrOutput = 'text' | 'lines' | 'elements';
 export interface PaddleTuning {
   /** Detector input, longer side, px. Default 960 (736 with `recognitionLevel: 'fast'`). */
   detectorSide?: number;
-  /** DB probability threshold. Default 0.3. */
+  /** DB probability threshold. Default 0.3 (PP-OCRv6 packs: 0.2). */
   detectorThreshold?: number;
-  /** Mean probability a detected line must reach. Default 0.6. */
+  /** Mean probability a detected line must reach. Default 0.6 (PP-OCRv6 packs: 0.4). */
   boxThreshold?: number;
-  /** How much a detected line is grown back. Default 1.5. */
+  /** How much a detected line is grown back. Default 1.5 (PP-OCRv6 packs: 1.4). */
   unclipRatio?: number;
 }
 
@@ -216,6 +216,13 @@ export interface RecognizeOptions {
   output?: OcrOutput;
   /** Fill `OcrResult.diagnostics`. Default false. */
   diagnostics?: boolean;
+  /**
+   * Paddle: find out whether the text is upside down (a vote of all lines with the pack's
+   * orientation classifier, about 1 ms per line) and read it turned. Boxes stay on the image as
+   * given; blocks and rows follow the text. Default true; no effect when the pack has no
+   * classifier, or on Vision, which reads rotated text itself.
+   */
+  textlineOrientation?: boolean;
   paddle?: PaddleTuning;
 }
 
@@ -233,6 +240,13 @@ export interface FrameRecognizeOptions {
   readingOrder?: ReadingOrder;
   output?: OcrOutput;
   diagnostics?: boolean;
+  /**
+   * Paddle: find out whether the text is upside down (a vote of all lines with the pack's
+   * orientation classifier, about 1 ms per line) and read it turned. Boxes stay on the image as
+   * given; blocks and rows follow the text. Default true; no effect when the pack has no
+   * classifier, or on Vision, which reads rotated text itself.
+   */
+  textlineOrientation?: boolean;
   paddle?: PaddleTuning;
 }
 
@@ -242,7 +256,9 @@ export type RawPixelFormat = 'rgba' | 'bgra' | 'argb' | 'abgr' | 'rgb' | 'bgr';
 // ─── Models ───────────────────────────────────────────────────────────────
 
 export type ModelFormat = 'onnx' | 'ort' | 'pte' | 'dict';
-export type ModelRole = 'detector' | 'recognizer' | 'dictionary';
+/** `orientation`: the optional text line classifier that finds upside-down lines (Paddle). */
+export type ModelRole =
+  'detector' | 'recognizer' | 'dictionary' | 'orientation';
 
 export interface ModelFile {
   /** Stable id, e.g. `pp-ocrv5-det-mobile`. */

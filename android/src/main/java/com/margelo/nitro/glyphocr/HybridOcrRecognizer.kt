@@ -29,11 +29,13 @@ internal class EngineOptions(
   val readingOrder: ReadingOrder?,
   val output: OcrOutput?,
   val diagnostics: Boolean?,
+  val textlineOrientation: Boolean?,
   val paddle: PaddleTuning?,
 ) {
-  constructor(o: RecognizeOptions) : this(o.recognitionLevel, o.minConfidence, o.readingOrder, o.output, o.diagnostics, o.paddle)
+  constructor(o: RecognizeOptions) :
+    this(o.recognitionLevel, o.minConfidence, o.readingOrder, o.output, o.diagnostics, o.textlineOrientation, o.paddle)
   constructor(o: FrameRecognizeOptions?) :
-    this(o?.recognitionLevel, o?.minConfidence, o?.readingOrder, o?.output, o?.diagnostics, o?.paddle)
+    this(o?.recognitionLevel, o?.minConfidence, o?.readingOrder, o?.output, o?.diagnostics, o?.textlineOrientation, o?.paddle)
 }
 
 /**
@@ -68,7 +70,7 @@ class HybridOcrRecognizer internal constructor(
     get() = if (runtimeKind == PaddleRuntimeKind.EXECUTORCH) {
       ModelStore.files(pack, setOf(ModelRole.DICTIONARY), setOf(ModelFormat.DICT))
     } else {
-      ModelStore.files(pack, ModelStore.allRoles(), ModelStore.ORT_FORMATS)
+      ModelStore.packFiles(pack)
     }
 
   override val isReady: Boolean
@@ -126,6 +128,7 @@ class HybridOcrRecognizer internal constructor(
         PaddleRuntimeKind.ONNXRUNTIME -> OrtRuntime(
           ModelStore.readBytes(files.first { it.role == ModelRole.DETECTOR }),
           ModelStore.readBytes(files.first { it.role == ModelRole.RECOGNIZER }),
+          files.firstOrNull { it.role == ModelRole.ORIENTATION }?.let { ModelStore.readBytes(it) },
           threads,
           tuning?.useXnnpack == true && cpus.isEmpty(),
         )
@@ -213,12 +216,16 @@ class HybridOcrRecognizer internal constructor(
     }
   }
 
+  /** PP-OCRv6 packs: their detector's own post-processing defaults (inference.yml). */
+  private val v6 = pack.family == "PP-OCRv6"
+
   private fun paddleOptions(o: EngineOptions) = PaddleOcr.Options(
     detLimitSide = o.paddle?.detectorSide?.toInt()?.takeIf { it > 0 } ?: if (o.level == RecognitionLevel.FAST) 736 else 960,
-    detThresh = (o.paddle?.detectorThreshold ?: 0.3).toFloat(),
-    boxThresh = (o.paddle?.boxThreshold ?: 0.6).toFloat(),
-    unclipRatio = (o.paddle?.unclipRatio ?: 1.5).toFloat(),
+    detThresh = (o.paddle?.detectorThreshold ?: if (v6) 0.2 else 0.3).toFloat(),
+    boxThresh = (o.paddle?.boxThreshold ?: if (v6) 0.4 else 0.6).toFloat(),
+    unclipRatio = (o.paddle?.unclipRatio ?: if (v6) 1.4 else 1.5).toFloat(),
     dropScore = (o.minConfidence ?: 0.5).toFloat(),
+    textlineOrientation = o.textlineOrientation ?: true,
   )
 
   private fun recognize(input: EngineInput, o: EngineOptions, t0: Long, requestId: Double): OcrResult {
@@ -255,7 +262,7 @@ class HybridOcrRecognizer internal constructor(
         },
       )
     }
-    val built = ResultBuilder.build(lines, input.imageWidth, input.imageHeight, output, o.readingOrder ?: ReadingOrder.BLOCKS)
+    val built = ResultBuilder.buildOriented(lines, input.imageWidth, input.imageHeight, output, o.readingOrder ?: ReadingOrder.BLOCKS)
     val totalMs = (SystemClock.elapsedRealtimeNanos() - t0) / 1e6
     return OcrResult(
       text = built.text,

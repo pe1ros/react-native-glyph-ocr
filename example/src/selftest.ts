@@ -126,9 +126,17 @@ async function runChecks(
     await expectError('zh without a script', 'invalid-argument', () =>
       createOcr({ languages: ['zh'] }),
     );
-    await expectError('paddle on iOS', 'engine-unavailable', () =>
-      createOcr({ languages: ['ru'], engine: 'paddle' }),
-    );
+    // Either a plain build (no Paddle) or one made with GlyphOcr_paddleOnIos=1.
+    try {
+      createOcr({ languages: ['ru'], engine: 'paddle' }).dispose();
+      check('paddle on iOS is built in', true);
+    } catch (e) {
+      check(
+        'paddle on iOS is not built in',
+        e instanceof OcrError && e.code === 'engine-unavailable',
+        { got: e instanceof OcrError ? e.code : String(e) },
+      );
+    }
     await expectError(
       'fast level has no Russian',
       'language-not-supported',
@@ -243,6 +251,40 @@ async function runChecks(
     turned.image.width === base.image.height,
     { image: turned.image },
   );
+
+  // ─── Upside down ───────────────────────────────────────────────────────
+  // Pixels turned 180° (not EXIF): Paddle finds the lines with its orientation classifier,
+  // Vision reads turned text itself.
+  const upsideDown = await sampleImage.rotateAsync(180);
+  const turnedBack = await ocr.recognize(upsideDown, {
+    readingOrder: 'blocks',
+  });
+  const plainBlocks = await ocr.recognize(sampleImage, {
+    readingOrder: 'blocks',
+  });
+  const firstLine = allLines(turnedBack)[0];
+  check(
+    'upside-down label reads in order',
+    similarity(turnedBack.text, plainBlocks.text) > 0.9 &&
+      firstLine != null &&
+      /состав/i.test(firstLine.text) &&
+      firstLine.boundingBox.y > 0.5,
+    {
+      similarity: similarity(turnedBack.text, plainBlocks.text),
+      first: firstLine?.text,
+      firstBox: firstLine?.boundingBox,
+      angle: firstLine?.angle,
+    },
+  );
+  if (ocr.engine === 'paddle') {
+    const without = await ocr.recognize(upsideDown, {
+      textlineOrientation: false,
+      output: 'text',
+    });
+    check('textlineOrientation: false reads it as is', true, {
+      similarity: similarity(without.text, plainBlocks.text),
+    });
+  }
 
   // ─── ROI ───────────────────────────────────────────────────────────────
   const roi = {
@@ -447,6 +489,55 @@ async function runChecks(
         status: store.getPackStatus(packId),
       });
       check('prune', true, { freed: await store.prune() });
+      if (Platform.OS === 'ios') {
+        // PaddleOCR on iOS: only in builds with GlyphOcr_paddleOnIos=1.
+        let paddle: Ocr | undefined;
+        try {
+          paddle = createOcr({ languages: ['ru', 'en'], engine: 'paddle' });
+        } catch (e) {
+          log(
+            `skip Paddle on iOS: ${e instanceof OcrError ? e.code : String(e)}`,
+          );
+        }
+        if (paddle) {
+          await paddle.prepare();
+          const read = await paddle.recognize(upright, {
+            readingOrder: 'rows',
+          });
+          const missed = SAMPLE_WORDS.filter(
+            w => !read.text.toLowerCase().includes(w),
+          );
+          check('Paddle on iOS reads the label', missed.length === 0, {
+            missed,
+            text: read.text.slice(0, 80),
+            timings: read.timings,
+          });
+          const paddleTurned = await paddle.recognize(upsideDown, {
+            readingOrder: 'blocks',
+          });
+          check(
+            'Paddle on iOS reads it upside down',
+            /состав/i.test(allLines(paddleTurned)[0]?.text ?? ''),
+            { first: allLines(paddleTurned)[0]?.text },
+          );
+          paddle.dispose();
+          await store.remove(['eslav']);
+        }
+      }
+      if (Platform.OS === 'android') {
+        // PP-OCRv6 tiny, the multilingual pack: English and Chinese with 40 Latin languages.
+        const multi = createOcr({ languages: ['en'], paddlePack: 'multi' });
+        await multi.prepare();
+        const read = await multi.recognize(upright, { readingOrder: 'rows' });
+        check(
+          'PP-OCRv6 multi pack reads English',
+          multi.packId === 'multi' &&
+            /water, sugar, citric acid/.test(read.text),
+          { text: read.text.slice(-80) },
+        );
+        multi.dispose();
+        await store.remove(['multi']);
+      }
     } catch (e) {
       check('download', false, { error: String(e) });
     } finally {

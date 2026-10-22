@@ -54,6 +54,19 @@ class TextLine(
     return Pair(srcX(u, v), srcY(u, v))
   }
 
+  /**
+   * The same line read the other way: turned 180°, for upside-down text. A point (u, v) of the
+   * turned line is (-u, -v) of this one, so the sampler and the corners follow the turned text.
+   */
+  fun flipped(): TextLine = TextLine(
+    cx = cx, cy = cy, cos = -cos, sin = -sin,
+    u0 = -u1, u1 = -u0,
+    binOrigin = if (centers == null) binOrigin else -(binOrigin + centers.size),
+    centers = centers?.let { c -> FloatArray(c.size) { -c[c.size - 1 - it] } },
+    centerConst = -centerConst,
+    halfHeight = halfHeight, scaleX = scaleX, scaleY = scaleY, vertical = vertical,
+  )
+
   /** Length along the text and height across it, in source px. */
   val lengthSrc: Float get() = (u1 - u0) * scaleX
   val heightSrc: Float get() = 2 * halfHeight * scaleY

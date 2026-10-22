@@ -65,11 +65,12 @@ namespace margelo::nitro::glyphocr {
     std::optional<ReadingOrder> readingOrder     SWIFT_PRIVATE;
     std::optional<OcrOutput> output     SWIFT_PRIVATE;
     std::optional<bool> diagnostics     SWIFT_PRIVATE;
+    std::optional<bool> textlineOrientation     SWIFT_PRIVATE;
     std::optional<PaddleTuning> paddle     SWIFT_PRIVATE;
 
   public:
     RecognizeOptions() = default;
-    explicit RecognizeOptions(std::optional<RecognitionLevel> recognitionLevel, std::optional<bool> usesLanguageCorrection, std::optional<OcrRegion> roi, std::optional<ImageOrientation> orientation, std::optional<double> minConfidence, std::optional<double> maxImageSide, std::optional<ReadingOrder> readingOrder, std::optional<OcrOutput> output, std::optional<bool> diagnostics, std::optional<PaddleTuning> paddle): recognitionLevel(recognitionLevel), usesLanguageCorrection(usesLanguageCorrection), roi(roi), orientation(orientation), minConfidence(minConfidence), maxImageSide(maxImageSide), readingOrder(readingOrder), output(output), diagnostics(diagnostics), paddle(paddle) {}
+    explicit RecognizeOptions(std::optional<RecognitionLevel> recognitionLevel, std::optional<bool> usesLanguageCorrection, std::optional<OcrRegion> roi, std::optional<ImageOrientation> orientation, std::optional<double> minConfidence, std::optional<double> maxImageSide, std::optional<ReadingOrder> readingOrder, std::optional<OcrOutput> output, std::optional<bool> diagnostics, std::optional<bool> textlineOrientation, std::optional<PaddleTuning> paddle): recognitionLevel(recognitionLevel), usesLanguageCorrection(usesLanguageCorrection), roi(roi), orientation(orientation), minConfidence(minConfidence), maxImageSide(maxImageSide), readingOrder(readingOrder), output(output), diagnostics(diagnostics), textlineOrientation(textlineOrientation), paddle(paddle) {}
 
   public:
     friend bool operator==(const RecognizeOptions& lhs, const RecognizeOptions& rhs) = default;
@@ -94,6 +95,7 @@ namespace margelo::nitro {
         JSIConverter<std::optional<margelo::nitro::glyphocr::ReadingOrder>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "readingOrder"))),
         JSIConverter<std::optional<margelo::nitro::glyphocr::OcrOutput>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "output"))),
         JSIConverter<std::optional<bool>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "diagnostics"))),
+        JSIConverter<std::optional<bool>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "textlineOrientation"))),
         JSIConverter<std::optional<margelo::nitro::glyphocr::PaddleTuning>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "paddle")))
       );
     }
@@ -108,6 +110,7 @@ namespace margelo::nitro {
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "readingOrder"), JSIConverter<std::optional<margelo::nitro::glyphocr::ReadingOrder>>::toJSI(runtime, arg.readingOrder));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "output"), JSIConverter<std::optional<margelo::nitro::glyphocr::OcrOutput>>::toJSI(runtime, arg.output));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "diagnostics"), JSIConverter<std::optional<bool>>::toJSI(runtime, arg.diagnostics));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "textlineOrientation"), JSIConverter<std::optional<bool>>::toJSI(runtime, arg.textlineOrientation));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "paddle"), JSIConverter<std::optional<margelo::nitro::glyphocr::PaddleTuning>>::toJSI(runtime, arg.paddle));
       return obj;
     }
@@ -128,6 +131,7 @@ namespace margelo::nitro {
       if (!JSIConverter<std::optional<margelo::nitro::glyphocr::ReadingOrder>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "readingOrder")))) return false;
       if (!JSIConverter<std::optional<margelo::nitro::glyphocr::OcrOutput>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "output")))) return false;
       if (!JSIConverter<std::optional<bool>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "diagnostics")))) return false;
+      if (!JSIConverter<std::optional<bool>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "textlineOrientation")))) return false;
       if (!JSIConverter<std::optional<margelo::nitro::glyphocr::PaddleTuning>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "paddle")))) return false;
       return true;
     }

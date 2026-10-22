@@ -370,6 +370,52 @@ internal object ResultBuilder {
     return Built(text, blocks.toTypedArray())
   }
 
+  /**
+   * [build] for text that may be upside down: when most lines read at about 180°, the order is
+   * worked out on the image turned 180° and the coordinates are turned back, so blocks and rows
+   * follow the text while every box stays on the image as given.
+   */
+  fun buildOriented(lines: List<RawLine>, imageW: Int, imageH: Int, output: OcrOutput, order: ReadingOrder): Built {
+    if (lines.count { abs(it.angle) > 135 } * 2 <= lines.size) return build(lines, imageW, imageH, output, order)
+    val w = imageW.toDouble()
+    val h = imageH.toDouble()
+    fun turn(p: Pt) = Pt(w - p.x, h - p.y)
+    val turned = lines.map { l ->
+      RawLine(
+        l.text, l.confidence, l.corners.map(::turn), w - l.right, h - l.bottom, w - l.left, h - l.top,
+        l.words.map { RawWord(it.text, it.confidence, it.corners.map(::turn)) },
+      )
+    }.sortedWith(compareBy({ it.top }, { it.left })) // the order [build] expects, in the turned image
+    val built = build(turned, imageW, imageH, output, order)
+    fun box(r: OcrRect, sw: Double, sh: Double) = OcrRect(sw - r.x - r.width, sh - r.y - r.height, r.width, r.height)
+    fun points(ps: Array<OcrPoint>) = ps.map { OcrPoint(1 - it.x, 1 - it.y) }.toTypedArray()
+    fun angle(a: Double) = if (a + 180 > 180) a - 180 else a + 180
+    return Built(
+      built.text,
+      built.blocks.map { b ->
+        OcrBlock(
+          text = b.text, confidence = b.confidence,
+          boundingBox = box(b.boundingBox, 1.0, 1.0), pixelBoundingBox = box(b.pixelBoundingBox, w, h),
+          cornerPoints = points(b.cornerPoints), angle = angle(b.angle),
+          lines = b.lines.map { l ->
+            OcrLine(
+              text = l.text, confidence = l.confidence,
+              boundingBox = box(l.boundingBox, 1.0, 1.0), pixelBoundingBox = box(l.pixelBoundingBox, w, h),
+              cornerPoints = points(l.cornerPoints), angle = angle(l.angle),
+              elements = l.elements.map { e ->
+                OcrElement(
+                  text = e.text, confidence = e.confidence,
+                  boundingBox = box(e.boundingBox, 1.0, 1.0), pixelBoundingBox = box(e.pixelBoundingBox, w, h),
+                  cornerPoints = points(e.cornerPoints), angle = angle(e.angle),
+                )
+              }.toTypedArray(),
+            )
+          }.toTypedArray(),
+        )
+      }.toTypedArray(),
+    )
+  }
+
   /** The block's rectangle along its median angle. */
   private fun blockCorners(lines: List<RawLine>, angle: Double): List<Pt> {
     val c = cos(Math.toRadians(angle))

@@ -18,7 +18,7 @@ public extension FrameRecognizeOptions {
   /**
    * Create a new instance of `FrameRecognizeOptions`.
    */
-  init(roi: OcrRect?, mirrored: Bool?, recognitionLevel: RecognitionLevel?, usesLanguageCorrection: Bool?, minConfidence: Double?, maxImageSide: Double?, readingOrder: ReadingOrder?, output: OcrOutput?, diagnostics: Bool?, paddle: PaddleTuning?) {
+  init(roi: OcrRect?, mirrored: Bool?, recognitionLevel: RecognitionLevel?, usesLanguageCorrection: Bool?, minConfidence: Double?, maxImageSide: Double?, readingOrder: ReadingOrder?, output: OcrOutput?, diagnostics: Bool?, textlineOrientation: Bool?, paddle: PaddleTuning?) {
     self.init({ () -> bridge.std__optional_OcrRect_ in
       if let __unwrappedValue = roi {
         return bridge.create_std__optional_OcrRect_(__unwrappedValue)
@@ -69,6 +69,12 @@ public extension FrameRecognizeOptions {
       }
     }(), { () -> bridge.std__optional_bool_ in
       if let __unwrappedValue = diagnostics {
+        return bridge.create_std__optional_bool_(__unwrappedValue)
+      } else {
+        return .init()
+      }
+    }(), { () -> bridge.std__optional_bool_ in
+      if let __unwrappedValue = textlineOrientation {
         return bridge.create_std__optional_bool_(__unwrappedValue)
       } else {
         return .init()
@@ -155,6 +161,18 @@ public extension FrameRecognizeOptions {
     return { () -> Bool? in
       if bridge.has_value_std__optional_bool_(self.__diagnostics) {
         let __unwrapped = bridge.get_std__optional_bool_(self.__diagnostics)
+        return __unwrapped
+      } else {
+        return nil
+      }
+    }()
+  }
+  
+  @inline(__always)
+  var textlineOrientation: Bool? {
+    return { () -> Bool? in
+      if bridge.has_value_std__optional_bool_(self.__textlineOrientation) {
+        let __unwrapped = bridge.get_std__optional_bool_(self.__textlineOrientation)
         return __unwrapped
       } else {
         return nil

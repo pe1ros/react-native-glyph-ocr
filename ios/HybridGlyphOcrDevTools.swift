@@ -58,7 +58,8 @@ final class HybridGlyphOcrDevTools: HybridGlyphOcrDevToolsSpec {
   func createTestFrame(uri: String, maxSide: Double, orientation: FrameOrientation) throws -> UInt64 {
     let options = RecognizeOptions(
       recognitionLevel: nil, usesLanguageCorrection: nil, roi: nil, orientation: nil, minConfidence: nil,
-      maxImageSide: maxSide, readingOrder: nil, output: nil, diagnostics: nil, paddle: nil)
+      maxImageSide: maxSide, readingOrder: nil, output: nil, diagnostics: nil, textlineOrientation: nil,
+      paddle: nil)
     let input = try ImageSource.fromUri(uri, options)
     return try FrameBuffers.testFrame(input.image, Exif.of(orientation, mirrored: false))
   }

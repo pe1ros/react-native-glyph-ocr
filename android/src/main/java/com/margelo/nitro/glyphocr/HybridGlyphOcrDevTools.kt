@@ -111,7 +111,7 @@ class HybridGlyphOcrDevTools : HybridGlyphOcrDevToolsSpec() {
   }
 
   private fun options(maxImageSide: Double) =
-    RecognizeOptions(null, null, null, null, null, maxImageSide, null, null, null, null)
+    RecognizeOptions(null, null, null, null, null, maxImageSide, null, null, null, null, null)
 
   override fun createTestFrame(uri: String, maxSide: Double, orientation: FrameOrientation): ULong {
     val input = ImageSource.fromUri(context, uri, options(maxSide))

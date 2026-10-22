@@ -337,6 +337,51 @@ enum ResultBuilder {
       .joined(separator: "\n")
   }
 
+  /**
+   * [build] for text that may be upside down (Paddle): when most lines read at about 180°, the
+   * order is worked out on the image turned 180° and the coordinates are turned back, so blocks
+   * and rows follow the text while every box stays on the image as given.
+   */
+  static func buildOriented(
+    _ lines: [RawLine], _ imageW: Int, _ imageH: Int, _ output: OcrOutput, _ order: ReadingOrder
+  ) -> (text: String, blocks: [OcrBlock]) {
+    if lines.filter({ Swift.abs($0.angle) > 135 }).count * 2 <= lines.count {
+      return build(lines, imageW, imageH, output, order)
+    }
+    let w = Double(imageW)
+    let h = Double(imageH)
+    func turn(_ p: Pt) -> Pt { Pt(x: w - p.x, y: h - p.y) }
+    let turned = lines.map { l in
+      RawLine(
+        text: l.text, confidence: l.confidence, corners: l.corners.map(turn), left: w - l.right, top: h - l.bottom,
+        right: w - l.left, bottom: h - l.top,
+        words: l.words.map { RawWord(text: $0.text, confidence: $0.confidence, corners: $0.corners.map(turn)) })
+    }.sorted { ($0.top, $0.left) < ($1.top, $1.left) }  // the order build expects, in the turned image
+    let built = build(turned, imageW, imageH, output, order)
+    func box(_ r: OcrRect, _ sw: Double, _ sh: Double) -> OcrRect {
+      OcrRect(x: sw - r.x - r.width, y: sh - r.y - r.height, width: r.width, height: r.height)
+    }
+    func points(_ ps: [OcrPoint]) -> [OcrPoint] { ps.map { OcrPoint(x: 1 - $0.x, y: 1 - $0.y) } }
+    func angle(_ a: Double) -> Double { a > 0 ? a - 180 : a + 180 }
+    let blocks = built.blocks.map { b in
+      OcrBlock(
+        text: b.text, confidence: b.confidence, boundingBox: box(b.boundingBox, 1, 1),
+        pixelBoundingBox: box(b.pixelBoundingBox, w, h), cornerPoints: points(b.cornerPoints), angle: angle(b.angle),
+        lines: b.lines.map { l in
+          OcrLine(
+            text: l.text, confidence: l.confidence, boundingBox: box(l.boundingBox, 1, 1),
+            pixelBoundingBox: box(l.pixelBoundingBox, w, h), cornerPoints: points(l.cornerPoints), angle: angle(l.angle),
+            elements: l.elements.map { e in
+              OcrElement(
+                text: e.text, confidence: e.confidence, boundingBox: box(e.boundingBox, 1, 1),
+                pixelBoundingBox: box(e.pixelBoundingBox, w, h), cornerPoints: points(e.cornerPoints),
+                angle: angle(e.angle))
+            })
+        })
+    }
+    return (built.text, blocks)
+  }
+
   static func build(
     _ lines: [RawLine], _ imageW: Int, _ imageH: Int, _ output: OcrOutput, _ order: ReadingOrder
   ) -> (text: String, blocks: [OcrBlock]) {

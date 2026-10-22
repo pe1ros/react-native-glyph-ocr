@@ -67,6 +67,8 @@ namespace margelo::nitro::glyphocr {
       jni::local_ref<JOcrOutput> output = this->getFieldValue(fieldOutput);
       static const auto fieldDiagnostics = clazz->getField<jni::JBoolean>("diagnostics");
       jni::local_ref<jni::JBoolean> diagnostics = this->getFieldValue(fieldDiagnostics);
+      static const auto fieldTextlineOrientation = clazz->getField<jni::JBoolean>("textlineOrientation");
+      jni::local_ref<jni::JBoolean> textlineOrientation = this->getFieldValue(fieldTextlineOrientation);
       static const auto fieldPaddle = clazz->getField<JPaddleTuning>("paddle");
       jni::local_ref<JPaddleTuning> paddle = this->getFieldValue(fieldPaddle);
       return RecognizeOptions(
@@ -79,6 +81,7 @@ namespace margelo::nitro::glyphocr {
         readingOrder != nullptr ? std::make_optional(readingOrder->toCpp()) : std::nullopt,
         output != nullptr ? std::make_optional(output->toCpp()) : std::nullopt,
         diagnostics != nullptr ? std::make_optional(static_cast<bool>(diagnostics->value())) : std::nullopt,
+        textlineOrientation != nullptr ? std::make_optional(static_cast<bool>(textlineOrientation->value())) : std::nullopt,
         paddle != nullptr ? std::make_optional(paddle->toCpp()) : std::nullopt
       );
     }
@@ -89,7 +92,7 @@ namespace margelo::nitro::glyphocr {
      */
     [[maybe_unused]]
     static jni::local_ref<JRecognizeOptions::javaobject> fromCpp(const RecognizeOptions& value) {
-      using JSignature = JRecognizeOptions(jni::alias_ref<JRecognitionLevel>, jni::alias_ref<jni::JBoolean>, jni::alias_ref<JOcrRegion>, jni::alias_ref<JImageOrientation>, jni::alias_ref<jni::JDouble>, jni::alias_ref<jni::JDouble>, jni::alias_ref<JReadingOrder>, jni::alias_ref<JOcrOutput>, jni::alias_ref<jni::JBoolean>, jni::alias_ref<JPaddleTuning>);
+      using JSignature = JRecognizeOptions(jni::alias_ref<JRecognitionLevel>, jni::alias_ref<jni::JBoolean>, jni::alias_ref<JOcrRegion>, jni::alias_ref<JImageOrientation>, jni::alias_ref<jni::JDouble>, jni::alias_ref<jni::JDouble>, jni::alias_ref<JReadingOrder>, jni::alias_ref<JOcrOutput>, jni::alias_ref<jni::JBoolean>, jni::alias_ref<jni::JBoolean>, jni::alias_ref<JPaddleTuning>);
       static const auto clazz = javaClassStatic();
       static const auto create = clazz->getStaticMethod<JSignature>("fromCpp");
       return create(
@@ -103,6 +106,7 @@ namespace margelo::nitro::glyphocr {
         value.readingOrder.has_value() ? JReadingOrder::fromCpp(value.readingOrder.value()) : nullptr,
         value.output.has_value() ? JOcrOutput::fromCpp(value.output.value()) : nullptr,
         value.diagnostics.has_value() ? jni::JBoolean::valueOf(value.diagnostics.value()) : nullptr,
+        value.textlineOrientation.has_value() ? jni::JBoolean::valueOf(value.textlineOrientation.value()) : nullptr,
         value.paddle.has_value() ? JPaddleTuning::fromCpp(value.paddle.value()) : nullptr
       );
     }

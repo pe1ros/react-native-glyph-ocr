@@ -47,6 +47,9 @@ data class RecognizeOptions(
   val diagnostics: Boolean?,
   @DoNotStrip
   @Keep
+  val textlineOrientation: Boolean?,
+  @DoNotStrip
+  @Keep
   val paddle: PaddleTuning?
 ) {
   /* primary constructor */
@@ -63,6 +66,7 @@ data class RecognizeOptions(
       && Objects.deepEquals(this.readingOrder, other.readingOrder)
       && Objects.deepEquals(this.output, other.output)
       && Objects.deepEquals(this.diagnostics, other.diagnostics)
+      && Objects.deepEquals(this.textlineOrientation, other.textlineOrientation)
       && Objects.deepEquals(this.paddle, other.paddle)
   }
 
@@ -77,6 +81,7 @@ data class RecognizeOptions(
       readingOrder,
       output,
       diagnostics,
+      textlineOrientation,
       paddle
     ).contentDeepHashCode()
   }
@@ -89,8 +94,8 @@ data class RecognizeOptions(
     @Keep
     @Suppress("unused")
     @JvmStatic
-    private fun fromCpp(recognitionLevel: RecognitionLevel?, usesLanguageCorrection: Boolean?, roi: OcrRegion?, orientation: ImageOrientation?, minConfidence: Double?, maxImageSide: Double?, readingOrder: ReadingOrder?, output: OcrOutput?, diagnostics: Boolean?, paddle: PaddleTuning?): RecognizeOptions {
-      return RecognizeOptions(recognitionLevel, usesLanguageCorrection, roi, orientation, minConfidence, maxImageSide, readingOrder, output, diagnostics, paddle)
+    private fun fromCpp(recognitionLevel: RecognitionLevel?, usesLanguageCorrection: Boolean?, roi: OcrRegion?, orientation: ImageOrientation?, minConfidence: Double?, maxImageSide: Double?, readingOrder: ReadingOrder?, output: OcrOutput?, diagnostics: Boolean?, textlineOrientation: Boolean?, paddle: PaddleTuning?): RecognizeOptions {
+      return RecognizeOptions(recognitionLevel, usesLanguageCorrection, roi, orientation, minConfidence, maxImageSide, readingOrder, output, diagnostics, textlineOrientation, paddle)
     }
   }
 }

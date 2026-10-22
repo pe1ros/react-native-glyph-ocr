@@ -32,6 +32,7 @@ namespace margelo::nitro::glyphocr {
     DETECTOR      SWIFT_NAME(detector) = 0,
     RECOGNIZER      SWIFT_NAME(recognizer) = 1,
     DICTIONARY      SWIFT_NAME(dictionary) = 2,
+    ORIENTATION      SWIFT_NAME(orientation) = 3,
   } CLOSED_ENUM;
 
 } // namespace margelo::nitro::glyphocr
@@ -47,6 +48,7 @@ namespace margelo::nitro {
         case hashString("detector"): return margelo::nitro::glyphocr::ModelRole::DETECTOR;
         case hashString("recognizer"): return margelo::nitro::glyphocr::ModelRole::RECOGNIZER;
         case hashString("dictionary"): return margelo::nitro::glyphocr::ModelRole::DICTIONARY;
+        case hashString("orientation"): return margelo::nitro::glyphocr::ModelRole::ORIENTATION;
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert \"" + unionValue + "\" to enum ModelRole - invalid value!");
       }
@@ -56,6 +58,7 @@ namespace margelo::nitro {
         case margelo::nitro::glyphocr::ModelRole::DETECTOR: return JSIConverter<std::string>::toJSI(runtime, "detector");
         case margelo::nitro::glyphocr::ModelRole::RECOGNIZER: return JSIConverter<std::string>::toJSI(runtime, "recognizer");
         case margelo::nitro::glyphocr::ModelRole::DICTIONARY: return JSIConverter<std::string>::toJSI(runtime, "dictionary");
+        case margelo::nitro::glyphocr::ModelRole::ORIENTATION: return JSIConverter<std::string>::toJSI(runtime, "orientation");
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert ModelRole to JS - invalid value: "
                                     + std::to_string(static_cast<int>(arg)) + "!");
@@ -70,6 +73,7 @@ namespace margelo::nitro {
         case hashString("detector"):
         case hashString("recognizer"):
         case hashString("dictionary"):
+        case hashString("orientation"):
           return true;
         default:
           return false;

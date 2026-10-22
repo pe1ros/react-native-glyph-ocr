@@ -25,10 +25,23 @@ interface PaddleRuntime : AutoCloseable {
   fun recognize(input: FloatBuffer, w: Int): RecOutput
 
   class RecOutput(val probs: FloatArray, val steps: Int, val classes: Int)
+
+  /** The text line orientation classifier is loaded: [classifyOrientation] works. */
+  val hasOrientation: Boolean get() = false
+
+  /** [1, 3, 80, 160] -> probabilities of 0° and 180°. */
+  fun classifyOrientation(input: FloatBuffer): FloatArray =
+    throw UnsupportedOperationException("No orientation classifier")
 }
 
 /** The official PaddleOCR ONNX exports on ONNX Runtime: the default runtime. */
-class OrtRuntime(detModel: ByteArray, recModel: ByteArray, threads: Int, useXnnpack: Boolean) : PaddleRuntime {
+class OrtRuntime(
+  detModel: ByteArray,
+  recModel: ByteArray,
+  clsModel: ByteArray?,
+  threads: Int,
+  useXnnpack: Boolean,
+) : PaddleRuntime {
   private val env = OrtEnvironment.getEnvironment()
 
   override val name = "onnxruntime-${OrtEnvironment.getEnvironment().version}"
@@ -36,6 +49,22 @@ class OrtRuntime(detModel: ByteArray, recModel: ByteArray, threads: Int, useXnnp
   private val rec = env.createSession(recModel, sessionOptions(threads, useXnnpack))
   private val detInput = det.inputNames.first()
   private val recInput = rec.inputNames.first()
+  // One thread: the classifier is tiny, more threads only add synchronization.
+  private val cls = clsModel?.let { env.createSession(it, sessionOptions(1, false)) }
+  private val clsInput = cls?.inputNames?.first()
+
+  override val hasOrientation get() = cls != null
+
+  override fun classifyOrientation(input: FloatBuffer): FloatArray {
+    val session = cls ?: throw UnsupportedOperationException("No orientation classifier")
+    OnnxTensor.createTensor(env, input, longArrayOf(1, 3, CLS_H.toLong(), CLS_W.toLong())).use { tensor ->
+      session.run(mapOf(clsInput to tensor)).use { result ->
+        val out = FloatArray(2)
+        (result.get(0) as OnnxTensor).floatBuffer.get(out)
+        return out
+      }
+    }
+  }
 
   override val rgbInput = false
   override val recWidthStep = 1
@@ -65,6 +94,7 @@ class OrtRuntime(detModel: ByteArray, recModel: ByteArray, threads: Int, useXnnp
   override fun close() {
     det.close()
     rec.close()
+    cls?.close()
   }
 
   private companion object {
@@ -85,3 +115,7 @@ class OrtRuntime(detModel: ByteArray, recModel: ByteArray, threads: Int, useXnnp
 }
 
 internal const val REC_H = 48
+
+/** Input of PP-LCNet textline orientation: 160 × 80, a plain resize of the line crop. */
+internal const val CLS_W = 160
+internal const val CLS_H = 80
