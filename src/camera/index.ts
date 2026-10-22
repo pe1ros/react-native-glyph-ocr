@@ -110,7 +110,7 @@ export interface UseTextScannerOptions {
   isActive?: boolean;
   /**
    * Thresholds of `FrameQuality`, first estimates from the 61 bench photos as 1920 px frames
-   * (docs/ocr-library-api.md, section 15): calibrate them on recorded camera frames.
+   * (blurred, darkened and shifted copies): calibrate them on recorded camera frames.
    * Sharpness depends on the label as much as on focus (206–12 465 on sharp photos), so a frame
    * must also reach `relativeSharpness` of the sharpest frame of the last `peakWindowMs`.
    * Default 50: below it even a busy label is badly out of focus.
@@ -131,12 +131,12 @@ export interface UseTextScannerOptions {
   recognizeOptions?: Omit<FrameRecognizeOptions, 'roi' | 'mirrored'>;
   /**
    * Take a photo instead of using the video frame once the frame is good: slower but
-   * the quality the spike measured. The output must be in the Camera's `outputs`.
+   * the quality of a full photo. The output must be in the Camera's `outputs`.
    */
   photoOutput?: CameraPhotoOutput;
   /** Frame output resolution. Default `CommonResolutions.UHD_4_3`. */
   targetResolution?: Size;
-  /** JS thread. Return false to keep scanning, e.g. when the «Состав» marker is missing. */
+  /** JS thread. Return false to keep scanning, e.g. when a keyword you expect is missing. */
   accept?: (result: OcrResult) => boolean;
   onResult?: (result: OcrResult) => void;
   onError?: (error: OcrError) => void;
@@ -311,13 +311,13 @@ export function useTextScanner(
         region == null
           ? undefined
           : region.view == null
-          ? region.rect
-          : viewRectToImageRect(
-              region.rect,
-              region.view,
-              upright,
-              region.resizeMode,
-            );
+            ? region.rect
+            : viewRectToImageRect(
+                region.rect,
+                region.view,
+                upright,
+                region.resizeMode,
+              );
 
       // 1. Measure every frame: ~1 ms on a small copy of the ROI's luma.
       let q: FrameQuality;
@@ -354,8 +354,8 @@ export function useTextScanner(
         q.brightness < minBrightness
           ? 'too-dark'
           : good
-          ? 'searching'
-          : 'hold-still';
+            ? 'searching'
+            : 'hold-still';
       const reportedAt = now - s.reportedAt > 250 ? now : s.reportedAt;
       if (reportedAt === now) {
         scheduleOnRN(report, q, label);

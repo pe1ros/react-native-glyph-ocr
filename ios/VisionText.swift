@@ -4,9 +4,8 @@ import ImageIO
 import Vision
 
 /**
- * Apple Vision text recognition as measured in the spike report (docs/spikes/paddleocr-android.md,
- * «iOS: Apple Vision»): VNRecognizeTextRequest revision 3, accurate level. Plain Swift without
- * Nitro, so scripts/ocr-spike/vision-bench.swift builds the same code on macOS to measure quality.
+ * Apple Vision text recognition: VNRecognizeTextRequest revision 3, accurate level. Plain Swift
+ * without Nitro, so the same code also builds on macOS to measure quality.
  */
 @available(iOS 16.0, *)
 enum VisionText {

@@ -16,6 +16,12 @@ apply from: "./fix-prefab.gradle"
 
 if (isNewArchitectureEnabled()) {
   apply plugin: "com.facebook.react"
+  // Nitro generates the bindings (nitrogen/); React Native's codegen has nothing to do here. Scan
+  // src/ only, or it picks up react-native's own specs from node_modules when this package is the
+  // root of a workspace.
+  react {
+    jsRootDir = file("../src")
+  }
 }
 
 def getExtOrDefault(name) {
@@ -33,19 +39,19 @@ def flag(name, defaultValue) {
   return value != null ? value.toString() : defaultValue
 }
 
-// ─── Build flags (docs/ocr-library-api.md, section 2) ─────────────────────
+// ─── Build flags (README, «Build flags») ──────────────────────────────────
 // GlyphOcr_embedPacks=eslav,cyrillic  packs of models/manifest.json to download at build time, check
 //                                      by sha256 and pack into assets/ocr-models (else downloaded at runtime)
 // GlyphOcr_devMlKit=true             compiles ML Kit for react-native-glyph-ocr/dev (+12.5 MB, ML Kit Terms)
 // GlyphOcr_executorch=auto|true|false  the minimal ExecuTorch build in android/executorch, made by
-//                                      scripts/ocr-spike/executorch/build-android.sh; auto = if it is there
+//                                      scripts/executorch/build-android.sh; auto = if it is there
 def embedPacks = flag("embedPacks", "").split(",").collect { it.trim() }.findAll { it }
 def withMlKit = flag("devMlKit", "false").toBoolean()
 def executorchDir = file("executorch")
 def executorchFlag = flag("executorch", "auto")
 def withExecuTorch = executorchFlag == "auto" ? new File(executorchDir, "jni/arm64-v8a/libexecutorch.so").exists() : executorchFlag.toBoolean()
 if (withExecuTorch && !new File(executorchDir, "jni/arm64-v8a/libexecutorch.so").exists()) {
-  throw new GradleException("[GlyphOcr] GlyphOcr_executorch=true, but ${executorchDir} has no build: run scripts/ocr-spike/executorch/build-android.sh")
+  throw new GradleException("[GlyphOcr] GlyphOcr_executorch=true, but ${executorchDir} has no build: run scripts/executorch/build-android.sh")
 }
 
 // The manifest and the recognizer dictionaries always ship in the APK (a few KB);
@@ -206,12 +212,6 @@ android {
       }
       if (withMlKit) {
         java.srcDirs += ["src/mlkit/java"]
-      }
-      if (isNewArchitectureEnabled()) {
-        java.srcDirs += [
-          // React Codegen files
-          "${project.buildDir}/generated/source/codegen/java"
-        ]
       }
     }
   }

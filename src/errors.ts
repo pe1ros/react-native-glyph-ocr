@@ -63,7 +63,7 @@ export class OcrError extends Error {
 }
 
 /**
- * Native code throws `[ocr:<code>] <message>` optionally followed by ` {json details}`.
+ * Native code throws `[ocr:<code>] <message>` optionally followed by ` {json details}`, on one line.
  * Nitro turns that into a plain `Error`; this restores the typed error.
  */
 export function toOcrError(e: unknown): OcrError {
@@ -71,8 +71,10 @@ export function toOcrError(e: unknown): OcrError {
     return e;
   }
   const raw = e instanceof Error ? e.message : String(e);
-  const m = /\[ocr:([a-z-]+)\]\s*([^{]*)(\{.*\})?/s.exec(raw);
-  if (!m || !CODES.has(m[1])) {
+  // One line: Nitro appends the native stack trace (`\n\tat com.…`) after it on Android.
+  const m = /\[ocr:([a-z-]+)\]\s*([^{\n]*)(\{[^\n]*\})?/.exec(raw);
+  const code = m?.[1];
+  if (m == null || code == null || !CODES.has(code)) {
     return new OcrError('internal', raw, undefined, e);
   }
   let details: Record<string, unknown> | undefined;
@@ -81,5 +83,5 @@ export function toOcrError(e: unknown): OcrError {
   } catch {
     details = undefined;
   }
-  return new OcrError(m[1] as OcrErrorCode, m[2].trim(), details, e);
+  return new OcrError(code as OcrErrorCode, (m[2] ?? '').trim(), details, e);
 }

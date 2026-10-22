@@ -11,7 +11,7 @@ import java.nio.FloatBuffer
 
 /**
  * One fused ExecuTorch program with `detect` and `recognize` methods, lowered to XNNPACK or Vulkan
- * (see scripts/ocr-spike/executorch). It takes RGB and recognizer widths that are multiples of 8,
+ * (see scripts/executorch). It takes RGB and recognizer widths that are multiples of 8,
  * the contract of react-native-executorch's createPaddleOcr. Our ExecuTorch build has XNNPACK only:
  * Vulkan programs fail to load with ExecutorchRuntimeException.
  */

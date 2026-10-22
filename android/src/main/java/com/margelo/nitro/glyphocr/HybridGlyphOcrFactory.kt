@@ -33,7 +33,7 @@ class HybridGlyphOcrFactory : HybridGlyphOcrFactorySpec() {
   override fun createFrameMeter(): HybridOcrFrameMeterSpec = HybridOcrFrameMeter()
 
   companion object {
-    /** The best measured on Pixel 6a (docs/spikes/paddleocr-android.md). */
+    /** The best measured on Pixel 6a. */
     const val DEFAULT_THREADS = 4
 
     fun requireEngine(engine: OcrEngine) {

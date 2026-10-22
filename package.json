@@ -1,52 +1,192 @@
 {
   "name": "react-native-glyph-ocr",
-  "version": "0.2.0",
-  "private": true,
+  "version": "0.3.0",
   "description": "On-device text recognition for React Native: Apple Vision on iOS, PaddleOCR (PP-OCRv5) on Android, as a Nitro module",
-  "main": "src/index",
-  "react-native": "src/index",
-  "source": "src/index",
-  "types": "src/index.ts",
+  "main": "./lib/module/index.js",
+  "types": "./lib/typescript/src/index.d.ts",
   "exports": {
     ".": {
-      "types": "./src/index.ts",
-      "react-native": "./src/index.ts",
-      "default": "./src/index.ts"
+      "react-native-glyph-ocr-source": "./src/index.ts",
+      "types": "./lib/typescript/src/index.d.ts",
+      "default": "./lib/module/index.js"
     },
     "./camera": {
-      "types": "./src/camera/index.ts",
-      "react-native": "./src/camera/index.ts",
-      "default": "./src/camera/index.ts"
+      "react-native-glyph-ocr-source": "./src/camera/index.ts",
+      "types": "./lib/typescript/src/camera/index.d.ts",
+      "default": "./lib/module/camera/index.js"
     },
     "./dev": {
-      "types": "./src/dev/index.ts",
-      "react-native": "./src/dev/index.ts",
-      "default": "./src/dev/index.ts"
+      "react-native-glyph-ocr-source": "./src/dev/index.ts",
+      "types": "./lib/typescript/src/dev/index.d.ts",
+      "default": "./lib/module/dev/index.js"
     },
     "./models/manifest.json": "./models/manifest.json",
+    "./app.plugin.js": "./app.plugin.js",
     "./package.json": "./package.json"
   },
+  "files": [
+    "src",
+    "lib",
+    "android",
+    "ios",
+    "models",
+    "nitrogen",
+    "plugin/build",
+    "app.plugin.js",
+    "nitro.json",
+    "*.podspec",
+    "react-native.config.js",
+    "NOTICE",
+    "!ios/build",
+    "!android/build",
+    "!android/executorch",
+    "!android/gradle",
+    "!android/gradlew",
+    "!android/gradlew.bat",
+    "!android/local.properties",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__",
+    "!**/.*"
+  ],
   "scripts": {
-    "specs": "nitrogen --logLevel=\"debug\"",
+    "example": "yarn workspace react-native-glyph-ocr-example",
+    "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build lib plugin/build",
+    "prepare": "bob build && tsc -p plugin/tsconfig.json",
+    "nitrogen": "nitrogen --logLevel=\"debug\"",
     "manifest": "node scripts/build-manifest.mjs",
-    "typecheck": "tsc -p tsconfig.json"
+    "typecheck": "tsc && tsc -p plugin/tsconfig.json --noEmit",
+    "lint": "eslint \"**/*.{js,ts,tsx}\"",
+    "test": "jest"
+  },
+  "keywords": [
+    "react-native",
+    "ocr",
+    "text-recognition",
+    "paddleocr",
+    "apple-vision",
+    "cyrillic",
+    "nitro",
+    "vision-camera",
+    "ios",
+    "android"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pe1ros/react-native-glyph-ocr.git"
+  },
+  "author": "Ilya Petrosyan <ilya.ezy@gmail.com> (https://github.com/pe1ros)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pe1ros/react-native-glyph-ocr/issues"
+  },
+  "homepage": "https://github.com/pe1ros/react-native-glyph-ocr#readme",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
   },
   "devDependencies": {
-    "nitrogen": "0.37.1"
+    "@eslint/compat": "^2.1.1",
+    "@eslint/eslintrc": "^3.3.7",
+    "@eslint/js": "^9.39.5",
+    "@expo/config-plugins": "^55.0.0",
+    "@react-native/babel-preset": "0.85.2",
+    "@react-native/eslint-config": "0.85.2",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22",
+    "@types/react": "^19.2.0",
+    "del-cli": "^7.0.0",
+    "eslint": "^9.39.5",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-ft-flow": "^3.0.11",
+    "eslint-plugin-prettier": "^5.5.6",
+    "jest": "^29.7.0",
+    "nitrogen": "0.37.1",
+    "prettier": "^3.9.9",
+    "react": "19.2.3",
+    "react-native": "0.85.2",
+    "react-native-builder-bob": "^0.43.1",
+    "react-native-nitro-image": "0.15.2",
+    "react-native-nitro-modules": "0.37.1",
+    "react-native-vision-camera": "5.2.3",
+    "react-native-vision-camera-worklets": "5.2.3",
+    "react-native-worklets": "0.9.1",
+    "typescript": "^6.0.3",
+    "yaml": "^2.8.1"
   },
   "peerDependencies": {
+    "@expo/config-plugins": "*",
     "react": "*",
     "react-native": ">=0.79",
-    "react-native-nitro-modules": "^0.37.0",
     "react-native-nitro-image": ">=0.15.2",
+    "react-native-nitro-modules": "^0.37.0",
     "react-native-vision-camera": ">=5.2.3",
     "react-native-vision-camera-worklets": ">=5.2.3",
     "react-native-worklets": ">=0.8.0"
   },
   "peerDependenciesMeta": {
-    "react-native-nitro-image": { "optional": true },
-    "react-native-vision-camera": { "optional": true },
-    "react-native-vision-camera-worklets": { "optional": true },
-    "react-native-worklets": { "optional": true }
+    "@expo/config-plugins": {
+      "optional": true
+    },
+    "react-native-nitro-image": {
+      "optional": true
+    },
+    "react-native-vision-camera": {
+      "optional": true
+    },
+    "react-native-vision-camera-worklets": {
+      "optional": true
+    },
+    "react-native-worklets": {
+      "optional": true
+    }
+  },
+  "workspaces": [
+    "example"
+  ],
+  "packageManager": "yarn@4.18.1",
+  "engines": {
+    "node": ">= 22.11.0"
+  },
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      [
+        "module",
+        {
+          "esm": true
+        }
+      ],
+      [
+        "typescript",
+        {
+          "project": "tsconfig.build.json"
+        }
+      ]
+    ]
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "roots": [
+      "<rootDir>/src",
+      "<rootDir>/plugin"
+    ],
+    "transform": {
+      "^.+\\.[jt]sx?$": [
+        "babel-jest",
+        {
+          "configFile": "./babel.config.mjs"
+        }
+      ]
+    }
+  },
+  "prettier": {
+    "arrowParens": "avoid",
+    "quoteProps": "consistent",
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "all",
+    "useTabs": false
   }
 }

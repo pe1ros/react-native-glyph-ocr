@@ -111,7 +111,7 @@ struct VisionOptions {
   }
 }
 
-/** `VNRecognizeTextRequest`, revision 3, as measured in docs/spikes/apple-vision-ios.md. */
+/** `VNRecognizeTextRequest`, revision 3: the most accurate revision, and the first one with Russian and Ukrainian. */
 @available(iOS 16.0, *)
 enum VisionEngine {
   static func makeRequest(_ o: VisionOptions, _ languages: [String], _ customWords: [String]) -> VNRecognizeTextRequest {

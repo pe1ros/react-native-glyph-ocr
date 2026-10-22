@@ -28,10 +28,7 @@ export interface NitroImageLike {
  * - an `Image` from react-native-nitro-image.
  */
 export type OcrSource =
-  | string
-  | { uri: string }
-  | { base64: string }
-  | NitroImageLike;
+  string | { uri: string } | { base64: string } | NitroImageLike;
 
 const PIXEL_FORMATS: Record<string, RawPixelFormat> = {
   RGBA: 'rgba',

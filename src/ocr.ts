@@ -67,7 +67,8 @@ let factory: GlyphOcrFactory | undefined;
 
 /** @internal */
 export function getFactory(): GlyphOcrFactory {
-  factory ??= NitroModules.createHybridObject<GlyphOcrFactory>('GlyphOcrFactory');
+  factory ??=
+    NitroModules.createHybridObject<GlyphOcrFactory>('GlyphOcrFactory');
   return factory;
 }
 

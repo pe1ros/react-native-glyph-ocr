@@ -37,7 +37,7 @@ export interface DevTuning {
   runtime?: PaddleRuntimeKind;
   /**
    * ExecuTorch: absolute path of one fused `.pte` program with `detect` and `recognize`
-   * (scripts/ocr-spike/executorch). The dictionary still comes from the pack.
+   * (scripts/executorch). The dictionary still comes from the pack.
    */
   program?: string;
 }
@@ -54,9 +54,11 @@ export interface TestFrameInfo {
   pixelFormat: string;
 }
 
-/** Bench helpers of the OCR spike. Imported only from `react-native-glyph-ocr/dev`. */
-export interface GlyphOcrDevTools
-  extends HybridObject<{ ios: 'swift'; android: 'kotlin' }> {
+/** Benchmark helpers. Imported only from `react-native-glyph-ocr/dev`. */
+export interface GlyphOcrDevTools extends HybridObject<{
+  ios: 'swift';
+  android: 'kotlin';
+}> {
   /** `<app external files>/ocr-bench` on Android, `<Documents>/ocr-bench` on iOS, with `in/` and `out/`. */
   readonly benchDir: string;
   /** Absolute paths of the JPEG/PNG/HEIC/WebP files in `dir`, sorted by name. */

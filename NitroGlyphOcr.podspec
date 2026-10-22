@@ -2,7 +2,7 @@ require "json"
 
 package = JSON.parse(File.read(File.join(__dir__, "package.json")))
 
-# Apple Vision on iOS (ios/). Build flags (docs/ocr-library-api.md, section 2), read from ENV in the Podfile:
+# Apple Vision on iOS (ios/). Build flags, read from ENV when `pod install` runs:
 #   GlyphOcr_paddleOnIos=1  PaddleOCR on ONNX Runtime on iOS: planned, not implemented yet
 if ENV["GlyphOcr_paddleOnIos"] == "1" || ENV["GlyphOcr_paddleOnIos"] == "true"
   raise "[GlyphOcr] GlyphOcr_paddleOnIos is not implemented yet: iOS has Apple Vision only"
@@ -12,11 +12,12 @@ Pod::Spec.new do |s|
   s.name         = "NitroGlyphOcr"
   s.version      = package["version"]
   s.summary      = package["description"]
-  s.homepage     = "https://github.com/pe1ros/react-native-glyph-ocr"
-  s.license      = "UNLICENSED"
-  s.authors      = "Ilya Petrosyan"
+  s.homepage     = package["homepage"]
+  s.license      = "MIT"
+  s.authors      = package["author"]
 
-  s.platforms    = { :ios => min_ios_version_supported }
+  # VNRecognizeTextRequest revision 3 (Russian, Ukrainian, the current accuracy) needs iOS 16.
+  s.platforms    = { :ios => "16.0" }
   s.source       = { :git => "https://github.com/pe1ros/react-native-glyph-ocr.git", :tag => "v#{s.version}" }
 
   s.source_files = [

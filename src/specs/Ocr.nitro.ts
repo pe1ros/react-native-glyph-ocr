@@ -127,7 +127,7 @@ export interface OcrBlock {
 export interface OcrTimings {
   /** Reading the source into pixels: file decode, EXIF rotation, ROI crop, downscale. */
   decodeMs: number;
-  /** The engine itself. The spike's `totalMs` measured this. */
+  /** The engine itself. */
   recognizeMs: number;
   /** decode + recognize + building the result. */
   totalMs: number;
@@ -176,13 +176,13 @@ export type ImageOrientation = 'auto' | 'up' | 'right' | 'down' | 'left';
 /** Same strings as VisionCamera's `Frame.orientation`, declared here to avoid a native dependency. */
 export type FrameOrientation = 'up' | 'right' | 'down' | 'left';
 
-/** `blocks`: paragraphs and columns kept together. `rows`: visual rows across the whole image (the spike's join). */
+/** `blocks`: paragraphs and columns kept together. `rows`: visual rows across the whole image, top to bottom. */
 export type ReadingOrder = 'blocks' | 'rows';
 
 /** How much of the tree to build: `text` skips geometry, `lines` skips words. */
 export type OcrOutput = 'text' | 'lines' | 'elements';
 
-/** Advanced Paddle knobs. Defaults are the spike's measured ones. May change between versions. */
+/** Advanced Paddle knobs. Defaults are the measured best on Pixel 6a. May change between versions. */
 export interface PaddleTuning {
   /** Detector input, longer side, px. Default 960 (736 with `recognitionLevel: 'fast'`). */
   detectorSide?: number;
@@ -288,7 +288,7 @@ export type ModelSource = 'remote' | 'embedded' | 'embedded-or-remote';
 export interface ModelStoreConfig {
   /** Replaces the built-in manifest. */
   manifest?: ModelManifest;
-  /** Download every file from `<baseUrl>/<file.path>` instead of `file.url`, e.g. our own server. */
+  /** Download every file from `<baseUrl>/<file.path>` instead of `file.url`, e.g. your own server. */
   baseUrl?: string;
   /** Sent with every download request. */
   headers?: Record<string, string>;
@@ -299,17 +299,10 @@ export interface ModelStoreConfig {
 }
 
 export type ModelPackStatus =
-  | 'installed'
-  | 'embedded'
-  | 'missing'
-  | 'downloading'
-  | 'corrupt';
+  'installed' | 'embedded' | 'missing' | 'downloading' | 'corrupt';
 
 export type PreparePhase =
-  | 'downloading'
-  | 'verifying'
-  | 'loading'
-  | 'warming-up';
+  'downloading' | 'verifying' | 'loading' | 'warming-up';
 
 export interface PrepareProgress {
   phase: PreparePhase;
@@ -337,8 +330,10 @@ export interface LoadResult {
 // ─── Hybrid objects ───────────────────────────────────────────────────────
 
 /** Downloads, verifies and stores model files. One per app. */
-export interface OcrModelStore
-  extends HybridObject<{ ios: 'swift'; android: 'kotlin' }> {
+export interface OcrModelStore extends HybridObject<{
+  ios: 'swift';
+  android: 'kotlin';
+}> {
   configure(config: ModelStoreConfig): void;
   readonly manifest: ModelManifest;
   readonly directory: string;
@@ -360,8 +355,10 @@ export interface OcrModelStore
  * One engine with one language set. Holds the loaded models (Paddle) or the request
  * settings (Vision). Requests on one recognizer run one at a time, in call order.
  */
-export interface OcrRecognizer
-  extends HybridObject<{ ios: 'swift'; android: 'kotlin' }> {
+export interface OcrRecognizer extends HybridObject<{
+  ios: 'swift';
+  android: 'kotlin';
+}> {
   readonly engine: OcrEngine;
   readonly languages: string[];
   /** Paddle: the pack in use. */
@@ -428,8 +425,10 @@ export interface FrameQuality {
   brightness: number;
 }
 
-export interface OcrFrameMeter
-  extends HybridObject<{ ios: 'swift'; android: 'kotlin' }> {
+export interface OcrFrameMeter extends HybridObject<{
+  ios: 'swift';
+  android: 'kotlin';
+}> {
   /** Synchronous, about 1 ms; safe to call in `onFrame` on every frame. */
   measure(
     nativeBufferPointer: UInt64,
@@ -441,8 +440,10 @@ export interface OcrFrameMeter
 }
 
 /** Entry object, autolinked. */
-export interface GlyphOcrFactory
-  extends HybridObject<{ ios: 'swift'; android: 'kotlin' }> {
+export interface GlyphOcrFactory extends HybridObject<{
+  ios: 'swift';
+  android: 'kotlin';
+}> {
   /** `vision` on iOS, `paddle` on Android. */
   readonly defaultEngine: OcrEngine;
   /** Engines `createRecognizer` accepts in this build: `['vision']` on iOS, `['paddle']` on Android. ML Kit is in `/dev` only. */

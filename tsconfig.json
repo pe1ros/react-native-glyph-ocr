@@ -1,15 +1,35 @@
 {
-  "include": ["src"],
   "compilerOptions": {
-    "noEmit": true,
+    "rootDir": ".",
+    "paths": {
+      "react-native-glyph-ocr": ["./src/index"],
+      "react-native-glyph-ocr/camera": ["./src/camera/index"],
+      "react-native-glyph-ocr/dev": ["./src/dev/index"]
+    },
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "customConditions": [
+      "react-native-glyph-ocr-source",
+      "react-native-strict-api"
+    ],
     "esModuleInterop": true,
-    "jsx": "react",
-    "lib": ["esnext"],
-    "module": "esnext",
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react-jsx",
+    "lib": ["ESNext"],
+    "module": "ESNext",
     "moduleResolution": "bundler",
+    "noEmit": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "esnext",
+    "target": "ESNext",
+    "types": ["jest"],
     "verbatimModuleSyntax": true
-  }
+  },
+  "exclude": ["lib", "plugin", "node_modules", "example/node_modules"]
 }

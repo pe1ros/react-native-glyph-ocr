@@ -14,6 +14,7 @@ let tools: GlyphOcrDevTools | undefined;
 
 /** Bench helpers. Not for app code: the API may change in any release. */
 export function getOcrDevTools(): GlyphOcrDevTools {
-  tools ??= NitroModules.createHybridObject<GlyphOcrDevTools>('GlyphOcrDevTools');
+  tools ??=
+    NitroModules.createHybridObject<GlyphOcrDevTools>('GlyphOcrDevTools');
   return tools;
 }

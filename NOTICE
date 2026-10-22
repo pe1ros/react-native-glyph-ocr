@@ -1,0 +1,29 @@
+react-native-glyph-ocr
+Copyright (c) 2026 Ilya Petrosyan
+The code of this package is licensed under the MIT License (see LICENSE).
+
+This package uses third-party models and libraries under their own licenses.
+
+PP-OCRv5 models and dictionaries
+  Copyright (c) PaddlePaddle Authors.
+  Licensed under the Apache License, Version 2.0 (see models/LICENSE-Apache-2.0.txt).
+  https://github.com/PaddlePaddle/PaddleOCR
+  https://huggingface.co/PaddlePaddle
+  The recognizer dictionaries in models/pp-ocrv5/ are taken unchanged from the
+  `PostProcess.character_dict` of each model's inference.yml, one character per line.
+  The ONNX models are not part of this package: on Android they are downloaded from the pinned
+  Hugging Face revisions listed in models/manifest.json (or from a mirror the app configures),
+  or embedded in the app at build time with the GlyphOcr_embedPacks Gradle flag.
+
+ONNX Runtime (Android, linked as com.microsoft.onnxruntime:onnxruntime-android)
+  Copyright (c) Microsoft Corporation. MIT License.
+  https://github.com/microsoft/onnxruntime
+
+ExecuTorch (Android, only with the GlyphOcr_executorch Gradle flag and an own build)
+  Copyright (c) Meta Platforms, Inc. and affiliates. BSD 3-Clause License.
+  https://github.com/pytorch/executorch
+
+ML Kit Text Recognition v2 (Android, only with the GlyphOcr_devMlKit Gradle flag)
+  Google ML Kit Terms of Service: https://developers.google.com/ml-kit/terms
+
+Apple Vision (iOS) is part of the operating system.
