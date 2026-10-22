@@ -1,0 +1,141 @@
+name: CI
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Typecheck
+        run: yarn typecheck
+
+      - name: Unit tests
+        run: yarn test
+
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Nitro bindings are up to date
+        run: |
+          yarn nitrogen
+          git diff --exit-code -- nitrogen
+
+      - name: Model manifest and dictionaries are up to date
+        run: yarn manifest --check
+
+      - name: Build lib and the Expo plugin
+        run: yarn prepare
+
+      - name: Package contents
+        run: |
+          # npm runs `prepare` (bob) even for a dry run and prints its log before the JSON.
+          npm pack --dry-run --json | sed -n '/^\[/,$p' > pack.json
+          node -e '
+            const files = require("./pack.json")[0].files.map(f => f.path);
+            const must = ["lib/module/index.js", "lib/typescript/src/index.d.ts", "lib/module/camera/index.js",
+              "plugin/build/index.js", "app.plugin.js", "NitroGlyphOcr.podspec", "models/manifest.json",
+              "models/LICENSE-Apache-2.0.txt", "LICENSE", "NOTICE", "nitrogen/generated/android/NitroGlyphOcr+autolinking.gradle"];
+            const missing = must.filter(f => !files.includes(f));
+            const extra = files.filter(f => /(^|\/)(\.|__tests__\/|example\/|android\/build\/|android\/executorch\/)/.test(f) || f.endsWith(".onnx"));
+            if (missing.length || extra.length) { console.error({ missing, extra }); process.exit(1); }
+            console.log(files.length + " files");
+          '
+
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Install JDK
+        uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Accept Android SDK licenses
+        run: /bin/bash -c "yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null"
+
+      - name: Cache Gradle
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.gradle/wrapper
+            ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('example/android/gradle/wrapper/gradle-wrapper.properties', 'android/build.gradle') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build the example (release, arm64-v8a)
+        env:
+          GRADLE_OPTS: '-Dorg.gradle.jvmargs=-Xmx6g'
+        run: |
+          cd example/android
+          ./gradlew assembleRelease --no-daemon --console=plain -PreactNativeArchitectures=arm64-v8a
+
+      - name: Native libraries are aligned for 16 KB pages
+        run: |
+          APK=example/android/app/build/outputs/apk/release/app-release.apk
+          ZIPALIGN=$(ls "$ANDROID_HOME"/build-tools/*/zipalign | sort -V | tail -1)
+          "$ZIPALIGN" -c -P 16 4 "$APK"
+          unzip -l "$APK" | grep -E "libNitroGlyphOcr.so|ocr-models/pp-ocrv5/PP-OCRv5_mobile_det.onnx"
+
+  build-ios:
+    runs-on: macos-latest
+    env:
+      XCODE_VERSION: 26
+      RCT_USE_RN_DEP: 1
+      RCT_USE_PREBUILT_RNCORE: 1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Use Xcode ${{ env.XCODE_VERSION }}
+        uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1.7.0
+        with:
+          xcode-version: ${{ env.XCODE_VERSION }}
+
+      - name: Install pods
+        run: |
+          cd example
+          bundle install
+          bundle exec pod install --project-directory=ios
+
+      # Debug: Swift 6.2 crashes on VisionCamera 5.2.3 with whole-module optimization (Release).
+      - name: Build the example (debug, simulator)
+        run: |
+          cd example/ios
+          xcodebuild -workspace GlyphOcrExample.xcworkspace -scheme GlyphOcrExample \
+            -configuration Debug -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO build | tail -20
+          test "${PIPESTATUS[0]}" -eq 0
