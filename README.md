@@ -1,9 +1,15 @@
 # react-native-glyph-ocr
 
 On-device text recognition for React Native, as a [Nitro](https://nitro.margelo.com) module:
-**Apple Vision on iOS, PaddleOCR PP-OCRv5 on Android.** It reads Russian and the other Cyrillic
-languages, plus Latin, Arabic, Devanagari, Korean, Thai, Greek, Tamil, Telugu, Chinese and Japanese
-scripts on Android, where ML Kit has no Cyrillic. Images never leave the device.
+**Apple Vision on iOS, PaddleOCR (PP-OCRv5 and PP-OCRv6) on Android**, and optionally PaddleOCR on
+iOS too. It reads Russian and the other Cyrillic languages, plus Latin, Arabic, Devanagari, Korean,
+Thai, Greek, Tamil, Telugu, Chinese and Japanese scripts on Android, where ML Kit has no Cyrillic.
+Images never leave the device.
+
+<p align="center">
+  <img src="docs/assets/android-photo.png" width="280" alt="Android: PaddleOCR boxes over a label, one line picked" />
+  <img src="docs/assets/ios-photo.png" width="280" alt="iOS: Vision boxes over the same label" />
+</p>
 
 - Result shaped like ML Kit: blocks → lines → words, each with text, confidence, a normalized and
   a pixel box, corner points and angle, all relative to the full upright image.
@@ -15,15 +21,40 @@ scripts on Android, where ML Kit has no Cyrillic. Images never leave the device.
 - Models are downloaded on first use from pinned Hugging Face revisions and checked by sha256, or
   from your own mirror, or embedded in the app at build time.
 - `useTextScanner`: waits for a sharp, still, well-lit camera frame inside your scan box and
-  recognizes it once.
+  recognizes it once, or keeps scanning (`continuous`).
+- Upside-down photos read in order on Android too (a 1 MB orientation classifier).
+- PaddleOCR on iOS as a build option, for the languages Vision does not read (Belarusian, Kazakh,
+  Bulgarian, Serbian, Greek, Hindi, Persian, …) or the same engine on both platforms.
+- `<OcrOverlay>`: the boxes over the photo or camera preview, rotated with the text, tap to pick a
+  line or a word.
 
-Accuracy and speed against ML Kit and Vision: [docs/benchmarks.md](docs/benchmarks.md).
+Accuracy and speed against ML Kit and Vision: [docs/benchmarks.md](docs/benchmarks.md). Coming from
+`@react-native-ml-kit/text-recognition`: [docs/migrating-from-ml-kit.md](docs/migrating-from-ml-kit.md).
+
+## How it compares
+
+October 2026, from each library's README and npm page; — where the documentation does not say.
+
+| | This package | [@react-native-ml-kit/text-recognition](https://github.com/a7medev/react-native-ml-kit) | [expo-text-extractor](https://github.com/pchalupa/expo-text-extractor) | [ppu-paddle-ocr](https://github.com/PT-Perkasa-Pilar-Utama/ppu-paddle-ocr) `/mobile` | [react-native-executorch](https://github.com/software-mansion/react-native-executorch) OCR | [react-native-vision-camera-ocr-plus](https://github.com/jamenamcinteer/react-native-vision-camera-ocr-plus) |
+|---|---|---|---|---|---|---|
+| Engine iOS / Android | Vision / PaddleOCR | ML Kit / ML Kit | Vision / ML Kit | PaddleOCR / PaddleOCR | PP-OCRv6 / PP-OCRv6 | ML Kit / ML Kit |
+| Russian and Cyrillic on Android | yes | no | no | yes | no | no |
+| ML Kit pods on iOS | no | yes | no | no | no | yes |
+| Pipeline | native (Swift, Kotlin + C++) | native | native | TypeScript over ONNX Runtime and Skia | native | native |
+| Blocks / lines / words with boxes | yes, normalized and pixels | yes, pixels | text only | boxes | lines | yes |
+| Confidence, angle | yes | no | no | confidence | confidence | — |
+| Region of interest | yes, crops before recognizing | no | no | no | no | yes |
+| Camera | VisionCamera 5: auto-capture scanner and frames | no | no | no | worklet | VisionCamera 5, every frame |
+| Model downloads | sha256-checked, resumable, own mirror, or embedded | built in | built in | cached on first run | cached on first run | built in |
+| Typed errors | yes | no | — | — | — | — |
+| Expo | config plugin | no | Expo module | dev build | dev build | dev build |
+| Published accuracy on real photos | [yes](docs/benchmarks.md) | no | no | own test set | no | no |
 
 ## Requirements
 
 | | |
 |---|---|
-| React Native | New Architecture. Tested with 0.85 |
+| React Native | New Architecture. Tested with 0.85 and 0.87 |
 | `react-native-nitro-modules` | 0.37 (the bindings are generated with nitrogen 0.37.1) |
 | iOS | 16.0 (Vision revision 3) |
 | Android | `minSdk` 24; the camera scanner needs `minSdk` 26 and Android 10 on the device (see [Camera](#camera)) |
@@ -50,6 +81,7 @@ With Expo (a development build, not Expo Go), add the config plugin to `app.json
 |---|---|---|
 | `embedPacks` | none | Android: packs to download at build time and ship in the APK (the `GlyphOcr_embedPacks` flag) |
 | `devMlKit` | `false` | Android: compile ML Kit for `react-native-glyph-ocr/dev` (`GlyphOcr_devMlKit`) |
+| `paddleOnIos` | `false` | iOS: also build PaddleOCR (`GlyphOcr_paddleOnIos`, see [Paddle on iOS](#paddle-on-ios)) |
 
 For the camera scanner on Android, raise `minSdkVersion` to 26 (with `expo-build-properties` in Expo).
 
@@ -90,7 +122,7 @@ function LabelReader({ uri }: { uri: string }) {
 
 | Import | What |
 |---|---|
-| `react-native-glyph-ocr` | `recognize`, `recognizeText`, `createOcr`, `useOcr`, `prepare`, `isReady`, `getSupportedLanguages`, `configureModels`, `getModelStore`, `OcrError` |
+| `react-native-glyph-ocr` | `recognize`, `recognizeText`, `createOcr`, `useOcr`, `prepare`, `isReady`, `getSupportedLanguages`, `configureModels`, `getModelStore`, `OcrError`, `OcrOverlay` |
 | `react-native-glyph-ocr/camera` | `useTextScanner`, `createFrameMeter`, `viewRectToImageRect`, `imageRectToViewRect` |
 | `react-native-glyph-ocr/dev` | benchmark helpers: tuned recognizers, ML Kit for comparison, camera-like test frames. Not for app code: it may change in any release |
 
@@ -104,20 +136,48 @@ Languages are BCP-47 tags in priority order. On iOS they become Vision's recogni
 
 | Pack | Languages | Download |
 |---|---|---|
-| `en` | en | 12.7 MB |
-| `eslav` | ru, uk, be, en | 12.7 MB |
-| `cyrillic` | ru, uk, be, sr-Cyrl, bg, mk, mn, kk, ky, tg, tt, ba, … (33, with en) | 12.9 MB |
-| `latin` | de, fr, es, it, pt, nl, pl, cs, tr, vi, … (48, with en) | 12.9 MB |
-| `arabic`, `devanagari`, `th`, `el`, `ta`, `te` | by name, plus en | 12.6–12.8 MB |
-| `korean` | ko, en | 18.3 MB |
-| `ch` | zh-Hans, zh-Hant, ja, en | 21.4 MB |
+| `en` | en | 13.7 MB |
+| `eslav` | ru, uk, be, en | 13.7 MB |
+| `cyrillic` | ru, uk, be, sr-Cyrl, bg, mk, mn, kk, ky, tg, tt, ba, … (33, with en) | 13.9 MB |
+| `latin` | de, fr, es, it, pt, nl, pl, cs, tr, vi, … (48, with en) | 13.9 MB |
+| `arabic`, `devanagari`, `th`, `el`, `ta`, `te` | by name, plus en | 13.7–13.8 MB |
+| `korean` | ko, en | 19.3 MB |
+| `ch` | zh-Hans, zh-Hant, ja, en | 22.4 MB |
+| `multi` (PP-OCRv6 tiny) | zh-Hans, zh-Hant, en and 42 Latin languages in one model | 7.3 MB |
 
-The detector (4.8 MB) is shared by all packs and downloaded once. If no single pack covers the
+The detector (4.8 MB; 1.8 MB for PP-OCRv6) and the orientation classifier (1 MB) are shared by the
+packs and downloaded once; the sizes above include them. `multi` comes last, so it is used when
+asked for (`paddlePack: 'multi'`, half the download of `latin` or `ch`) or when only it covers the
+languages (`['zh-Hans', 'de']`); PP-OCRv6 has no Cyrillic, kana or Korean. If no single pack covers the
 languages (`['ru', 'de']`), creating the instance throws `language-not-supported` with
 `details.suggestion`: one instance per pack.
 
 `engine: 'auto' | 'vision' | 'paddle'` overrides the default (Vision on iOS, Paddle on Android).
-Paddle on iOS is not built yet, so `'paddle'` there throws `engine-unavailable`.
+On iOS `'paddle'` needs a build with [Paddle on iOS](#paddle-on-ios); otherwise it throws
+`engine-unavailable`.
+
+### Paddle on iOS
+
+Vision reads about 30 languages; for the others (Belarusian, Kazakh, Bulgarian, Serbian, Greek,
+Hindi, Tamil, Persian, Urdu, Hungarian, Finnish, …), or for the same results on both platforms, build
+PaddleOCR into the iOS app too. It adds ONNX Runtime (onnxruntime-objc 1.30) to the app and downloads
+the packs as on Android.
+
+```ruby
+# ios/Podfile, inside the app target (ONNX Runtime's Objective-C API needs module maps)
+pod 'onnxruntime-objc', :modular_headers => true
+```
+
+```sh
+GlyphOcr_paddleOnIos=1 pod install
+```
+
+With Expo, set `paddleOnIos: true` in the plugin options: it writes both into the Podfile. Then:
+
+```ts
+const ocr = createOcr({ languages: ['kk'], engine: 'paddle' }); // the `cyrillic` pack
+await ocr.prepare();
+```
 
 ### `createOcr(options): Ocr`
 
@@ -153,6 +213,7 @@ Paddle on iOS is not built yet, so `'paddle'` there throws `engine-unavailable`.
 | `readingOrder` | `'blocks'` | `'blocks'`: paragraphs and columns together; `'rows'`: visual rows across the image |
 | `output` | `'elements'` | `'text'` skips geometry, `'lines'` skips words |
 | `diagnostics` | `false` | fills `result.diagnostics` (runtime, input size, detector/recognizer time) |
+| `textlineOrientation` | `true` | Paddle: finds out whether the text is upside down (one vote of all lines, about 1 ms each) and reads it turned; boxes stay on the image as given |
 | `signal` | none | `AbortSignal`; rejects with `cancelled` |
 
 ### Result
@@ -193,6 +254,27 @@ Every rejection is an `OcrError` with a `code`, a `message` and sometimes `detai
 | `frame-unsupported` | a camera buffer the module cannot read (see [Camera](#camera)) |
 | `cancelled` | the `AbortSignal` fired |
 | `out-of-memory`, `disposed`, `internal` | |
+
+### `<OcrOverlay>`
+
+```tsx
+import { OcrOverlay } from 'react-native-glyph-ocr';
+
+<View>
+  <Image source={{ uri }} style={{ width, height }} resizeMode="contain" />
+  <OcrOverlay
+    result={result}
+    resizeMode="contain"        // as the image or camera preview under it
+    level="lines"               // or 'blocks', 'elements' (words)
+    onPress={node => setPicked(node.text)}
+  />
+</View>
+```
+
+It fills its parent, so give the parent the size of the image view. Boxes follow the text's angle.
+`selected`, `boxStyle` and `selectedBoxStyle` customize the highlight. For custom drawing,
+`nodeToViewBox(node, view, result.image, resizeMode)` returns the rotated rectangle in view points
+and `imagePointToViewPoint` maps a single point.
 
 ### `useOcr(options)`
 
@@ -261,6 +343,10 @@ function Scanner() {
 
 - `state`: `'idle' | 'searching' | 'too-dark' | 'hold-still' | 'recognizing' | 'done' | 'error'`;
   `quality` reports sharpness, motion and brightness about 4 times a second; `reset()` scans again.
+- `continuous: true` (or `{ intervalMs }`, default 500) keeps scanning after a result: every
+  accepted result calls `onResult` and replaces `result`. Vision reads a frame in about 0.15 s, so
+  on iOS this is close to live; on Android a frame takes about a second. Put `<OcrOverlay>` over
+  the preview with `resizeMode="cover"` to draw what was read.
 - Thresholds (`minSharpness`, `relativeSharpness`, `maxMotion`, `minBrightness`, `stableMs`) have
   measured defaults. `photoOutput` takes a full photo once the frame is good, instead of using the
   video frame: slower, but better for a whole label.
@@ -284,19 +370,19 @@ while scanning (`SuspendAll timeout … "com.margelo.camera.frame"`,
 | `GlyphOcr_embedPacks=eslav,…` | `android/gradle.properties` | empty | downloads these packs at build time, checks sha256, packs them uncompressed into `assets/ocr-models` |
 | `GlyphOcr_devMlKit=true` | `android/gradle.properties` | off | compiles ML Kit Text Recognition (Latin) for `/dev` (+12.5 MB, ML Kit Terms of Service) |
 | `GlyphOcr_executorch=auto\|true\|false` | `android/gradle.properties` | `auto` | compiles the ExecuTorch runtime from `android/executorch` of this package, built by [`scripts/executorch/build-android.sh`](scripts/executorch/build-android.sh) (arm64 only). Selected in `/dev` only |
-| `GlyphOcr_paddleOnIos=1` | env of `pod install` | off | reserved for PaddleOCR on iOS; not implemented, `pod install` stops with an error |
+| `GlyphOcr_paddleOnIos=1` | env of `pod install` | off | iOS: also builds PaddleOCR on ONNX Runtime ([Paddle on iOS](#paddle-on-ios)) |
 
 ## Platform differences
 
 | | iOS | Android |
 |---|---|---|
-| Engine | Vision `VNRecognizeTextRequest`, revision 3 | PaddleOCR PP-OCRv5 mobile on ONNX Runtime 1.30 |
+| Engine | Vision `VNRecognizeTextRequest`, revision 3; PaddleOCR as a build option | PaddleOCR PP-OCRv5 mobile (PP-OCRv6 tiny for `multi`) on ONNX Runtime 1.30 |
 | Languages | what the iOS version reads (16 on iOS 16) | the packs above |
-| Model size | 0, part of iOS | 12.7 MB per pack, downloaded or embedded |
+| Model size | 0, part of iOS | 13.7 MB for `eslav`, downloaded or embedded |
 | Library size | 0 | ONNX Runtime (see [docs/benchmarks.md](docs/benchmarks.md#app-size)) |
 | Model version | changes with iOS (iOS 17–18 have an older Cyrillic model) | pinned by sha256 |
 | Speed, a cropped ingredients list | 0.15 s, iPhone 13 Pro Max | 0.9–1.1 s, Pixel 6a |
-| Rotated text | reads it, including text along an arc | up to ±45° and vertical; not upside down |
+| Rotated text | reads it, including text along an arc and upside down | up to ±45°, vertical, and upside down (a vote of the orientation classifier) |
 | Sources | `ph://`, no `content://` | `content://`, no `ph://` |
 | Simulator / emulator | works; texts differ from a device (no Neural Engine) | works; speed is not representative |
 

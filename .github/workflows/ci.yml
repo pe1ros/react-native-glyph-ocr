@@ -109,7 +109,13 @@ jobs:
 
   build-ios:
     runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        paddle: ['0', '1']
+    name: build-ios (Paddle on iOS ${{ matrix.paddle }})
     env:
+      GlyphOcr_paddleOnIos: ${{ matrix.paddle }}
       XCODE_VERSION: 26
       RCT_USE_RN_DEP: 1
       RCT_USE_PREBUILT_RNCORE: 1

@@ -31,6 +31,10 @@ changes do. Its **Self-test** tab checks the whole API on a device or simulator:
 output modes, camera-like frames, the frame meter, cancelling and errors. Run it after native
 changes on both platforms and expect `0 failed`. Each line is also logged with a `[selftest]` prefix.
 
+PaddleOCR on iOS is a separate build: `GlyphOcr_paddleOnIos=1 bundle exec pod install` in
+`example/ios` (the example's Podfile then adds onnxruntime-objc with module maps). Its self-test also
+downloads the `eslav` pack and reads the label with Paddle when the download switch is on.
+
 Native code: open `example/ios/GlyphOcrExample.xcworkspace` (the pod is under
 `Pods > Development Pods > NitroGlyphOcr`) or `example/android` in Android Studio.
 

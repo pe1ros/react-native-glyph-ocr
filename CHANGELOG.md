@@ -7,6 +7,21 @@ before 1.0 a minor version may change the API.
 
 First release on npm.
 
+- PaddleOCR on iOS as a build option (`GlyphOcr_paddleOnIos=1`, Expo `paddleOnIos`): the same
+  pipeline as Android on onnxruntime-objc, for the languages Vision does not read.
+- Upside-down photos: a 1 MB PP-LCNet text line orientation classifier in every pack; one vote of
+  all lines decides, the lines are read turned, blocks and rows follow the text and the boxes stay
+  on the image. `RecognizeOptions.textlineOrientation` (default true); new model role `orientation`.
+- `multi` pack: PP-OCRv6 tiny, one 7.3 MB model for Chinese, English and 42 Latin languages;
+  detector defaults follow the pack's family.
+- `<OcrOverlay>` with `nodeToViewBox`, `imagePointToViewPoint` and `nodesOf`: boxes over the
+  photo or the camera preview, rotated with the text, tap to pick a node.
+- `useTextScanner({ continuous })`: keeps scanning after a result.
+- React Native 0.87 and AGP 9: the Kotlin plugin is applied only when AGP does not provide it,
+  `packaging`/`lint` DSL, and release lint is off for the library (AGP 9's lint crashes on the
+  nitrogen-generated Kotlin). Tested with React Native 0.85 and 0.87.
+- Docs: a comparison with other OCR libraries, a migration guide from
+  `@react-native-ml-kit/text-recognition`, and ppu-paddle-ocr in the benchmarks.
 - Published as a compiled package: `lib/module` (ES modules) and `lib/typescript` (types) built
   with react-native-builder-bob; the TypeScript sources ship too, for source maps.
 - MIT license for the code; `NOTICE` and the Apache-2.0 text for the PP-OCRv5 models and
