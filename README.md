@@ -1,5 +1,9 @@
 # react-native-glyph-ocr
 
+<p align="center">
+  <img src="docs/assets/banner.png" width="640" alt="Glyph OCR" />
+</p>
+
 On-device text recognition for React Native, as a [Nitro](https://nitro.margelo.com) module:
 **Apple Vision on iOS, PaddleOCR (PP-OCRv5 and PP-OCRv6) on Android**, and optionally PaddleOCR on
 iOS too. It reads Russian and the other Cyrillic languages, plus Latin, Arabic, Devanagari, Korean,
