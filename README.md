@@ -26,7 +26,8 @@ Images never leave the device.
   from your own mirror, or embedded in the app at build time.
 - `useTextScanner`: waits for a sharp, still, well-lit camera frame inside your scan box and
   recognizes it once, or keeps scanning (`continuous`).
-- Upside-down photos read in order on Android too (a 1 MB orientation classifier).
+- Upside-down photos read in order on Android too: when the longest lines read with low confidence,
+  the recognizer reads them turned as well and turns the text if that reading is clearly better.
 - PaddleOCR on iOS as a build option, for the languages Vision does not read (Belarusian, Kazakh,
   Bulgarian, Serbian, Greek, Hindi, Persian, …) or the same engine on both platforms.
 - `<OcrOverlay>`: the boxes over the photo or camera preview, rotated with the text, tap to pick a
@@ -140,17 +141,17 @@ Languages are BCP-47 tags in priority order. On iOS they become Vision's recogni
 
 | Pack | Languages | Download |
 |---|---|---|
-| `en` | en | 13.7 MB |
-| `eslav` | ru, uk, be, en | 13.7 MB |
-| `cyrillic` | ru, uk, be, sr-Cyrl, bg, mk, mn, kk, ky, tg, tt, ba, … (33, with en) | 13.9 MB |
-| `latin` | de, fr, es, it, pt, nl, pl, cs, tr, vi, … (48, with en) | 13.9 MB |
-| `arabic`, `devanagari`, `th`, `el`, `ta`, `te` | by name, plus en | 13.7–13.8 MB |
-| `korean` | ko, en | 19.3 MB |
-| `ch` | zh-Hans, zh-Hant, ja, en | 22.4 MB |
-| `multi` (PP-OCRv6 tiny) | zh-Hans, zh-Hant, en and 42 Latin languages in one model | 7.3 MB |
+| `en` | en | 12.7 MB |
+| `eslav` | ru, uk, be, en | 12.7 MB |
+| `cyrillic` | ru, uk, be, sr-Cyrl, bg, mk, mn, kk, ky, tg, tt, ba, … (33, with en) | 12.9 MB |
+| `latin` | de, fr, es, it, pt, nl, pl, cs, tr, vi, … (48, with en) | 12.9 MB |
+| `arabic`, `devanagari`, `th`, `el`, `ta`, `te` | by name, plus en | 12.6–12.8 MB |
+| `korean` | ko, en | 18.2 MB |
+| `ch` | zh-Hans, zh-Hant, ja, en | 21.4 MB |
+| `multi` (PP-OCRv6 tiny) | zh-Hans, zh-Hant, en and 42 Latin languages in one model | 6.2 MB |
 
-The detector (4.8 MB; 1.8 MB for PP-OCRv6) and the orientation classifier (1 MB) are shared by the
-packs and downloaded once; the sizes above include them. `multi` comes last, so it is used when
+The detector (4.8 MB; 1.8 MB for PP-OCRv6) is shared by the packs and downloaded once; the sizes
+above include it. `multi` comes last, so it is used when
 asked for (`paddlePack: 'multi'`, half the download of `latin` or `ch`) or when only it covers the
 languages (`['zh-Hans', 'de']`); PP-OCRv6 has no Cyrillic, kana or Korean. If no single pack covers the
 languages (`['ru', 'de']`), creating the instance throws `language-not-supported` with
@@ -217,7 +218,7 @@ await ocr.prepare();
 | `readingOrder` | `'blocks'` | `'blocks'`: paragraphs and columns together; `'rows'`: visual rows across the image |
 | `output` | `'elements'` | `'text'` skips geometry, `'lines'` skips words |
 | `diagnostics` | `false` | fills `result.diagnostics` (runtime, input size, detector/recognizer time) |
-| `textlineOrientation` | `true` | Paddle: finds out whether the text is upside down (one vote of all lines, about 1 ms each) and reads it turned; boxes stay on the image as given |
+| `textlineOrientation` | `true` | Paddle: finds out whether the text is upside down (when the 8 longest lines read with low confidence, their middles are read turned too) and reads it turned; boxes stay on the image as given |
 | `signal` | none | `AbortSignal`; rejects with `cancelled` |
 
 ### Result
@@ -382,11 +383,11 @@ while scanning (`SuspendAll timeout … "com.margelo.camera.frame"`,
 |---|---|---|
 | Engine | Vision `VNRecognizeTextRequest`, revision 3; PaddleOCR as a build option | PaddleOCR PP-OCRv5 mobile (PP-OCRv6 tiny for `multi`) on ONNX Runtime 1.30 |
 | Languages | what the iOS version reads (16 on iOS 16) | the packs above |
-| Model size | 0, part of iOS | 13.7 MB for `eslav`, downloaded or embedded |
+| Model size | 0, part of iOS | 12.7 MB for `eslav`, downloaded or embedded |
 | Library size | 0 | ONNX Runtime (see [docs/benchmarks.md](docs/benchmarks.md#app-size)) |
 | Model version | changes with iOS (iOS 17–18 have an older Cyrillic model) | pinned by sha256 |
 | Speed, a cropped ingredients list | 0.15 s, iPhone 13 Pro Max | 0.9–1.1 s, Pixel 6a |
-| Rotated text | reads it, including text along an arc and upside down | up to ±45°, vertical, and upside down (a vote of the orientation classifier) |
+| Rotated text | reads it, including text along an arc and upside down | up to ±45°, vertical, and upside down (the recognizer compares the longest lines read both ways) |
 | Sources | `ph://`, no `content://` | `content://`, no `ph://` |
 | Simulator / emulator | works; texts differ from a device (no Neural Engine) | works; speed is not representative |
 

@@ -128,7 +128,6 @@ class HybridOcrRecognizer internal constructor(
         PaddleRuntimeKind.ONNXRUNTIME -> OrtRuntime(
           ModelStore.readBytes(files.first { it.role == ModelRole.DETECTOR }),
           ModelStore.readBytes(files.first { it.role == ModelRole.RECOGNIZER }),
-          files.firstOrNull { it.role == ModelRole.ORIENTATION }?.let { ModelStore.readBytes(it) },
           threads,
           tuning?.useXnnpack == true && cpus.isEmpty(),
         )

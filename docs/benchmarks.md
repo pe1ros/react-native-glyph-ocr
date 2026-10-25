@@ -74,7 +74,7 @@ Recognition of the photo, decoding included, after the warm-up `prepare()` does.
 | | Size |
 |---|---|
 | Vision (iOS) | 0, part of the system |
-| PaddleOCR models, one pack (Android) | 13.7 MB download (detector 4.8 + recognizer 7.9 + orientation 1.0), or embedded with `GlyphOcr_embedPacks` |
+| PaddleOCR models, one pack (Android) | 12.7 MB download (detector 4.8 + recognizer 7.9), or embedded with `GlyphOcr_embedPacks` |
 | ONNX Runtime 1.30 (Android, the Maven AAR) | `libonnxruntime.so` 33 MB per ABI (arm64-v8a), stored uncompressed |
 | ExecuTorch, own minimal build (Android, arm64) | 1.7 MB (0.69 MB gzip) |
 | ML Kit Latin with its bundled model (`/dev` only) | +12.5 MB |

@@ -123,8 +123,7 @@ final class HybridPaddleRecognizer: HybridOcrRecognizerSpec {
     let dictionary = try String(contentsOf: dictURL, encoding: .utf8).split(separator: "\n").map(String.init)
     let engine: PaddleOcr
     do {
-      engine = try PaddleOcr(
-        detector: det, recognizer: rec, orientation: try url(.orientation), dictionary: dictionary, threads: threads)
+      engine = try PaddleOcr(detector: det, recognizer: rec, dictionary: dictionary, threads: threads)
     } catch let e as OcrError {
       throw e
     } catch {

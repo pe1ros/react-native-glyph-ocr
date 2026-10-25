@@ -4,9 +4,8 @@ import Foundation
 import onnxruntime_objc
 
 /**
- * PP-OCRv5/v6 text detection (DB) + recognition (CTC) on ONNX Runtime, with the optional text
- * line orientation classifier. The same pipeline as PaddleOcr.kt on Android; see TextLines.swift
- * for the line finder.
+ * PP-OCRv5/v6 text detection (DB) + recognition (CTC) on ONNX Runtime. The same pipeline as
+ * PaddleOcr.kt on Android; see TextLines.swift for the line finder.
  */
 final class PaddleOcr {
   struct Options {
@@ -51,25 +50,27 @@ final class PaddleOcr {
   private static let recH = 48
   private static let recMinW = 320
   private static let recMaxW = 3200
-  private static let clsW = 160
-  private static let clsH = 80
+  // Upside-down check, as in PaddleOcr.kt: the longest lines; the confidence of reading them as is
+  // above which the text is upright; the middle of each read turned, at most this many line heights
+  // long; and how much more confident the turned reading must be
+  private static let orientationLines = 8
+  private static let orientationUprightScore: Float = 0.8
+  private static let orientationSegmentHeights: Float = 10
+  private static let orientationMargin: Float = 0.05
   private static let mean: [Float] = [0.485, 0.456, 0.406]
   private static let std: [Float] = [0.229, 0.224, 0.225]
 
   private let env: ORTEnv
   private let det: ORTSession
   private let rec: ORTSession
-  private let cls: ORTSession?
   /** CTC classes: 0 is blank, then the dictionary, then a space. */
   private let classes: [String]
 
-  init(detector: URL, recognizer: URL, orientation: URL?, dictionary: [String], threads: Int) throws {
+  init(detector: URL, recognizer: URL, dictionary: [String], threads: Int) throws {
     let env = try ORTEnv(loggingLevel: .error)
     self.env = env
     det = try Self.session(env, detector, threads)
     rec = try Self.session(env, recognizer, threads)
-    // One thread: the classifier is tiny, more threads only add synchronization.
-    cls = try orientation.map { try Self.session(env, $0, 1) }
     classes = [""] + dictionary + [" "]
   }
 
@@ -106,23 +107,21 @@ final class PaddleOcr {
 
     // --- Recognition, one line at a time.
     let src = try Self.pixels(image, srcW, srcH)
-    // A label photographed upside down is upside down as a whole, and the classifier is unsure
-    // about single lines: the decision is one vote of all lines, weighted by their length.
-    var upsideDown = false
-    if o.textlineOrientation, let cls {
-      var weight: Float = 0
-      var sum: Float = 0
-      for line in found where !line.vertical && line.lengthSrc >= 1 && line.heightSrc >= 1 {
-        sum += line.lengthSrc * (try Self.upsideDownProbability(cls, src, srcW, srcH, line))
-        weight += line.lengthSrc
-      }
-      upsideDown = weight > 0 && sum / weight > 0.5
-    }
+    // Readings of the longest lines as is (by index in `found`), made by the upside-down check;
+    // reused when the text is upright
+    var readAsIs: [Int: Decoded?] = [:]
+    let upsideDown = try o.textlineOrientation && isUpsideDown(src, srcW, srcH, found, &readAsIs, checkCancelled)
     var lines: [Line] = []
-    for detected in found {
+    for (i, detected) in found.enumerated() {
       try checkCancelled()
       let line = upsideDown && !detected.vertical ? detected.flipped() : detected
-      guard let recognized = try recognize(src, srcW, srcH, line) else { continue }
+      let read: Decoded?
+      if !upsideDown, let cached = readAsIs[i] {
+        read = cached
+      } else {
+        read = try recognize(src, srcW, srcH, line)
+      }
+      guard let recognized = read else { continue }
       if recognized.score >= o.dropScore && !recognized.text.trimmingCharacters(in: .whitespaces).isEmpty {
         lines.append(Self.bounds(line, recognized, srcW, srcH))
       }
@@ -131,6 +130,46 @@ final class PaddleOcr {
     return Output(
       lines: lines, detMs: Double(t1 - t0) / 1e6, recMs: Double(t2 - t1) / 1e6, detWidth: detW, detHeight: detH,
       boxCount: found.count)
+  }
+
+  /**
+   * A label photographed upside down is upside down as a whole, so one decision covers all lines.
+   * The recognizer makes it. The longest lines are read as is first; that reading is needed anyway
+   * and goes to `readAsIs`. A confident reading means upright text. Otherwise the middle of each of
+   * those lines is read turned 180°, and the text counts as upside down only when the turned reading
+   * is clearly more confident. Same as PaddleOcr.kt.
+   */
+  private func isUpsideDown(
+    _ src: [UInt32], _ srcW: Int, _ srcH: Int, _ found: [TextLine], _ readAsIs: inout [Int: Decoded?],
+    _ checkCancelled: () throws -> Void
+  ) throws -> Bool {
+    let sample = found.indices
+      .filter { !found[$0].vertical && found[$0].lengthSrc >= 1 && found[$0].heightSrc >= 1 }
+      .sorted { found[$0].lengthSrc > found[$1].lengthSrc }
+      .prefix(Self.orientationLines)
+    var asIs: Float = 0
+    var asIsChars = 0
+    for i in sample {
+      try checkCancelled()
+      let read = try recognize(src, srcW, srcH, found[i])
+      readAsIs[i] = .some(read)
+      if let read {
+        asIs += read.score * Float(read.text.count)
+        asIsChars += read.text.count
+      }
+    }
+    let asIsScore = asIsChars == 0 ? 0 : asIs / Float(asIsChars)
+    if sample.isEmpty || asIsScore >= Self.orientationUprightScore { return false }
+    var turned: Float = 0
+    var turnedChars = 0
+    for i in sample {
+      try checkCancelled()
+      if let r = try recognize(src, srcW, srcH, found[i].middle(Self.orientationSegmentHeights).flipped()) {
+        turned += r.score * Float(r.text.count)
+        turnedChars += r.text.count
+      }
+    }
+    return turnedChars > 0 && turned / Float(turnedChars) > asIsScore + Self.orientationMargin
   }
 
   private struct Decoded {
@@ -257,34 +296,6 @@ final class PaddleOcr {
       }
     }
     return out
-  }
-
-  /**
-   * PP-LCNet textline orientation: the probability that the line is upside down, from the middle
-   * of the line at its own proportions (160 × 80, about two line heights long; BGR, ImageNet
-   * mean/std, as PaddleOCR feeds it).
-   */
-  private static func upsideDownProbability(_ cls: ORTSession, _ src: [UInt32], _ srcW: Int, _ srcH: Int, _ line: TextLine) throws -> Float {
-    let plane = clsH * clsW
-    var input = [Float](repeating: 0, count: 3 * plane)
-    let h2 = 2 * line.halfHeight
-    let uc = (line.u0 + line.u1) / 2
-    let half = h2 * Float(clsW) / Float(clsH) / 2
-    let ua = Swift.max(line.u0, uc - half)
-    let ub = Swift.min(line.u1, uc + half)
-    for j in 0..<clsH {
-      for i in 0..<clsW {
-        let u = ua + (Float(i) + 0.5) / Float(clsW) * (ub - ua)
-        let v = line.centerAt(u) - line.halfHeight + (Float(j) + 0.5) / Float(clsH) * h2
-        let px = bilinear(src, srcW, srcH, line.srcX(u, v), line.srcY(u, v))
-        let idx = j * clsW + i
-        input[idx] = (px.0 / 255 - mean[0]) / std[0]
-        input[plane + idx] = (px.1 / 255 - mean[1]) / std[1]
-        input[2 * plane + idx] = (px.2 / 255 - mean[2]) / std[2]
-      }
-    }
-    let (p, _) = try infer(cls, input, [1, 3, clsH, clsW])
-    return p[1]
   }
 
   /** Bilinear sample of BGRA pixels; returns (B, G, R). */

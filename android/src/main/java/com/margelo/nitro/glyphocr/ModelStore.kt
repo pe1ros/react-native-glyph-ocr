@@ -92,13 +92,9 @@ internal object ModelStore {
 
   fun allRoles() = setOf(ModelRole.DETECTOR, ModelRole.RECOGNIZER, ModelRole.DICTIONARY)
 
-  /** The pack's files: one per required role, plus the orientation classifier if the pack lists one. */
-  fun packFiles(pack: ModelPack, formats: Set<ModelFormat> = ORT_FORMATS): List<ModelFile> {
-    val byId = manifest.files.associateBy { it.id }
-    val orientation = pack.files.mapNotNull { byId[it] }
-      .firstOrNull { it.role == ModelRole.ORIENTATION && it.format in formats }
-    return files(pack, allRoles(), formats) + listOfNotNull(orientation)
-  }
+  /** The pack's files: one per role. */
+  fun packFiles(pack: ModelPack, formats: Set<ModelFormat> = ORT_FORMATS): List<ModelFile> =
+    files(pack, allRoles(), formats)
 
   private fun ext(format: ModelFormat) = if (format == ModelFormat.DICT) "txt" else format.name.lowercase()
 

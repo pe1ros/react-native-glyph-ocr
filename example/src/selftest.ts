@@ -253,7 +253,7 @@ async function runChecks(
   );
 
   // ─── Upside down ───────────────────────────────────────────────────────
-  // Pixels turned 180° (not EXIF): Paddle finds the lines with its orientation classifier,
+  // Pixels turned 180° (not EXIF): Paddle reads the longest lines both ways and turns the text,
   // Vision reads turned text itself.
   const upsideDown = await sampleImage.rotateAsync(180);
   const turnedBack = await ocr.recognize(upsideDown, {

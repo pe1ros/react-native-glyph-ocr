@@ -67,6 +67,19 @@ class TextLine(
     halfHeight = halfHeight, scaleX = scaleX, scaleY = scaleY, vertical = vertical,
   )
 
+  /** The middle of the line, at most `heights` line heights long. */
+  fun middle(heights: Float): TextLine {
+    val half = heights * halfHeight
+    val uc = (u0 + u1) / 2
+    if (uc - half <= u0) return this
+    return TextLine(
+      cx = cx, cy = cy, cos = cos, sin = sin,
+      u0 = uc - half, u1 = uc + half,
+      binOrigin = binOrigin, centers = centers, centerConst = centerConst,
+      halfHeight = halfHeight, scaleX = scaleX, scaleY = scaleY, vertical = vertical,
+    )
+  }
+
   /** Length along the text and height across it, in source px. */
   val lengthSrc: Float get() = (u1 - u0) * scaleX
   val heightSrc: Float get() = 2 * halfHeight * scaleY

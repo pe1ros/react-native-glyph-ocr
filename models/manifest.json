@@ -12,16 +12,6 @@
       "license": "Apache-2.0"
     },
     {
-      "id": "pp-lcnet-textline-ori",
-      "role": "orientation",
-      "format": "onnx",
-      "path": "pp-lcnet/PP-LCNet_x0_25_textline_ori.onnx",
-      "url": "https://huggingface.co/PaddlePaddle/PP-LCNet_x0_25_textline_ori_onnx/resolve/aea1f18d97338aaf84b463f90192f2820524a00a/inference.onnx",
-      "sha256": "94a6a0a0425f2b5f08b5df72086f2d72abe40f1d22f6d12d2cd83674f11f2ff3",
-      "bytes": 1019454,
-      "license": "Apache-2.0"
-    },
-    {
       "id": "pp-ocrv6-tiny-det",
       "role": "detector",
       "format": "onnx",
@@ -290,8 +280,7 @@
       "files": [
         "pp-ocrv5-det-mobile",
         "pp-ocrv5-rec-en",
-        "pp-ocrv5-dict-en",
-        "pp-lcnet-textline-ori"
+        "pp-ocrv5-dict-en"
       ]
     },
     {
@@ -307,8 +296,7 @@
       "files": [
         "pp-ocrv5-det-mobile",
         "pp-ocrv5-rec-eslav",
-        "pp-ocrv5-dict-eslav",
-        "pp-lcnet-textline-ori"
+        "pp-ocrv5-dict-eslav"
       ]
     },
     {
@@ -353,8 +341,7 @@
       "files": [
         "pp-ocrv5-det-mobile",
         "pp-ocrv5-rec-cyrillic",
-        "pp-ocrv5-dict-cyrillic",
-        "pp-lcnet-textline-ori"
+        "pp-ocrv5-dict-cyrillic"
       ]
     },
     {
@@ -414,8 +401,7 @@
       "files": [
         "pp-ocrv5-det-mobile",
         "pp-ocrv5-rec-latin",
-        "pp-ocrv5-dict-latin",
-        "pp-lcnet-textline-ori"
+        "pp-ocrv5-dict-latin"
       ]
     },
     {
@@ -429,8 +415,7 @@
       "files": [
         "pp-ocrv5-det-mobile",
         "pp-ocrv5-rec-korean",
-        "pp-ocrv5-dict-korean",
-        "pp-lcnet-textline-ori"
+        "pp-ocrv5-dict-korean"
       ]
     },
     {
@@ -451,8 +436,7 @@
       "files": [
         "pp-ocrv5-det-mobile",
         "pp-ocrv5-rec-arabic",
-        "pp-ocrv5-dict-arabic",
-        "pp-lcnet-textline-ori"
+        "pp-ocrv5-dict-arabic"
       ]
     },
     {
@@ -478,8 +462,7 @@
       "files": [
         "pp-ocrv5-det-mobile",
         "pp-ocrv5-rec-devanagari",
-        "pp-ocrv5-dict-devanagari",
-        "pp-lcnet-textline-ori"
+        "pp-ocrv5-dict-devanagari"
       ]
     },
     {
@@ -493,8 +476,7 @@
       "files": [
         "pp-ocrv5-det-mobile",
         "pp-ocrv5-rec-th",
-        "pp-ocrv5-dict-th",
-        "pp-lcnet-textline-ori"
+        "pp-ocrv5-dict-th"
       ]
     },
     {
@@ -508,8 +490,7 @@
       "files": [
         "pp-ocrv5-det-mobile",
         "pp-ocrv5-rec-el",
-        "pp-ocrv5-dict-el",
-        "pp-lcnet-textline-ori"
+        "pp-ocrv5-dict-el"
       ]
     },
     {
@@ -523,8 +504,7 @@
       "files": [
         "pp-ocrv5-det-mobile",
         "pp-ocrv5-rec-ta",
-        "pp-ocrv5-dict-ta",
-        "pp-lcnet-textline-ori"
+        "pp-ocrv5-dict-ta"
       ]
     },
     {
@@ -538,8 +518,7 @@
       "files": [
         "pp-ocrv5-det-mobile",
         "pp-ocrv5-rec-te",
-        "pp-ocrv5-dict-te",
-        "pp-lcnet-textline-ori"
+        "pp-ocrv5-dict-te"
       ]
     },
     {
@@ -555,8 +534,7 @@
       "files": [
         "pp-ocrv5-det-mobile",
         "pp-ocrv5-rec-ch",
-        "pp-ocrv5-dict-ch",
-        "pp-lcnet-textline-ori"
+        "pp-ocrv5-dict-ch"
       ]
     },
     {
@@ -613,8 +591,7 @@
       "files": [
         "pp-ocrv6-tiny-det",
         "pp-ocrv6-rec-multi",
-        "pp-ocrv6-dict-multi",
-        "pp-lcnet-textline-ori"
+        "pp-ocrv6-dict-multi"
       ]
     }
   ]

@@ -77,21 +77,17 @@ final class ModelStore: @unchecked Sendable {
     return p
   }
 
-  /**
-   * One file per role, ONNX (the format Paddle on ONNX Runtime would read) or the dictionary, plus
-   * the orientation classifier if the pack lists one.
-   */
+  /** One file per role, ONNX (the format Paddle on ONNX Runtime would read) or the dictionary. */
   func files(_ pack: ModelPack) throws -> [ModelFile] {
     let byId = Dictionary(manifest.files.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
     let listed = pack.files.compactMap { byId[$0] }
     let readable: (ModelFile) -> Bool = { $0.format == .onnx || $0.format == .ort || $0.format == .dict }
-    let required = try [ModelRole.detector, .recognizer, .dictionary].map { role in
+    return try [ModelRole.detector, .recognizer, .dictionary].map { role in
       guard let f = listed.first(where: { $0.role == role && readable($0) }) else {
         throw OcrError("models-not-ready", "Pack \(pack.id) has no \(role.stringValue)", ["packId": pack.id])
       }
       return f
     }
-    return required + listed.filter { $0.role == .orientation && readable($0) }.prefix(1)
   }
 
   private func ext(_ format: ModelFormat) -> String { format == .dict ? "txt" : format.stringValue }

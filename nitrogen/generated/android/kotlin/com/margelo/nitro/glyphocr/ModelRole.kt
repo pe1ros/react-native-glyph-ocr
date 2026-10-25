@@ -18,8 +18,7 @@ import com.facebook.proguard.annotations.DoNotStrip
 enum class ModelRole(@DoNotStrip @Keep val value: Int) {
   DETECTOR(0),
   RECOGNIZER(1),
-  DICTIONARY(2),
-  ORIENTATION(3);
+  DICTIONARY(2);
 
   companion object
 }

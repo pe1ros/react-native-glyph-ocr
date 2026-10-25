@@ -9,10 +9,13 @@ First release on npm.
 
 - PaddleOCR on iOS as a build option (`GlyphOcr_paddleOnIos=1`, Expo `paddleOnIos`): the same
   pipeline as Android on onnxruntime-objc, for the languages Vision does not read.
-- Upside-down photos: a 1 MB PP-LCNet text line orientation classifier in every pack; one vote of
-  all lines decides, the lines are read turned, blocks and rows follow the text and the boxes stay
-  on the image. `RecognizeOptions.textlineOrientation` (default true); new model role `orientation`.
-- `multi` pack: PP-OCRv6 tiny, one 7.3 MB model for Chinese, English and 42 Latin languages;
+- Upside-down photos: the 8 longest lines are read first; when that reading is not confident, the
+  middle of each is read turned 180° too, and the text is read turned only when that reading is
+  clearly more confident. Upright text read confidently costs nothing extra. Blocks and rows follow
+  the text and the boxes stay on the image. `RecognizeOptions.textlineOrientation`
+  (default true). No extra model: the PP-LCNet text line orientation classifier tried first got
+  60–70% of the lines of Cyrillic labels right and turned 17 of 61 upright labels upside down.
+- `multi` pack: PP-OCRv6 tiny, a 6.2 MB download for Chinese, English and 42 Latin languages;
   detector defaults follow the pack's family.
 - `<OcrOverlay>` with `nodeToViewBox`, `imagePointToViewPoint` and `nodesOf`: boxes over the
   photo or the camera preview, rotated with the text, tap to pick a node.

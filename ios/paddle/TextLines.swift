@@ -50,6 +50,16 @@ struct TextLine {
       centerConst: -centerConst, halfHeight: halfHeight, scaleX: scaleX, scaleY: scaleY, vertical: vertical)
   }
 
+  /** The middle of the line, at most `heights` line heights long. */
+  func middle(_ heights: Float) -> TextLine {
+    let half = heights * halfHeight
+    let uc = (u0 + u1) / 2
+    if uc - half <= u0 { return self }
+    return TextLine(
+      cx: cx, cy: cy, cos: cos, sin: sin, u0: uc - half, u1: uc + half, binOrigin: binOrigin, centers: centers,
+      centerConst: centerConst, halfHeight: halfHeight, scaleX: scaleX, scaleY: scaleY, vertical: vertical)
+  }
+
   /** Length along the text and height across it, in source px. */
   var lengthSrc: Float { (u1 - u0) * scaleX }
   var heightSrc: Float { 2 * halfHeight * scaleY }

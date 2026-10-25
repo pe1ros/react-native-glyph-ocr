@@ -26,7 +26,7 @@ class PaddleOcr(
     val boxThresh: Float,
     val unclipRatio: Float,
     val dropScore: Float,
-    /** Run the orientation classifier, if loaded, and read upside-down lines turned. */
+    /** Find out whether the text is upside down and read it turned. */
     val textlineOrientation: Boolean,
   )
 
@@ -52,7 +52,7 @@ class PaddleOcr(
     val detWidth: Int,
     val detHeight: Int,
     val boxCount: Int,
-    /** Lines the orientation classifier turned 180°. */
+    /** Lines read turned 180°: the text was upside down. */
     val flippedCount: Int,
   )
 
@@ -104,19 +104,10 @@ class PaddleOcr(
     val src = IntArray(srcW * srcH)
     bitmap.getPixels(src, 0, srcW, 0, 0, srcW, srcH)
     val lines = ArrayList<Line>()
-    // A label photographed upside down is upside down as a whole, and the classifier is unsure
-    // about single lines: the decision is one vote of all lines, weighted by their length.
     var flippedCount = 0
-    val upsideDown = options.textlineOrientation && runtime.hasOrientation && run {
-      var weight = 0f
-      var sum = 0f
-      for (line in found) {
-        if (line.vertical || line.lengthSrc < 1f || line.heightSrc < 1f) continue
-        sum += line.lengthSrc * upsideDownProbability(src, srcW, srcH, line)
-        weight += line.lengthSrc
-      }
-      weight > 0f && sum / weight > 0.5f
-    }
+    // Readings of the longest lines as is, made by the upside-down check; reused when the text is upright
+    val readAsIs = HashMap<TextLine, Decoded?>()
+    val upsideDown = options.textlineOrientation && isUpsideDown(src, srcW, srcH, found, readAsIs, checkCancelled)
     for (detected in found) {
       checkCancelled()
       val line = if (upsideDown && !detected.vertical) {
@@ -125,7 +116,8 @@ class PaddleOcr(
       } else {
         detected
       }
-      val recognized = recognize(src, srcW, srcH, line) ?: continue
+      val recognized = (if (readAsIs.containsKey(line)) readAsIs[line] else recognize(src, srcW, srcH, line))
+        ?: continue
       if (recognized.score >= options.dropScore && recognized.text.isNotBlank()) {
         lines.add(bounds(line, recognized, srcW, srcH))
       }
@@ -138,30 +130,49 @@ class PaddleOcr(
   }
 
   /**
-   * PP-LCNet textline orientation: the probability that the line is upside down. The classifier
-   * takes 160 × 80 (BGR, ImageNet mean/std, as PaddleOCR feeds it); squashing a whole long line into
-   * it loses the letter shapes, so it sees the middle of the line at its own proportions, about two
-   * line heights long (a short line is stretched to fill it).
+   * A label photographed upside down is upside down as a whole, so one decision covers all lines.
+   * The recognizer makes it. The longest lines are read as is first; that reading is needed anyway
+   * and goes to [readAsIs]. A confident reading means upright text: upside-down text read as is gives
+   * low-confidence garbage. Otherwise the middle of each of those lines is read turned 180°, and the
+   * text counts as upside down only when the turned reading is clearly more confident.
+   * (The PP-LCNet text line orientation classifier tried before got 60–70% of the lines of Cyrillic
+   * labels right and turned upright labels upside down.)
    */
-  private fun upsideDownProbability(src: IntArray, srcW: Int, srcH: Int, line: TextLine): Float {
-    val tensor = floatBuffer(3 * CLS_H * CLS_W)
-    val plane = CLS_H * CLS_W
-    val h2 = 2 * line.halfHeight
-    val uc = (line.u0 + line.u1) / 2
-    val ua = max(line.u0, uc - h2 * CLS_W / CLS_H / 2)
-    val ub = min(line.u1, uc + h2 * CLS_W / CLS_H / 2)
-    for (j in 0 until CLS_H) {
-      for (i in 0 until CLS_W) {
-        val u = ua + (i + 0.5f) / CLS_W * (ub - ua)
-        val v = line.centerAt(u) - line.halfHeight + (j + 0.5f) / CLS_H * h2
-        val bgr = bilinear(src, srcW, srcH, line.srcX(u, v), line.srcY(u, v))
-        val idx = j * CLS_W + i
-        for (ch in 0 until 3) {
-          tensor.put(ch * plane + idx, (bgr[ch] / 255f - CLS_MEAN[ch]) / CLS_STD[ch])
-        }
+  private fun isUpsideDown(
+    src: IntArray,
+    srcW: Int,
+    srcH: Int,
+    found: List<TextLine>,
+    readAsIs: MutableMap<TextLine, Decoded?>,
+    checkCancelled: () -> Unit,
+  ): Boolean {
+    val sample = found
+      .filter { !it.vertical && it.lengthSrc >= 1f && it.heightSrc >= 1f }
+      .sortedByDescending { it.lengthSrc }
+      .take(ORIENTATION_LINES)
+    var asIs = 0f
+    var asIsChars = 0
+    for (line in sample) {
+      checkCancelled()
+      val read = recognize(src, srcW, srcH, line)
+      readAsIs[line] = read
+      if (read != null) {
+        asIs += read.score * read.text.length
+        asIsChars += read.text.length
       }
     }
-    return runtime.classifyOrientation(tensor)[1]
+    val asIsScore = if (asIsChars == 0) 0f else asIs / asIsChars
+    if (sample.isEmpty() || asIsScore >= ORIENTATION_UPRIGHT_SCORE) return false
+    var turned = 0f
+    var turnedChars = 0
+    for (line in sample) {
+      checkCancelled()
+      recognize(src, srcW, srcH, line.middle(ORIENTATION_SEGMENT_HEIGHTS).flipped())?.let {
+        turned += it.score * it.text.length
+        turnedChars += it.text.length
+      }
+    }
+    return turnedChars > 0 && turned / turnedChars > asIsScore + ORIENTATION_MARGIN
   }
 
   private class Decoded(val text: String, val score: Float, val words: List<Word>)
@@ -383,7 +394,16 @@ class PaddleOcr(
     private const val TAG = "GlyphOcr"
     private const val REC_MIN_W = 320
     private const val REC_MAX_W = 3200
-    private val CLS_MEAN = floatArrayOf(0.485f, 0.456f, 0.406f)
-    private val CLS_STD = floatArrayOf(0.229f, 0.224f, 0.225f)
+
+    // Upside-down check: the longest lines; the confidence of reading them as is above which the
+    // text is upright without reading it turned; the middle of each line read turned, at most this
+    // many line heights long; and how much more confident the turned reading must be. Chosen on 61
+    // label photos and the same photos turned 180°: no upright label turned, 3 of 61 turned ones
+    // missed (all unreadable); turned labels read as is scored at most 0.60, and 42 of 60 upright
+    // ones skip the turned reading.
+    private const val ORIENTATION_LINES = 8
+    private const val ORIENTATION_UPRIGHT_SCORE = 0.8f
+    private const val ORIENTATION_SEGMENT_HEIGHTS = 10f
+    private const val ORIENTATION_MARGIN = 0.05f
   }
 }

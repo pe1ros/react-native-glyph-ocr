@@ -23,8 +23,6 @@ public extension ModelRole {
         self = .recognizer
       case "dictionary":
         self = .dictionary
-      case "orientation":
-        self = .orientation
       default:
         return nil
     }
@@ -41,8 +39,6 @@ public extension ModelRole {
         return "recognizer"
       case .dictionary:
         return "dictionary"
-      case .orientation:
-        return "orientation"
     }
   }
 }

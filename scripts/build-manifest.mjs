@@ -24,12 +24,6 @@ const HF = 'https://huggingface.co';
 const DETECTOR = { id: 'pp-ocrv5-det-mobile', repo: 'PaddlePaddle/PP-OCRv5_mobile_det_onnx', path: 'pp-ocrv5/PP-OCRv5_mobile_det.onnx' };
 /** PP-OCRv6 has its own, smaller detector (1.8 MB), used by the PP-OCRv6 packs. */
 const DETECTOR_V6 = { id: 'pp-ocrv6-tiny-det', repo: 'PaddlePaddle/PP-OCRv6_tiny_det_onnx', path: 'pp-ocrv6/PP-OCRv6_tiny_det.onnx' };
-/** Finds upside-down lines (0° / 180°), shared by every pack like the detector; about 1 MB. */
-const ORIENTATION = {
-  id: 'pp-lcnet-textline-ori',
-  repo: 'PaddlePaddle/PP-LCNet_x0_25_textline_ori_onnx',
-  path: 'pp-lcnet/PP-LCNet_x0_25_textline_ori.onnx',
-};
 
 /** Narrow packs first: the first pack covering all requested languages wins. */
 const PACKS = [
@@ -123,16 +117,11 @@ const sha256 = s => createHash('sha256').update(s).digest('hex');
 async function build() {
   const outputs = new Map();
   const det = await onnxFile(DETECTOR.repo);
-  const ori = await onnxFile(ORIENTATION.repo);
   const detV6 = await onnxFile(DETECTOR_V6.repo);
   const files = [
     {
       id: DETECTOR.id, role: 'detector', format: 'onnx', path: DETECTOR.path,
       url: det.url, sha256: det.sha256, bytes: det.bytes, license: 'Apache-2.0',
-    },
-    {
-      id: ORIENTATION.id, role: 'orientation', format: 'onnx', path: ORIENTATION.path,
-      url: ori.url, sha256: ori.sha256, bytes: ori.bytes, license: 'Apache-2.0',
     },
     {
       id: DETECTOR_V6.id, role: 'detector', format: 'onnx', path: DETECTOR_V6.path,
@@ -170,7 +159,7 @@ async function build() {
     );
     packs.push({
       id: p.id, engine: 'paddle', family, languages,
-      files: [(p.detector ?? DETECTOR).id, `${prefix}-rec-${p.id}`, `${prefix}-dict-${p.id}`, ORIENTATION.id],
+      files: [(p.detector ?? DETECTOR).id, `${prefix}-rec-${p.id}`, `${prefix}-dict-${p.id}`],
     });
     console.error(`${p.id}: ${chars.length} chars, ${(rec.bytes / 1e6).toFixed(1)} MB, ${languages.length} languages`);
   }
