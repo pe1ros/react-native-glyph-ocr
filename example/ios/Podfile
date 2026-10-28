@@ -19,8 +19,11 @@ target 'GlyphOcrExample' do
 
   # react-native-glyph-ocr with PaddleOCR on iOS (GlyphOcr_paddleOnIos=1 pod install): its Swift
   # imports ONNX Runtime's Objective-C API, which needs module maps.
+  # The podspecs are copied from trunk into podspecs/: resolving the pods through the CocoaPods CDN
+  # hangs on GitHub's macOS runners. An app only needs the `onnxruntime-objc` line.
   if ['1', 'true'].include?(ENV['GlyphOcr_paddleOnIos'].to_s)
-    pod 'onnxruntime-objc', :modular_headers => true
+    pod 'onnxruntime-objc', :modular_headers => true, :podspec => 'podspecs/onnxruntime-objc.podspec.json'
+    pod 'onnxruntime-c', :podspec => 'podspecs/onnxruntime-c.podspec.json'
   end
 
   use_react_native!(
