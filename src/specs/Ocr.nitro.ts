@@ -462,7 +462,10 @@ export interface GlyphOcrFactory extends HybridObject<{
 }> {
   /** `vision` on iOS, `paddle` on Android. */
   readonly defaultEngine: OcrEngine;
-  /** Engines `createRecognizer` accepts in this build: `['vision']` on iOS, `['paddle']` on Android. ML Kit is in `/dev` only. */
+  /**
+   * Engines `createRecognizer` accepts in this build: `['vision']` on iOS (`['vision', 'paddle']`
+   * with `GlyphOcr_paddleOnIos=1`), `['paddle']` on Android. ML Kit is in `/dev` only.
+   */
   readonly availableEngines: OcrEngine[];
   readonly models: OcrModelStore;
   getSupportedLanguages(engine?: OcrEngine): SupportedLanguage[];
