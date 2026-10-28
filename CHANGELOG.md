@@ -3,9 +3,15 @@
 All notable changes to this package. Versions follow [semantic versioning](https://semver.org);
 before 1.0 a minor version may change the API.
 
-## 0.3.0 — unreleased
+## 0.3.1 — unreleased
 
 First release on npm.
+
+- Docs: `availableEngines` lists `paddle` on iOS when the app is built with `GlyphOcr_paddleOnIos=1`.
+
+## 0.3.0
+
+Tagged in git only, not published on npm.
 
 - PaddleOCR on iOS as a build option (`GlyphOcr_paddleOnIos=1`, Expo `paddleOnIos`): the same
   pipeline as Android on onnxruntime-objc, for the languages Vision does not read.

@@ -1,6 +1,6 @@
 {
   "name": "react-native-glyph-ocr",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "On-device text recognition for React Native: Apple Vision on iOS, PaddleOCR (PP-OCRv5) on Android, as a Nitro module",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
